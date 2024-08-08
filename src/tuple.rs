@@ -212,5 +212,14 @@ mod tests {
             Tuple::new_vector(1.0, -2.5, 3.25) / 2.0,
             Tuple::new_vector(0.5, -1.25, 1.625),
         );
+        assert_eq!(
+            Tuple::new_point(1.0, -2.5, 3.25) / 2.0,
+            Tuple {
+                x: 0.5,
+                y: -1.25,
+                z: 1.625,
+                w: 0.5,
+            },
+        );
     }
 }
