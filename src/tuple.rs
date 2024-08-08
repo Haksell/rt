@@ -1,8 +1,10 @@
-use crate::Float;
+// Do we really need w everywhere?
+
+use crate::{is_close, Float};
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Tuple {
     x: Float,
     y: Float,
@@ -35,9 +37,27 @@ impl Tuple {
         }
     }
 
+    pub fn is_close(&self, rhs: &Self) -> bool {
+        is_close(self.x, rhs.x)
+            && is_close(self.y, rhs.y)
+            && is_close(self.z, rhs.z)
+            && is_close(self.w, rhs.w) // Use == for w?
+    }
+
     pub fn magnitude(&self) -> Float {
         // What about w?
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
+    pub fn normalize(&self) -> Self {
+        // What if self.magnitude() == 0?
+        let scalar = 1.0 / self.magnitude();
+        Self {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+            w: self.w, // ?
+        }
     }
 }
 
@@ -244,5 +264,24 @@ mod tests {
             Tuple::new_vector(1.0, -2.0, -3.0).magnitude(),
             (14.0 as Float).sqrt()
         );
+    }
+
+    #[test]
+    fn test_normalize() {
+        assert_eq!(
+            Tuple::new_vector(3.0, 0.0, 0.0).normalize(),
+            Tuple::new_vector(1.0, 0.0, 0.0)
+        );
+        assert!(Tuple::new_vector(3.0, 4.0, 0.0)
+            .normalize()
+            .is_close(&Tuple::new_vector(0.6, 0.8, 0.0)));
+        let sqrt14 = (14.0 as Float).sqrt();
+        assert!(Tuple::new_vector(1.0, -2.0, -3.0)
+            .normalize()
+            .is_close(&Tuple::new_vector(
+                1.0 / sqrt14,
+                -2.0 / sqrt14,
+                -3.0 / sqrt14
+            )));
     }
 }
