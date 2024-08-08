@@ -3,9 +3,9 @@
 ## todo
 
 - [ ] read *The Ray Tracer Challenge*
-- [ ] reproduce 3 images from subject
-- [ ] read scene from JSON file
 - [ ] parallelize somehow (`#[repr(simd)]`, stdsimd, packed_simd, rayon?)
+- [ ] read scene from JSON file
+- [ ] reproduce 3 images from subject
 
 ## mandatory part
 
