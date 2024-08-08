@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Sub};
 
 // TODO: SIMD
 #[derive(Debug, PartialEq)]
@@ -48,6 +48,19 @@ impl Add for Tuple {
     }
 }
 
+impl Sub for Tuple {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Tuple;
@@ -85,6 +98,22 @@ mod tests {
         assert_eq!(
             Tuple::new_point(3.0, -2.0, 5.0) + Tuple::new_vector(-2.0, 3.0, 1.0),
             Tuple::new_point(1.0, 1.0, 6.0)
-        )
+        );
+    }
+
+    #[test]
+    fn test_subtraction() {
+        assert_eq!(
+            Tuple::new_point(3.0, 2.0, 1.0) - Tuple::new_point(5.0, 6.0, 7.0),
+            Tuple::new_vector(-2.0, -4.0, -6.0)
+        );
+        assert_eq!(
+            Tuple::new_vector(3.0, 2.0, 1.0) - Tuple::new_vector(5.0, 6.0, 7.0),
+            Tuple::new_vector(-2.0, -4.0, -6.0)
+        );
+        assert_eq!(
+            Tuple::new_point(3.0, 2.0, 1.0) - Tuple::new_vector(5.0, 6.0, 7.0),
+            Tuple::new_point(-2.0, -4.0, -6.0)
+        );
     }
 }
