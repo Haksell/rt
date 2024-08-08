@@ -27,6 +27,7 @@
 
 ## options
 
+- [ ] external files for scene description
 - [ ] limited objects: parallelograms, disks, half-spheres, tubes etc...
 - [ ] composed elements: cubes, pyramids, tetrahedrons...
 - [ ] more native elements: paraboloid, hyperboloid, tablecloth, toroid...
@@ -34,7 +35,6 @@
 - [ ] direct light
 - [ ] parallel light
 - [ ] bump mapping and color disruption
-- [ ] external files for scene description
 - [ ] reflection
 - [ ] transparency
 - [ ] shadow modification according to transparency of the elements

@@ -63,7 +63,18 @@ impl Tuple {
         // Once again, wtf am I supposed to do with w?
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
+
+    pub fn cross(&self, rhs: &Self) -> Self {
+        // Let's just completely ignore w
+        Self::new_vector(
+            self.y * rhs.z - self.z * rhs.y,
+            self.z * rhs.x - self.x * rhs.z,
+            self.x * rhs.y - self.y * rhs.x,
+        )
+    }
 }
+
+// TODO: implement operators for &Tuple
 
 impl Add for Tuple {
     type Output = Self;
@@ -299,5 +310,22 @@ mod tests {
             Tuple::new_vector(1.0, 0.0, 0.0).dot(&Tuple::new_vector(0.0, 1.0, 0.0)),
             0.0,
         );
+    }
+
+    #[test]
+    fn test_cross() {
+        let x = Tuple::new_vector(1.0, 0.0, 0.0);
+        let y = Tuple::new_vector(0.0, 1.0, 0.0);
+        let z = Tuple::new_vector(0.0, 0.0, 1.0);
+        assert_eq!(x.cross(&y), z);
+        assert_eq!(y.cross(&z), x);
+        assert_eq!(z.cross(&x), y);
+        assert_eq!(y.cross(&x), -z.clone());
+        assert_eq!(z.cross(&y), -x.clone());
+        assert_eq!(x.cross(&z), -y.clone());
+        let a = Tuple::new_vector(1.0, 2.0, 3.0);
+        let b = Tuple::new_vector(2.0, 3.0, 4.0);
+        assert_eq!(a.cross(&b), Tuple::new_vector(-1.0, 2.0, -1.0));
+        assert_eq!(b.cross(&a), Tuple::new_vector(1.0, -2.0, 1.0));
     }
 }
