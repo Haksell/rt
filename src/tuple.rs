@@ -34,6 +34,11 @@ impl Tuple {
             _ => panic!("Tuple::w is invalid: {}", self.w),
         }
     }
+
+    pub fn magnitude(&self) -> Float {
+        // What about w?
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
 }
 
 impl Add for Tuple {
@@ -112,6 +117,8 @@ impl Div<Float> for Tuple {
 
 #[cfg(test)]
 mod tests {
+    use crate::Float;
+
     use super::Tuple;
 
     #[test]
@@ -220,6 +227,22 @@ mod tests {
                 z: 1.625,
                 w: 0.5,
             },
+        );
+    }
+
+    #[test]
+    fn test_magnitude() {
+        assert_eq!(Tuple::new_vector(1.0, 0.0, 0.0).magnitude(), 1.0);
+        assert_eq!(Tuple::new_vector(0.0, 1.0, 0.0).magnitude(), 1.0);
+        assert_eq!(Tuple::new_vector(0.0, 0.0, 1.0).magnitude(), 1.0);
+        assert_eq!(Tuple::new_vector(0.0, 3.0, 4.0).magnitude(), 5.0);
+        assert_eq!(
+            Tuple::new_vector(1.0, 2.0, 3.0).magnitude(),
+            (14.0 as Float).sqrt()
+        );
+        assert_eq!(
+            Tuple::new_vector(1.0, -2.0, -3.0).magnitude(),
+            (14.0 as Float).sqrt()
         );
     }
 }
