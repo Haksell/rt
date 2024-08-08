@@ -45,8 +45,7 @@ impl Tuple {
     }
 
     pub fn magnitude(&self) -> Float {
-        // What about w?
-        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+        (self.dot(self)).sqrt()
     }
 
     pub fn normalize(&self) -> Self {
@@ -56,8 +55,13 @@ impl Tuple {
             x: self.x * scalar,
             y: self.y * scalar,
             z: self.z * scalar,
-            w: self.w, // ?
+            w: self.w, // ???
         }
+    }
+
+    pub fn dot(&self, rhs: &Self) -> Float {
+        // Once again, wtf am I supposed to do with w?
+        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 }
 
@@ -283,5 +287,17 @@ mod tests {
                 -2.0 / sqrt14,
                 -3.0 / sqrt14
             )));
+    }
+
+    #[test]
+    fn test_dot() {
+        assert_eq!(
+            Tuple::new_vector(1.0, 2.0, 3.0).dot(&Tuple::new_vector(2.0, 3.0, 4.0)),
+            20.0,
+        );
+        assert_eq!(
+            Tuple::new_vector(1.0, 0.0, 0.0).dot(&Tuple::new_vector(0.0, 1.0, 0.0)),
+            0.0,
+        );
     }
 }
