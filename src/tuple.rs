@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 // TODO: SIMD
 #[derive(Debug, PartialEq)]
 pub struct Tuple {
@@ -33,6 +35,19 @@ impl Tuple {
     }
 }
 
+impl Add for Tuple {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Tuple;
@@ -63,5 +78,13 @@ mod tests {
         assert_eq!(vector_manual, vector_constructor);
         assert!(vector_constructor.is_vector());
         assert!(!vector_constructor.is_point());
+    }
+
+    #[test]
+    fn test_addition() {
+        assert_eq!(
+            Tuple::new_point(3.0, -2.0, 5.0) + Tuple::new_vector(-2.0, 3.0, 1.0),
+            Tuple::new_point(1.0, 1.0, 6.0)
+        )
     }
 }
