@@ -3,6 +3,7 @@
 ## todo
 
 - [ ] read *The Ray Tracer Challenge*
+- [ ] test speed of `f32` vs `f64`
 - [ ] parallelize somehow (`#[repr(simd)]`, stdsimd, packed_simd, rayon?)
 - [ ] read scene from JSON file
 - [ ] reproduce 3 images from subject
