@@ -89,7 +89,7 @@ impl Mul<Float> for Tuple {
     }
 }
 
-impl Mul<Tuple> for f32 {
+impl Mul<Tuple> for Float {
     type Output = Tuple;
 
     fn mul(self, tuple: Tuple) -> Tuple {
