@@ -1,20 +1,21 @@
-use std::ops::{Add, Sub};
+use crate::Float;
+use std::ops::{Add, Mul, Neg, Sub};
 
 // TODO: SIMD
 #[derive(Debug, PartialEq)]
 pub struct Tuple {
-    x: f32,
-    y: f32,
-    z: f32,
-    w: f32,
+    x: Float,
+    y: Float,
+    z: Float,
+    w: Float,
 }
 
 impl Tuple {
-    pub fn new_point(x: f32, y: f32, z: f32) -> Self {
+    pub fn new_point(x: Float, y: Float, z: Float) -> Self {
         Self { x, y, z, w: 1.0 }
     }
 
-    pub fn new_vector(x: f32, y: f32, z: f32) -> Self {
+    pub fn new_vector(x: Float, y: Float, z: Float) -> Self {
         Self { x, y, z, w: 0.0 }
     }
 
@@ -57,6 +58,46 @@ impl Sub for Tuple {
             y: self.y - other.y,
             z: self.z - other.z,
             w: self.w - other.w,
+        }
+    }
+}
+
+// What if I want to negate a point?
+impl Neg for Tuple {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: -self.w,
+        }
+    }
+}
+
+impl Mul<Float> for Tuple {
+    type Output = Self;
+
+    fn mul(self, scalar: Float) -> Self {
+        Self {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+            w: self.w * scalar,
+        }
+    }
+}
+
+impl Mul<Tuple> for f32 {
+    type Output = Tuple;
+
+    fn mul(self, tuple: Tuple) -> Tuple {
+        Tuple {
+            x: self * tuple.x,
+            y: self * tuple.y,
+            z: self * tuple.z,
+            w: self * tuple.w,
         }
     }
 }
@@ -114,6 +155,46 @@ mod tests {
         assert_eq!(
             Tuple::new_point(3.0, 2.0, 1.0) - Tuple::new_vector(5.0, 6.0, 7.0),
             Tuple::new_point(-2.0, -4.0, -6.0)
+        );
+    }
+
+    #[test]
+    fn test_negation() {
+        assert_eq!(
+            -Tuple::new_vector(3.0, 2.0, -1.0),
+            Tuple::new_vector(-3.0, -2.0, 1.0)
+        );
+    }
+
+    #[test]
+    fn test_scaling() {
+        assert_eq!(
+            Tuple {
+                x: 1.0,
+                y: -2.0,
+                z: 3.0,
+                w: -4.0
+            } * 3.5,
+            Tuple {
+                x: 3.5,
+                y: -7.0,
+                z: 10.5,
+                w: -14.0
+            },
+        );
+        assert_eq!(
+            0.5 * Tuple {
+                x: 1.0,
+                y: -2.0,
+                z: 3.0,
+                w: -4.0
+            },
+            Tuple {
+                x: 0.5,
+                y: -1.0,
+                z: 1.5,
+                w: -2.0
+            },
         );
     }
 }
