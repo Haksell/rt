@@ -1,6 +1,4 @@
-mod tuple;
-
-use tuple::Tuple;
+use rt::Tuple;
 
 fn main() {
     println!("{:?}", Tuple::new_point(4.0, -4.0, 3.0));
