@@ -1,5 +1,5 @@
 use crate::Float;
-use std::ops::{Add, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD
 #[derive(Debug, PartialEq)]
@@ -102,6 +102,14 @@ impl Mul<Tuple> for Float {
     }
 }
 
+impl Div<Float> for Tuple {
+    type Output = Self;
+
+    fn div(self, divisor: Float) -> Self {
+        self * (1.0 / divisor)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Tuple;
@@ -195,6 +203,14 @@ mod tests {
                 z: 1.5,
                 w: -2.0
             },
+        );
+    }
+
+    #[test]
+    fn test_division() {
+        assert_eq!(
+            Tuple::new_vector(1.0, -2.5, 3.25) / 2.0,
+            Tuple::new_vector(0.5, -1.25, 1.625),
         );
     }
 }
