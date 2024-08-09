@@ -1,8 +1,7 @@
 use minifb::{Key, Window, WindowOptions};
 use rt::{Canvas, Color};
 
-// TODO: args for window or PPM file
-// TODO: projectile launcher from chapter 1
+// TODO: args for window or PPM file or just keyboard shortcut?
 
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
@@ -20,13 +19,8 @@ fn main() {
         }
     }
 
-    let mut window = Window::new(
-        "Raytracer - ESC to exit",
-        WIDTH,
-        HEIGHT,
-        WindowOptions::default(),
-    )
-    .unwrap_or_else(|e| panic!("{}", e));
+    let mut window = Window::new("rt", WIDTH, HEIGHT, WindowOptions::default())
+        .unwrap_or_else(|e| panic!("{}", e));
     window.set_target_fps(6); // TODO: remove once incremental raytracing is implemented
 
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
