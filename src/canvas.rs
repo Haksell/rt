@@ -47,9 +47,8 @@ impl Canvas {
 
 #[cfg(test)]
 mod tests {
-    use crate::Color;
-
     use super::Canvas;
+    use crate::Color;
 
     #[test]
     fn test_new() {

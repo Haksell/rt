@@ -153,9 +153,8 @@ impl Div<Float> for Tuple {
 
 #[cfg(test)]
 mod tests {
-    use crate::Float;
-
     use super::Tuple;
+    use crate::Float;
 
     #[test]
     fn test_point() {
