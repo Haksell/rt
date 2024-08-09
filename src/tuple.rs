@@ -26,6 +26,10 @@ impl Tuple {
         Self::new(x, y, z, 0.0)
     }
 
+    pub fn zero() -> Self {
+        Self::new(0.0, 0.0, 0.0, 0.0)
+    }
+
     pub fn is_point(&self) -> bool {
         match self.w {
             0.0 => false,
