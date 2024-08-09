@@ -11,7 +11,7 @@ pub use tuple::Tuple;
 
 type Float = f32; // TODO: try f64
 
-// TODO: find a better way to get TAU
+// TODO: find a better way to get Float::TAU
 
 pub trait FloatExt {
     const TAU: Self;

@@ -19,6 +19,7 @@ pub fn scale(x: Float, y: Float, z: Float) -> Matrix<4> {
     ])
 }
 
+// TODO: remove if not used (Tuple * scalar already exists)
 pub fn scale_constant(s: Float) -> Matrix<4> {
     scale(s, s, s)
 }
@@ -53,10 +54,20 @@ pub fn rotate_z(angle: Float) -> Matrix<4> {
     ])
 }
 
+// TODO: remove if unused
+pub fn shear(xy: Float, xz: Float, yx: Float, yz: Float, zx: Float, zy: Float) -> Matrix<4> {
+    Matrix::new(&[
+        [1.0, xy, xz, 0.0],
+        [yx, 1.0, yz, 0.0],
+        [zx, zy, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ])
+}
+
 #[cfg(test)]
 mod tests {
     use super::{rotate_x, rotate_y, rotate_z, scale, scale_constant, translate};
-    use crate::{Float, FloatExt, Tuple};
+    use crate::{transform::shear, Float, FloatExt, Tuple};
 
     #[test]
     fn test_translate() {
@@ -171,6 +182,38 @@ mod tests {
                 (2.0 as Float).sqrt(),
                 -1.0
             ))
+        );
+    }
+
+    #[test]
+    fn test_shear() {
+        assert_eq!(
+            shear(0.0, 0.0, 0.0, 0.0, 0.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(2.0, 3.0, 4.0)
+        );
+        assert_eq!(
+            shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(5.0, 3.0, 4.0)
+        );
+        assert_eq!(
+            shear(0.0, 1.0, 0.0, 0.0, 0.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(6.0, 3.0, 4.0)
+        );
+        assert_eq!(
+            shear(0.0, 0.0, 1.0, 0.0, 0.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(2.0, 5.0, 4.0)
+        );
+        assert_eq!(
+            shear(0.0, 0.0, 0.0, 1.0, 0.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(2.0, 7.0, 4.0)
+        );
+        assert_eq!(
+            shear(0.0, 0.0, 0.0, 0.0, 1.0, 0.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(2.0, 3.0, 6.0)
+        );
+        assert_eq!(
+            shear(0.0, 0.0, 0.0, 0.0, 0.0, 1.0) * Tuple::new_point(2.0, 3.0, 4.0),
+            Tuple::new_point(2.0, 3.0, 7.0)
         );
     }
 }
