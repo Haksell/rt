@@ -19,7 +19,6 @@ pub fn scale(x: Float, y: Float, z: Float) -> Matrix<4> {
     ])
 }
 
-// TODO: remove if not used (Tuple * scalar already exists)
 pub fn scale_constant(s: Float) -> Matrix<4> {
     scale(s, s, s)
 }
@@ -215,5 +214,18 @@ mod tests {
             shear(0.0, 0.0, 0.0, 0.0, 0.0, 1.0) * Tuple::new_point(2.0, 3.0, 4.0),
             Tuple::new_point(2.0, 3.0, 7.0)
         );
+    }
+
+    #[test]
+    fn test_mixed_transforms() {
+        let p1 = Tuple::new_point(1.0, 0.0, 1.0);
+        let a = rotate_x(Float::TAU / 4.0);
+        let b = scale_constant(5.0);
+        let c = translate(10.0, 5.0, 7.0);
+        let p2 = a.clone() * p1.clone();
+        let p3 = b.clone() * p2;
+        let p4 = c.clone() * p3;
+        assert_eq!(p4, Tuple::new_point(15.0, 0.0, 7.0));
+        assert_eq!((c * b * a) * p1, Tuple::new_point(15.0, 0.0, 7.0));
     }
 }
