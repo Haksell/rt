@@ -1,8 +1,8 @@
 use crate::{Float, Tuple};
 
 pub struct Ray {
-    origin: Tuple,
-    direction: Tuple,
+    pub origin: Tuple,
+    pub direction: Tuple,
 }
 
 impl Ray {
@@ -23,9 +23,8 @@ impl Ray {
 
 #[cfg(test)]
 mod tests {
-    use crate::Tuple;
-
     use super::Ray;
+    use crate::Tuple;
 
     #[test]
     fn test_ray_new_valid() {

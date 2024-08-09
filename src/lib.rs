@@ -1,6 +1,7 @@
 mod canvas;
 mod color;
 mod matrix;
+pub mod objects;
 mod ray;
 pub mod transform;
 mod tuple;
