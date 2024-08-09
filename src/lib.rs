@@ -1,7 +1,7 @@
 mod canvas;
 mod color;
 mod matrix;
-pub mod transformations;
+pub mod transform;
 mod tuple;
 
 pub use canvas::Canvas;
