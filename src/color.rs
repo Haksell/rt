@@ -4,8 +4,9 @@ use std::ops::{Add, Mul, Sub};
 
 use crate::{is_close, Float};
 
+// TODO: Copy?
 #[derive(Debug, PartialEq, Clone)]
-struct Color {
+pub struct Color {
     r: Float,
     g: Float,
     b: Float,
@@ -14,6 +15,10 @@ struct Color {
 impl Color {
     pub fn new(r: Float, g: Float, b: Float) -> Self {
         Self { r, g, b }
+    }
+
+    pub fn black() -> Self {
+        Self::new(0.0, 0.0, 0.0)
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {

@@ -1,6 +1,9 @@
+mod canvas;
 mod color;
 mod tuple;
 
+pub use canvas::Canvas;
+pub use color::Color;
 pub use tuple::Tuple;
 
 type Float = f32; // TODO: try f64

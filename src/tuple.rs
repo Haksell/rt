@@ -4,6 +4,7 @@ use crate::{is_close, Float};
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD
+// TODO: Copy?
 #[derive(Debug, PartialEq, Clone)]
 pub struct Tuple {
     x: Float,
