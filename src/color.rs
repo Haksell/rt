@@ -7,9 +7,9 @@ use crate::{is_close, Float};
 // TODO: not Copy?
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {
-    r: Float,
-    g: Float,
-    b: Float,
+    pub r: Float,
+    pub g: Float,
+    pub b: Float,
 }
 
 impl Color {
