@@ -1,6 +1,8 @@
 use super::Matrix;
 use crate::Float;
 
+// TODO: implement methods directly on Tuple when not chaining matrices?
+
 pub fn translate(x: Float, y: Float, z: Float) -> Matrix<4> {
     Matrix::new(&[
         [1.0, 0.0, 0.0, x],
