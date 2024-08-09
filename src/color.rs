@@ -52,6 +52,13 @@ impl Color {
     pub fn is_close(&self, rhs: &Self) -> bool {
         is_close(self.r, rhs.r) && is_close(self.g, rhs.g) && is_close(self.b, rhs.b)
     }
+
+    pub fn to_u32(&self) -> u32 {
+        let r = (self.r.clamp(0.0, 1.0) * 255.0) as u32;
+        let g = (self.g.clamp(0.0, 1.0) * 255.0) as u32;
+        let b = (self.b.clamp(0.0, 1.0) * 255.0) as u32;
+        (r << 16) | (g << 8) | b
+    }
 }
 
 impl Add for Color {
@@ -148,5 +155,21 @@ mod tests {
     fn test_multiplication() {
         assert!((Color::new(0.9, 0.6, 0.75) * Color::new(0.7, 0.1, 0.25))
             .is_close(&Color::new(0.63, 0.06, 0.1875)));
+    }
+
+    #[test]
+    fn test_to_u32() {
+        assert_eq!(Color::black().to_u32(), 0x000000);
+        assert_eq!(Color::blue().to_u32(), 0x0000ff);
+        assert_eq!(Color::green().to_u32(), 0x00ff00);
+        assert_eq!(Color::cyan().to_u32(), 0x00ffff);
+        assert_eq!(Color::red().to_u32(), 0xff0000);
+        assert_eq!(Color::magenta().to_u32(), 0xff00ff);
+        assert_eq!(Color::yellow().to_u32(), 0xffff00);
+        assert_eq!(Color::white().to_u32(), 0xffffff);
+        assert_eq!(
+            Color::new(0.333, 0.667, 1.0).to_u32(),
+            85 << 16 | 170 << 8 | 255
+        );
     }
 }

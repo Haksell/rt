@@ -1,4 +1,4 @@
-use crate::{clamp, Color};
+use crate::Color;
 
 #[derive(Debug, PartialEq)]
 pub struct Canvas {
@@ -16,10 +16,16 @@ impl Canvas {
         }
     }
 
-    pub fn write_pixel(&mut self, x: usize, y: usize, c: Color) {
+    pub fn set_pixel(&mut self, x: usize, y: usize, c: Color) {
         assert!(x < self.width);
         assert!(y < self.height);
         self.pixels[y][x] = c;
+    }
+
+    pub fn get_pixel(&mut self, x: usize, y: usize) -> Color {
+        assert!(x < self.width);
+        assert!(y < self.height);
+        self.pixels[y][x]
     }
 
     pub fn to_ppm(&self) -> String {
@@ -28,9 +34,9 @@ impl Canvas {
             for pix in row {
                 ppm.push_str(&format!(
                     "{} {} {}",
-                    clamp(pix.r * 255.0, 0.0, 255.0).round() as usize,
-                    clamp(pix.g * 255.0, 0.0, 255.0).round() as usize,
-                    clamp(pix.b * 255.0, 0.0, 255.0).round() as usize,
+                    (pix.r.clamp(0.0, 1.0) * 255.0).round() as usize,
+                    (pix.g.clamp(0.0, 1.0) * 255.0).round() as usize,
+                    (pix.b.clamp(0.0, 1.0) * 255.0).round() as usize,
                 ));
                 ppm.push('\n');
             }
@@ -60,11 +66,11 @@ mod tests {
     }
 
     #[test]
-    fn test_write_pixel_valid() {
+    fn test_set_pixel_valid() {
         let mut canvas = Canvas::new(3, 2);
-        canvas.write_pixel(0, 0, Color::red());
-        canvas.write_pixel(1, 0, Color::green());
-        canvas.write_pixel(2, 1, Color::blue());
+        canvas.set_pixel(0, 0, Color::red());
+        canvas.set_pixel(1, 0, Color::green());
+        canvas.set_pixel(2, 1, Color::blue());
         assert_eq!(
             canvas.pixels,
             vec![
@@ -76,18 +82,18 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_write_pixel_invalid() {
+    fn test_set_pixel_invalid() {
         let mut canvas = Canvas::new(3, 2);
-        canvas.write_pixel(3, 0, Color::red());
+        canvas.set_pixel(3, 0, Color::red());
     }
 
     #[test]
     fn test_to_ppm() {
         let mut canvas = Canvas::new(3, 2);
-        canvas.write_pixel(0, 0, Color::red());
-        canvas.write_pixel(1, 0, Color::green());
-        canvas.write_pixel(2, 0, Color::new(0.333, 0.667, 1.0));
-        canvas.write_pixel(2, 1, Color::blue());
+        canvas.set_pixel(0, 0, Color::red());
+        canvas.set_pixel(1, 0, Color::green());
+        canvas.set_pixel(2, 0, Color::new(0.333, 0.667, 1.0));
+        canvas.set_pixel(2, 1, Color::blue());
         assert_eq!(
             canvas.to_ppm(),
             String::from("P3\n3 2\n255\n255 0 0\n0 255 0\n85 170 255\n0 0 0\n0 0 0\n0 0 255\n")
