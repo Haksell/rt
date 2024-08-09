@@ -25,6 +25,16 @@ impl<const N: usize> Matrix<N> {
         }
         Self { values }
     }
+
+    pub fn transpose(&self) -> Self {
+        let mut values = [[0.0; N]; N];
+        for y in 0..N {
+            for x in 0..N {
+                values[y][x] = self[x][y];
+            }
+        }
+        Self { values }
+    }
 }
 
 impl<const N: usize> Index<usize> for Matrix<N> {
@@ -227,6 +237,16 @@ mod tests {
                 [0.0, 0.0, 0.0, 1.0],
             ]) * Tuple::new(1.0, 2.0, 3.0, 1.0),
             Tuple::new(18.0, 24.0, 33.0, 1.0),
+        );
+    }
+
+    #[test]
+    fn test_transpose() {
+        assert_eq!(Matrix::<6>::zero().transpose(), Matrix::<6>::zero());
+        assert_eq!(Matrix::<7>::identity().transpose(), Matrix::<7>::identity());
+        assert_eq!(
+            Matrix::new(&[[1.0, 2.0], [3.0, 4.0]]).transpose(),
+            Matrix::new(&[[1.0, 3.0], [2.0, 4.0]])
         );
     }
 }
