@@ -11,15 +11,13 @@ pub use tuple::Tuple;
 
 type Float = f32; // TODO: try f64
 
-// TODO: find a better way to get constants
+// TODO: find a better way to get TAU
 
 pub trait FloatExt {
-    const PI: Self;
     const TAU: Self;
 }
 
 impl FloatExt for Float {
-    const PI: Float = std::f32::consts::PI;
     const TAU: Float = std::f32::consts::TAU;
 }
 
