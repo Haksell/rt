@@ -1,3 +1,4 @@
+mod color;
 mod tuple;
 
 pub use tuple::Tuple;
