@@ -7,19 +7,23 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 // TODO: Copy?
 #[derive(Debug, PartialEq, Clone)]
 pub struct Tuple {
-    x: Float,
-    y: Float,
-    z: Float,
-    w: Float,
+    pub x: Float,
+    pub y: Float,
+    pub z: Float,
+    pub w: Float,
 }
 
 impl Tuple {
+    pub fn new(x: Float, y: Float, z: Float, w: Float) -> Self {
+        Self { x, y, z, w }
+    }
+
     pub fn new_point(x: Float, y: Float, z: Float) -> Self {
-        Self { x, y, z, w: 1.0 }
+        Self::new(x, y, z, 1.0)
     }
 
     pub fn new_vector(x: Float, y: Float, z: Float) -> Self {
-        Self { x, y, z, w: 0.0 }
+        Self::new(x, y, z, 0.0)
     }
 
     pub fn is_point(&self) -> bool {
@@ -219,32 +223,12 @@ mod tests {
     #[test]
     fn test_scaling() {
         assert_eq!(
-            Tuple {
-                x: 1.0,
-                y: -2.0,
-                z: 3.0,
-                w: -4.0
-            } * 3.5,
-            Tuple {
-                x: 3.5,
-                y: -7.0,
-                z: 10.5,
-                w: -14.0
-            },
+            Tuple::new(1.0, -2.0, 3.0, -4.0) * 3.5,
+            Tuple::new(3.5, -7.0, 10.5, -14.0),
         );
         assert_eq!(
-            0.5 * Tuple {
-                x: 1.0,
-                y: -2.0,
-                z: 3.0,
-                w: -4.0
-            },
-            Tuple {
-                x: 0.5,
-                y: -1.0,
-                z: 1.5,
-                w: -2.0
-            },
+            0.5 * Tuple::new(1.0, -2.0, 3.0, -4.0),
+            Tuple::new(0.5, -1.0, 1.5, -2.0),
         );
     }
 
@@ -256,12 +240,7 @@ mod tests {
         );
         assert_eq!(
             Tuple::new_point(1.0, -2.5, 3.25) / 2.0,
-            Tuple {
-                x: 0.5,
-                y: -1.25,
-                z: 1.625,
-                w: 0.5,
-            },
+            Tuple::new(0.5, -1.25, 1.625, 0.5,),
         );
     }
 
