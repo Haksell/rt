@@ -1,5 +1,5 @@
-use crate::{Float, Tuple};
-use std::ops::{Index, Mul};
+use crate::{is_close, Float, Tuple};
+use std::ops::{Div, Index, Mul};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix<const N: usize> {
@@ -26,6 +26,10 @@ impl<const N: usize> Matrix<N> {
         Self { values }
     }
 
+    pub fn is_close(&self, rhs: &Self) -> bool {
+        (0..N).all(|y| (0..N).all(|x| is_close(self.values[y][x], rhs.values[y][x])))
+    }
+
     pub fn transpose(&self) -> Self {
         let mut values = [[0.0; N]; N];
         for y in 0..N {
@@ -34,6 +38,53 @@ impl<const N: usize> Matrix<N> {
             }
         }
         Self { values }
+    }
+
+    pub fn inverse(&self) -> Self {
+        // TODO: implement only for Matrix<4> so we can use arrays instead of vectors
+        let mut augmented_matrix = vec![vec![0.0; 2 * N]; N];
+        for y in 0..N {
+            for x in 0..N {
+                augmented_matrix[y][x] = self.values[y][x];
+            }
+            augmented_matrix[y][N + y] = 1.0;
+        }
+
+        for y in 0..N {
+            if augmented_matrix[y][y] == 0.0 {
+                let y_swap = (y + 1..N)
+                    .find(|&y2| augmented_matrix[y2][y] != 0.0)
+                    .expect("matrix is singular and cannot be inverted");
+                if y != y_swap {
+                    augmented_matrix.swap(y, y_swap);
+                }
+            }
+
+            let scalar = 1.0 / augmented_matrix[y][y];
+            for x in y..2 * N {
+                augmented_matrix[y][x] *= scalar;
+            }
+
+            for y_other in 0..N {
+                if y_other != y {
+                    let factor = augmented_matrix[y_other][y];
+                    for x in y..2 * N {
+                        augmented_matrix[y_other][x] -= factor * augmented_matrix[y][x];
+                    }
+                }
+            }
+        }
+
+        let mut inverse_values = [[0.0; N]; N];
+        for y in 0..N {
+            for x in 0..N {
+                inverse_values[y][x] = augmented_matrix[y][N + x];
+            }
+        }
+
+        Self {
+            values: inverse_values,
+        }
     }
 }
 
@@ -100,6 +151,21 @@ impl<const N: usize> Mul<Float> for Matrix<N> {
     }
 }
 
+impl<const N: usize> Div<Float> for Matrix<N> {
+    type Output = Self;
+
+    fn div(self, divisor: Float) -> Self {
+        let scalar = 1.0 / divisor;
+        let mut values = self.values.clone();
+        for y in 0..N {
+            for x in 0..N {
+                values[y][x] *= scalar
+            }
+        }
+        Self { values }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Matrix;
@@ -149,6 +215,10 @@ mod tests {
         assert_eq!(
             Matrix::<3>::identity() * 4.2,
             Matrix::new(&[[4.2, 0.0, 0.0], [0.0, 4.2, 0.0], [0.0, 0.0, 4.2]])
+        );
+        assert_eq!(
+            Matrix::<3>::identity() / 2.0,
+            Matrix::new(&[[0.5, 0.0, 0.0], [0.0, 0.5, 0.0], [0.0, 0.0, 0.5]])
         );
     }
 
@@ -248,5 +318,82 @@ mod tests {
             Matrix::new(&[[1.0, 2.0], [3.0, 4.0]]).transpose(),
             Matrix::new(&[[1.0, 3.0], [2.0, 4.0]])
         );
+    }
+
+    #[test]
+    fn test_inverse2() {
+        assert_eq!(Matrix::<2>::identity().inverse(), Matrix::<2>::identity());
+        assert!(Matrix::new(&[[1.0, 2.0], [3.0, 4.0]])
+            .inverse()
+            .is_close(&Matrix::new(&[[-2.0, 1.0], [1.5, -0.5]])));
+    }
+
+    #[test]
+    fn test_inverse3() {
+        assert_eq!(Matrix::<3>::identity().inverse(), Matrix::<3>::identity());
+        assert!(
+            Matrix::new(&[[1.0, 2.0, 3.0], [4.0, 0.0, 6.0], [7.0, 8.0, 9.0]])
+                .inverse()
+                .is_close(
+                    &(Matrix::new(&[[-24.0, 3.0, 6.0], [3.0, -6.0, 3.0], [16.0, 3.0, -4.0]])
+                        / 30.0)
+                )
+        );
+        assert_eq!(
+            Matrix::new(&[[1.0, 2.0, 3.0], [3.0, -2.0, 1.0], [2.0, 1.0, 3.5]]).inverse(),
+            Matrix::new(&[[2.0, 1.0, -2.0], [2.125, 0.625, -2.0], [-1.75, -0.75, 2.0]])
+        );
+    }
+
+    #[test]
+    fn test_inverse4() {
+        assert_eq!(Matrix::<4>::identity().inverse(), Matrix::<4>::identity());
+        let swap = Matrix::new(&[
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ]);
+        assert_eq!(swap.inverse(), swap);
+        assert!(Matrix::new(&[
+            [1.0, 2.0, 3.0, 4.0],
+            [12.0, 13.0, 14.0, 5.0],
+            [11.0, 0.0, 15.0, 6.0],
+            [10.0, 9.0, 8.0, 7.0]
+        ])
+        .inverse()
+        .is_close(
+            &(Matrix::new(&[
+                [-411.0, -132.0, 55.0, 282.0],
+                [68.0, 121.0, -110.0, -31.0],
+                [187.0, 154.0, 55.0, -264.0],
+                [286.0, -143.0, 0.0, 143.0]
+            ]) / 1430.0)
+        ));
+        assert!(Matrix::new(&[
+            [-0.5, -4.0, -0.5, -1.25],
+            [-2.75, 0.5, -4.75, -4.25],
+            [5.0, -0.75, -4.0, 0.25],
+            [4.5, 3.75, 4.5, 3.75]
+        ])
+        .inverse()
+        .is_close(&Matrix::new(&[
+            [0.26050284, 0.16642336, 0.07412814, 0.27050554],
+            [-0.15247364, 0.11678832, -0.02595296, 0.08326575],
+            [0.32019465, 0.15474453, -0.14549878, 0.29180860],
+            [-0.54436334, -0.50218978, 0.11159773, -0.49137605]
+        ])));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_inverse_zero() {
+        Matrix::<4>::zero().inverse();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_inverse_singular() {
+        Matrix::new(&[[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]).inverse();
     }
 }
