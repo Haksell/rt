@@ -5,7 +5,7 @@
 - [ ] read *The Ray Tracer Challenge*
 - [ ] test speed of `f32` vs `f64`
 - [ ] parallelize somehow (`#[repr(simd)]`, stdsimd, packed_simd, rayon?)
-- [ ] read scene from JSON file
+- [ ] read scene from file (JSON?)
 - [ ] reproduce 3 images from subject
 
 ## mandatory part
@@ -41,3 +41,12 @@
 - [ ] textures
 - [ ] negative elements
 - [ ] limit disruption / transparency / reflection, depending on texture
+
+## bonus
+
+- [ ] `.obj` files
+
+## scene file
+
+- [ ] width
+- [ ] height
