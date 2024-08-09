@@ -1,12 +1,14 @@
 use crate::Float;
 use std::ops::Index;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct Matrix<const N: usize> {
     values: [[Float; N]; N], // TODO: [Float; N * N]?
 }
 
 impl<const N: usize> Matrix<N> {
     pub fn new(values: &[[Float; N]; N]) -> Self {
+        // This dereference seems very sus
         Self { values: *values }
     }
 
@@ -65,24 +67,14 @@ mod tests {
 
     #[test]
     fn test_zero() {
-        let matrix = Matrix::<2>::zero();
-        assert_eq!(matrix[0][0], 0.0);
-        assert_eq!(matrix[0][1], 0.0);
-        assert_eq!(matrix[1][0], 0.0);
-        assert_eq!(matrix[1][1], 0.0);
+        assert_eq!(Matrix::<2>::zero(), Matrix::new(&[[0.0, 0.0], [0.0, 0.0]]));
     }
 
     #[test]
     fn test_identity() {
-        let matrix = Matrix::<3>::identity();
-        assert_eq!(matrix[0][0], 1.0);
-        assert_eq!(matrix[0][1], 0.0);
-        assert_eq!(matrix[0][2], 0.0);
-        assert_eq!(matrix[1][0], 0.0);
-        assert_eq!(matrix[1][1], 1.0);
-        assert_eq!(matrix[1][2], 0.0);
-        assert_eq!(matrix[2][0], 0.0);
-        assert_eq!(matrix[2][1], 0.0);
-        assert_eq!(matrix[2][2], 1.0);
+        assert_eq!(
+            Matrix::<3>::identity(),
+            Matrix::new(&[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
+        );
     }
 }
