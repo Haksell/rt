@@ -11,6 +11,18 @@ pub use tuple::Tuple;
 
 type Float = f32; // TODO: try f64
 
+// TODO: find a better way to get constants
+
+pub trait FloatExt {
+    const PI: Self;
+    const TAU: Self;
+}
+
+impl FloatExt for Float {
+    const PI: Float = std::f32::consts::PI;
+    const TAU: Float = std::f32::consts::TAU;
+}
+
 fn is_close(f1: Float, f2: Float) -> bool {
     const EPSILON: Float = 1e-6;
     (f1 - f2).abs() < EPSILON

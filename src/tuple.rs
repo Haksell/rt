@@ -4,7 +4,6 @@ use crate::{is_close, Float};
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD
-// TODO: Copy?
 #[derive(Debug, PartialEq, Clone)]
 pub struct Tuple {
     pub x: Float,
@@ -83,7 +82,7 @@ impl Tuple {
     }
 }
 
-// TODO: implement operators for &Tuple
+// TODO: implement operators for &Tuple, and remove .clone() from everywhere
 
 impl Add for Tuple {
     type Output = Self;
