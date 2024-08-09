@@ -1,5 +1,5 @@
 use crate::Float;
-use std::ops::Index;
+use std::ops::{Index, Mul};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix<const N: usize> {
@@ -32,6 +32,22 @@ impl<const N: usize> Index<usize> for Matrix<N> {
 
     fn index(&self, row: usize) -> &[Float; N] {
         &self.values[row]
+    }
+}
+
+impl Mul<Matrix<4>> for Matrix<4> {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self {
+        let mut values = [[0.0; 4]; 4];
+        for y in 0..4 {
+            for x in 0..4 {
+                for i in 0..4 {
+                    values[y][x] += self.values[y][i] * rhs.values[i][x];
+                }
+            }
+        }
+        Self { values }
     }
 }
 
@@ -77,4 +93,65 @@ mod tests {
             Matrix::new(&[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         );
     }
+
+    #[test]
+    fn test_mat_mul() {
+        assert_eq!(
+            Matrix::<4>::zero() * Matrix::<4>::zero(),
+            Matrix::<4>::zero()
+        );
+        assert_eq!(
+            Matrix::<4>::zero() * Matrix::<4>::identity(),
+            Matrix::<4>::zero()
+        );
+        assert_eq!(
+            Matrix::<4>::identity() * Matrix::<4>::zero(),
+            Matrix::<4>::zero()
+        );
+        assert_eq!(
+            Matrix::<4>::identity() * Matrix::<4>::identity(),
+            Matrix::<4>::identity()
+        );
+        assert_eq!(
+            Matrix::new(&[
+                [2.0, 0.0, 0.0, 0.0],
+                [0.0, 2.0, 0.0, 0.0],
+                [0.0, 0.0, 2.0, 0.0],
+                [0.0, 0.0, 0.0, 2.0],
+            ]) * Matrix::new(&[
+                [0.0, 1.0, 2.0, 3.0],
+                [4.0, 5.0, 6.0, 7.0],
+                [8.0, 9.0, 10.0, 11.0],
+                [12.0, 13.0, 14.0, 15.0],
+            ]),
+            Matrix::new(&[
+                [0.0, 2.0, 4.0, 6.0],
+                [8.0, 10.0, 12.0, 14.0],
+                [16.0, 18.0, 20.0, 22.0],
+                [24.0, 26.0, 28.0, 30.0],
+            ])
+        );
+        assert_eq!(
+            Matrix::new(&[
+                [0.0, 1.0, 0.0, 0.0],
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, 1.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ]) * Matrix::new(&[
+                [0.0, 1.0, 2.0, 3.0],
+                [4.0, 5.0, 6.0, 7.0],
+                [8.0, 9.0, 10.0, 11.0],
+                [12.0, 13.0, 14.0, 15.0],
+            ]),
+            Matrix::new(&[
+                [4.0, 5.0, 6.0, 7.0],
+                [0.0, 1.0, 2.0, 3.0],
+                [8.0, 9.0, 10.0, 11.0],
+                [12.0, 13.0, 14.0, 15.0],
+            ])
+        );
+    }
+
+    #[test]
+    fn test_tup_mul() {}
 }
