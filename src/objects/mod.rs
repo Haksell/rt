@@ -14,7 +14,7 @@ pub struct Intersection<'a> {
 }
 
 impl<'a> Intersection<'a> {
-    fn new(object: &'a dyn Object, t: Float) -> Self {
+    pub fn new(object: &'a dyn Object, t: Float) -> Self {
         Self { object, t }
     }
 }

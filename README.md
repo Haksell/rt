@@ -9,6 +9,7 @@
 - [ ] multithreading (`std::thread`, `rayon`, `crossbeam`?)
 - [ ] read scene from file (JSON?)
 - [ ] reproduce 3 images from subject
+- [ ] use `pub(crate)` where appropriate
 
 ## mandatory part
 

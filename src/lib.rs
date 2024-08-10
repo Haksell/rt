@@ -1,5 +1,6 @@
 mod canvas;
 mod color;
+mod computations; // TODO: find better name
 mod lighting;
 mod material;
 mod matrix;
