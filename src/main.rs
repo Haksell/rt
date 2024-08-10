@@ -1,18 +1,20 @@
 use minifb::{Key, Window, WindowOptions};
 use rt::{
     objects::{hit, Object, Sphere},
+    transform::translate,
     Canvas, Color, Float, Ray, Tuple,
 };
 
 // TODO: args for window or PPM file or just keyboard shortcut?
 
-const CANVAS_SIZE: usize = 200; // TODO: remove for non-square canvases
+const CANVAS_SIZE: usize = 400; // TODO: remove for non-square canvases
 const WIDTH: usize = CANVAS_SIZE;
 const HEIGHT: usize = CANVAS_SIZE;
 
 fn main() {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let object = Sphere::unit();
+    let mut object = Sphere::unit();
+    object.set_transform(&translate(1.0, 0.0, 0.0));
     let ray_origin = Tuple::new_point(0.0, 0.0, -5.0);
     let wall_z = 10.0;
     let wall_size = 8.0;
