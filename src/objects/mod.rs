@@ -2,7 +2,7 @@ mod sphere;
 
 use std::fmt::Debug;
 
-use crate::{Float, Ray};
+use crate::{Float, Matrix, Ray};
 pub use sphere::Sphere;
 
 // TODO: automate Intersection.object
@@ -28,6 +28,8 @@ impl<'a> PartialEq for Intersection<'a> {
 
 pub trait Object: Debug {
     fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
+    fn get_transform(&self) -> &Matrix<4>;
+    fn set_transform(&mut self, transform: &Matrix<4>); // TODO: NO
 }
 
 pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>> {
@@ -43,7 +45,7 @@ mod tests {
 
     #[test]
     fn test_hit_all_positive() {
-        let sphere = Sphere::new();
+        let sphere = Sphere::unit();
         let intersections = vec![
             Intersection::new(&sphere, 4.0),
             Intersection::new(&sphere, 6.0),
@@ -53,7 +55,7 @@ mod tests {
 
     #[test]
     fn test_hit_one_positive() {
-        let sphere = Sphere::new();
+        let sphere = Sphere::unit();
         let intersections = vec![
             Intersection::new(&sphere, -1.0),
             Intersection::new(&sphere, 1.0),
@@ -63,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_hit_all_negative() {
-        let sphere = Sphere::new();
+        let sphere = Sphere::unit();
         let intersections = vec![
             Intersection::new(&sphere, -6.0),
             Intersection::new(&sphere, -4.0),
@@ -73,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_hit_more() {
-        let sphere = Sphere::new();
+        let sphere = Sphere::unit();
         let intersections = vec![
             Intersection::new(&sphere, 5.0),
             Intersection::new(&sphere, 7.0),

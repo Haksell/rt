@@ -1,25 +1,26 @@
 use super::{Intersection, Object};
-use crate::{Float, Ray, Tuple};
+use crate::{Matrix, Ray};
 
 #[derive(Debug)]
 pub struct Sphere {
-    pub center: Tuple,
-    pub radius: Float,
+    // TODO: store inverse transform instead?
+    pub transform: Matrix<4>, // TODO: &'a Matrix<4> ?
 }
 
 impl Sphere {
-    // TODO: accept arguments
-    pub fn new() -> Self {
+    pub fn unit() -> Self {
         Self {
-            center: Tuple::new_point(0.0, 0.0, 0.0),
-            radius: 1.0,
+            transform: Matrix::identity(),
         }
     }
+
+    // TODO: pub fn new(transform: &Matrix<4>) so we don't need mut everywhere
 }
 
 impl Object for Sphere {
     fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-        let sphere_to_ray = ray.origin.clone() - self.center.clone();
+        let ray = ray.transform(&self.transform.inverse());
+        let sphere_to_ray = ray.origin.clone();
         let a = ray.direction.dot(&ray.direction);
         let b = 2.0 * ray.direction.dot(&sphere_to_ray);
         let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;
@@ -35,17 +36,25 @@ impl Object for Sphere {
             Intersection::new(self, (neg_b + sqrt_discriminant) * factor),
         ]
     }
+
+    fn set_transform(&mut self, transform: &Matrix<4>) {
+        self.transform = transform.clone();
+    }
+
+    fn get_transform(&self) -> &Matrix<4> {
+        &self.transform
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::super::{Intersection, Object};
     use super::Sphere;
-    use crate::{Ray, Tuple};
+    use crate::{transform, Matrix, Ray, Tuple};
 
     #[test]
     fn test_sphere_intersect() {
-        let sphere = Sphere::new();
+        let sphere = Sphere::unit();
         let direction = Tuple::new_vector(0.0, 0.0, 1.0);
         let ray = Ray::new(&Tuple::new_point(0.0, 0.0, -5.0), &direction.clone());
         assert_eq!(
@@ -80,6 +89,46 @@ mod tests {
                 Intersection::new(&sphere, -6.0),
                 Intersection::new(&sphere, -4.0)
             ]
+        );
+    }
+
+    #[test]
+    fn test_sphere_transform() {
+        let mut s = Sphere::unit();
+        assert_eq!(s.transform, Matrix::identity());
+        s.set_transform(&transform::translate(2.0, 3.0, 4.0));
+        assert_eq!(
+            s.transform,
+            Matrix::new(&[
+                [1.0, 0.0, 0.0, 2.0],
+                [0.0, 1.0, 0.0, 3.0],
+                [0.0, 0.0, 1.0, 4.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ])
+        );
+    }
+
+    #[test]
+    fn test_sphere_intersect_with_transform() {
+        let mut sphere = Sphere::unit();
+        sphere.set_transform(&transform::scale_constant(2.0));
+        assert_eq!(
+            sphere.intersect(&Ray::new(
+                &Tuple::new_point(0.0, 0.0, -5.0),
+                &Tuple::new_vector(0.0, 0.0, 1.0),
+            )),
+            vec![
+                Intersection::new(&sphere, 3.0),
+                Intersection::new(&sphere, 7.0)
+            ]
+        );
+        sphere.set_transform(&transform::translate(5.0, 0.0, 0.0));
+        assert_eq!(
+            sphere.intersect(&Ray::new(
+                &Tuple::new_point(0.0, 0.0, -5.0),
+                &Tuple::new_vector(0.0, 0.0, 1.0),
+            )),
+            vec![]
         );
     }
 }
