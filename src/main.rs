@@ -15,7 +15,7 @@ fn main() {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
     let mut object = Sphere::unit();
     object.set_transform(&translate(1.0, 0.0, 0.0));
-    let ray_origin = Tuple::new_point(0.0, 0.0, -5.0);
+    let camera = Tuple::new_point(0.0, 0.0, -5.0);
     let wall_z = 10.0;
     let wall_size = 8.0;
     let pixel_size = wall_size / CANVAS_SIZE as Float;
@@ -25,10 +25,7 @@ fn main() {
         for x in 0..WIDTH {
             let world_x = -half_wall_size + pixel_size * x as Float;
             let point_on_the_wall = Tuple::new_point(world_x, world_y, wall_z);
-            let ray = Ray::new(
-                &ray_origin,
-                &(point_on_the_wall - ray_origin.clone()).normalize(),
-            );
+            let ray = Ray::new(&camera, &(point_on_the_wall - camera.clone()).normalize());
             let intersections = object.intersect(&ray);
             canvas.set_pixel(
                 x,
