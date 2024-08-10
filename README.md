@@ -47,6 +47,7 @@
 ## bonus
 
 - [ ] `.obj` files
+- [ ] ellipsoids (scaled spheres)
 
 ## scene file
 
