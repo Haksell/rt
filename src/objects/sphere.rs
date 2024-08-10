@@ -1,5 +1,5 @@
 use super::{Intersection, Object};
-use crate::{Matrix, Ray};
+use crate::{Matrix, Ray, Tuple};
 
 #[derive(Debug)]
 pub struct Sphere {
@@ -37,6 +37,15 @@ impl Object for Sphere {
         ]
     }
 
+    fn normal_at(&self, world_point: &Tuple) -> Tuple {
+        let object_point = self.transform.inverse() * world_point.clone();
+        let object_normal = Tuple::new_vector(object_point.x, object_point.y, object_point.z);
+        // TODO: understand why the transpose
+        let mut world_normal = self.transform.inverse().transpose() * object_normal;
+        world_normal.w = 0.0;
+        world_normal.normalize()
+    }
+
     fn set_transform(&mut self, transform: &Matrix<4>) {
         self.transform = transform.clone();
     }
@@ -50,10 +59,26 @@ impl Object for Sphere {
 mod tests {
     use super::super::{Intersection, Object};
     use super::Sphere;
-    use crate::{transform, Matrix, Ray, Tuple};
+    use crate::{transform, Float, FloatExt, Matrix, Ray, Tuple};
 
     #[test]
-    fn test_sphere_intersect() {
+    fn test_sphere_transform() {
+        let mut s = Sphere::unit();
+        assert_eq!(s.transform, Matrix::identity());
+        s.set_transform(&transform::translate(2.0, 3.0, 4.0));
+        assert_eq!(
+            s.transform,
+            Matrix::new(&[
+                [1.0, 0.0, 0.0, 2.0],
+                [0.0, 1.0, 0.0, 3.0],
+                [0.0, 0.0, 1.0, 4.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ])
+        );
+    }
+
+    #[test]
+    fn test_sphere_unit_intersect() {
         let sphere = Sphere::unit();
         let direction = Tuple::new_vector(0.0, 0.0, 1.0);
         let ray = Ray::new(&Tuple::new_point(0.0, 0.0, -5.0), &direction.clone());
@@ -93,23 +118,7 @@ mod tests {
     }
 
     #[test]
-    fn test_sphere_transform() {
-        let mut s = Sphere::unit();
-        assert_eq!(s.transform, Matrix::identity());
-        s.set_transform(&transform::translate(2.0, 3.0, 4.0));
-        assert_eq!(
-            s.transform,
-            Matrix::new(&[
-                [1.0, 0.0, 0.0, 2.0],
-                [0.0, 1.0, 0.0, 3.0],
-                [0.0, 0.0, 1.0, 4.0],
-                [0.0, 0.0, 0.0, 1.0],
-            ])
-        );
-    }
-
-    #[test]
-    fn test_sphere_intersect_with_transform() {
+    fn test_sphere_transformed_intersect() {
         let mut sphere = Sphere::unit();
         sphere.set_transform(&transform::scale_constant(2.0));
         assert_eq!(
@@ -130,5 +139,48 @@ mod tests {
             )),
             vec![]
         );
+    }
+
+    #[test]
+    fn test_sphere_unit_normal_at() {
+        let s = Sphere::unit();
+        assert_eq!(
+            s.normal_at(&Tuple::new_point(1.0, 0.0, 0.0)),
+            Tuple::new_vector(1.0, 0.0, 0.0)
+        );
+        assert_eq!(
+            s.normal_at(&Tuple::new_point(0.0, 1.0, 0.0)),
+            Tuple::new_vector(0.0, 1.0, 0.0)
+        );
+        assert_eq!(
+            s.normal_at(&Tuple::new_point(0.0, 0.0, 1.0)),
+            Tuple::new_vector(0.0, 0.0, 1.0)
+        );
+        let sqrt3_third = (3.0 as Float).sqrt() / 3.0;
+        assert!(s
+            .normal_at(&Tuple::new_point(sqrt3_third, sqrt3_third, sqrt3_third))
+            .is_close(&Tuple::new_vector(sqrt3_third, sqrt3_third, sqrt3_third)));
+    }
+
+    #[test]
+    fn test_sphere_translated_normal_at() {
+        let mut s = Sphere::unit();
+        s.set_transform(&transform::translate(0.0, 1.0, 0.0));
+        let sqrt_half = (0.5 as Float).sqrt();
+        assert!(s
+            .normal_at(&Tuple::new_point(0.0, 1.0 + sqrt_half, -sqrt_half))
+            .is_close(&Tuple::new_vector(0.0, sqrt_half, -sqrt_half)));
+    }
+
+    #[test]
+    fn test_sphere_transformed_normal_at() {
+        let mut s = Sphere::unit();
+        s.set_transform(
+            &(transform::scale(1.0, 0.5, 1.0) * transform::rotate_z(Float::TAU / 10.0)),
+        );
+        let sqrt_half = (0.5 as Float).sqrt();
+        assert!(s
+            .normal_at(&Tuple::new_point(0.0, sqrt_half, -sqrt_half)) // is it even on the sphere?
+            .is_close(&Tuple::new_vector(0.0, 0.97014254, -0.24253564)));
     }
 }
