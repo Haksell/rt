@@ -50,10 +50,10 @@ impl Tuple {
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
-        is_close(self.x, rhs.x)
+        self.w == rhs.w // maybe even assert for .w
+            && is_close(self.x, rhs.x)
             && is_close(self.y, rhs.y)
             && is_close(self.z, rhs.z)
-            && is_close(self.w, rhs.w) // Use == for w?
     }
 
     pub fn magnitude(&self) -> Float {
@@ -61,23 +61,23 @@ impl Tuple {
     }
 
     pub fn normalize(&self) -> Self {
-        // What if self.magnitude() == 0?
+        // what if self.magnitude() == 0?
         let scalar = 1.0 / self.magnitude();
         Self {
             x: self.x * scalar,
             y: self.y * scalar,
             z: self.z * scalar,
-            w: self.w, // ???
+            w: self.w, // maybe assert_eq!(self.w, 0.0)
         }
     }
 
     pub fn dot(&self, rhs: &Self) -> Float {
-        // Once again, wtf am I supposed to do with w?
+        // maybe assert_eq!(self.w, rhs.w, 0.0)
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
     pub fn cross(&self, rhs: &Self) -> Self {
-        // Let's just completely ignore w
+        // maybe assert_eq!(self.w, rhs.w, 0.0)
         Self::new_vector(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
@@ -119,7 +119,6 @@ impl Sub for Tuple {
     }
 }
 
-// What if I want to negate a point?
 impl Neg for Tuple {
     type Output = Self;
 
