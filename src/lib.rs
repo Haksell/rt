@@ -11,8 +11,8 @@ mod tuple;
 // TODO: remove unused pub
 pub use canvas::Canvas;
 pub use color::Color;
-pub use lighting::lighting;
-use material::Material;
+pub use lighting::{lighting, PointLight};
+pub use material::Material;
 use matrix::Matrix;
 pub use ray::Ray;
 pub use tuple::Tuple;

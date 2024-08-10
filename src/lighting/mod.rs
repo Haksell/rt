@@ -1,7 +1,7 @@
 mod point_light;
 
 use crate::{Color, Material, Tuple};
-use point_light::PointLight;
+pub use point_light::PointLight;
 
 pub fn lighting(
     material: &Material,

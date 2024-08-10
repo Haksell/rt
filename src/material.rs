@@ -19,4 +19,11 @@ impl Material {
             shininess: 200.0, // too much?
         }
     }
+
+    pub fn from_color(color: Color) -> Self {
+        Self {
+            color,
+            ..Self::default()
+        }
+    }
 }

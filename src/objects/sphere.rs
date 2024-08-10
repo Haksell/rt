@@ -30,6 +30,7 @@ impl Sphere {
         }
     }
 
+    // Is it really plastic though?
     pub fn plastic(transform: Matrix<4>) -> Self {
         Self {
             transform,

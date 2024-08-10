@@ -1,8 +1,8 @@
 use minifb::{Key, Window, WindowOptions};
 use rt::{
+    lighting,
     objects::{hit, Object, Sphere},
-    transform::translate,
-    Canvas, Color, Float, Ray, Tuple,
+    Canvas, Color, Float, Material, PointLight, Ray, Tuple,
 };
 
 // TODO: args for window or PPM file or just keyboard shortcut?
@@ -13,12 +13,13 @@ const HEIGHT: usize = CANVAS_SIZE;
 
 fn main() {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let object = Sphere::plastic(translate(1.0, 0.0, 0.0));
+    let object = Sphere::unit(Material::from_color(Color::new(1.0, 0.2, 1.0)));
     let camera_pos = Tuple::new_point(0.0, 0.0, -5.0);
     let wall_z = 10.0;
     let wall_size = 8.0;
     let pixel_size = wall_size / CANVAS_SIZE as Float;
     let half_wall_size = wall_size / 2.0;
+    let light = PointLight::new(Color::white(), Tuple::new_point(-10.0, 10.0, -10.0));
     for y in 0..HEIGHT {
         let world_y = half_wall_size - pixel_size * y as Float;
         for x in 0..WIDTH {
@@ -29,15 +30,22 @@ fn main() {
                 (point_on_the_wall - camera_pos.clone()).normalize(),
             );
             let intersections = object.intersect(&ray);
-            canvas.set_pixel(
-                x,
-                y,
-                if hit(&intersections).is_some() {
-                    Color::red()
-                } else {
-                    Color::black()
-                },
-            );
+            if let Some(intersection) = hit(&intersections) {
+                let point = ray.position(intersection.t);
+                let normal = intersection.object.normal_at(&point);
+                let eye = -ray.direction;
+                canvas.set_pixel(
+                    x,
+                    y,
+                    lighting(
+                        intersection.object.get_material(),
+                        &light,
+                        &point,
+                        &eye,
+                        &normal,
+                    ),
+                );
+            }
         }
     }
 
