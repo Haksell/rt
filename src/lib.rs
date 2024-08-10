@@ -1,5 +1,6 @@
 mod canvas;
 mod color;
+mod material;
 mod matrix;
 pub mod objects;
 mod point_light;

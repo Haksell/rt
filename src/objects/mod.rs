@@ -2,7 +2,7 @@ mod sphere;
 
 use std::fmt::Debug;
 
-use crate::{Float, Matrix, Ray, Tuple};
+use crate::{material::Material, Float, Matrix, Ray, Tuple};
 pub use sphere::Sphere;
 
 // TODO: automate Intersection.object
@@ -30,7 +30,9 @@ pub trait Object: Debug {
     fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
     fn normal_at(&self, point: &Tuple) -> Tuple;
     fn get_transform(&self) -> &Matrix<4>;
-    fn set_transform(&mut self, transform: &Matrix<4>); // TODO: NO
+    fn set_transform(&mut self, transform: Matrix<4>); // TODO: NO
+    fn get_material(&self) -> &Material;
+    fn set_material(&mut self, material: Material); // TODO: NO
 }
 
 pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>> {
@@ -46,7 +48,7 @@ mod tests {
 
     #[test]
     fn test_hit_all_positive() {
-        let sphere = Sphere::unit();
+        let sphere = Sphere::default();
         let intersections = vec![
             Intersection::new(&sphere, 4.0),
             Intersection::new(&sphere, 6.0),
@@ -56,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_hit_one_positive() {
-        let sphere = Sphere::unit();
+        let sphere = Sphere::default();
         let intersections = vec![
             Intersection::new(&sphere, -1.0),
             Intersection::new(&sphere, 1.0),
@@ -66,7 +68,7 @@ mod tests {
 
     #[test]
     fn test_hit_all_negative() {
-        let sphere = Sphere::unit();
+        let sphere = Sphere::default();
         let intersections = vec![
             Intersection::new(&sphere, -6.0),
             Intersection::new(&sphere, -4.0),
@@ -76,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_hit_more() {
-        let sphere = Sphere::unit();
+        let sphere = Sphere::default();
         let intersections = vec![
             Intersection::new(&sphere, 5.0),
             Intersection::new(&sphere, 7.0),

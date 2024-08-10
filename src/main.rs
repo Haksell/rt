@@ -13,8 +13,7 @@ const HEIGHT: usize = CANVAS_SIZE;
 
 fn main() {
     let mut canvas = Canvas::new(WIDTH, HEIGHT);
-    let mut object = Sphere::unit();
-    object.set_transform(&translate(1.0, 0.0, 0.0));
+    let object = Sphere::plastic(translate(1.0, 0.0, 0.0));
     let camera_pos = Tuple::new_point(0.0, 0.0, -5.0);
     let wall_z = 10.0;
     let wall_size = 8.0;

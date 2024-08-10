@@ -1,20 +1,41 @@
 use super::{Intersection, Object};
-use crate::{Matrix, Ray, Tuple};
+use crate::{material::Material, Matrix, Ray, Tuple};
 
 #[derive(Debug)]
 pub struct Sphere {
     // TODO: store inverse transform instead?
     pub transform: Matrix<4>, // TODO: &'a Matrix<4> ?
+    pub material: Material,   // TODO: &Material ?
 }
 
 impl Sphere {
-    pub fn unit() -> Self {
+    pub fn new(transform: Matrix<4>, material: Material) -> Self {
         Self {
-            transform: Matrix::identity(),
+            transform,
+            material,
         }
     }
 
-    // TODO: pub fn new(transform: &Matrix<4>) so we don't need mut everywhere
+    pub fn default() -> Self {
+        Self {
+            transform: Matrix::identity(),
+            material: Material::default(),
+        }
+    }
+
+    pub fn unit(material: Material) -> Self {
+        Self {
+            transform: Matrix::identity(),
+            material,
+        }
+    }
+
+    pub fn plastic(transform: Matrix<4>) -> Self {
+        Self {
+            transform,
+            material: Material::default(),
+        }
+    }
 }
 
 impl Object for Sphere {
@@ -46,12 +67,20 @@ impl Object for Sphere {
         world_normal.normalize()
     }
 
-    fn set_transform(&mut self, transform: &Matrix<4>) {
-        self.transform = transform.clone();
+    fn set_transform(&mut self, transform: Matrix<4>) {
+        self.transform = transform;
     }
 
     fn get_transform(&self) -> &Matrix<4> {
         &self.transform
+    }
+
+    fn set_material(&mut self, material: Material) {
+        self.material = material;
+    }
+
+    fn get_material(&self) -> &Material {
+        &self.material
     }
 }
 
@@ -62,10 +91,13 @@ mod tests {
     use crate::{transform, Float, FloatExt, Matrix, Ray, Tuple};
 
     #[test]
+    fn test_sphere_constructors() {}
+
+    #[test]
     fn test_sphere_transform() {
-        let mut s = Sphere::unit();
+        let mut s = Sphere::default();
         assert_eq!(s.transform, Matrix::identity());
-        s.set_transform(&transform::translate(2.0, 3.0, 4.0));
+        s.set_transform(transform::translate(2.0, 3.0, 4.0));
         assert_eq!(
             s.transform,
             Matrix::new(&[
@@ -79,7 +111,7 @@ mod tests {
 
     #[test]
     fn test_sphere_unit_intersect() {
-        let sphere = Sphere::unit();
+        let sphere = Sphere::default();
         let direction = Tuple::new_vector(0.0, 0.0, 1.0);
         let ray = Ray::new(Tuple::new_point(0.0, 0.0, -5.0), direction.clone());
         assert_eq!(
@@ -119,8 +151,7 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_intersect() {
-        let mut sphere = Sphere::unit();
-        sphere.set_transform(&transform::scale_constant(2.0));
+        let mut sphere = Sphere::plastic(transform::scale_constant(2.0));
         assert_eq!(
             sphere.intersect(&Ray::new(
                 Tuple::new_point(0.0, 0.0, -5.0),
@@ -131,7 +162,7 @@ mod tests {
                 Intersection::new(&sphere, 7.0)
             ]
         );
-        sphere.set_transform(&transform::translate(5.0, 0.0, 0.0));
+        sphere.set_transform(transform::translate(5.0, 0.0, 0.0));
         assert_eq!(
             sphere.intersect(&Ray::new(
                 Tuple::new_point(0.0, 0.0, -5.0),
@@ -143,7 +174,7 @@ mod tests {
 
     #[test]
     fn test_sphere_unit_normal_at() {
-        let s = Sphere::unit();
+        let s = Sphere::default();
         assert_eq!(
             s.normal_at(&Tuple::new_point(1.0, 0.0, 0.0)),
             Tuple::new_vector(1.0, 0.0, 0.0)
@@ -164,23 +195,19 @@ mod tests {
 
     #[test]
     fn test_sphere_translated_normal_at() {
-        let mut s = Sphere::unit();
-        s.set_transform(&transform::translate(0.0, 1.0, 0.0));
         let sqrt_half = (0.5 as Float).sqrt();
-        assert!(s
+        assert!(Sphere::plastic(transform::translate(0.0, 1.0, 0.0))
             .normal_at(&Tuple::new_point(0.0, 1.0 + sqrt_half, -sqrt_half))
             .is_close(&Tuple::new_vector(0.0, sqrt_half, -sqrt_half)));
     }
 
     #[test]
     fn test_sphere_transformed_normal_at() {
-        let mut s = Sphere::unit();
-        s.set_transform(
-            &(transform::scale(1.0, 0.5, 1.0) * transform::rotate_z(Float::TAU / 10.0)),
-        );
         let sqrt_half = (0.5 as Float).sqrt();
-        assert!(s
-            .normal_at(&Tuple::new_point(0.0, sqrt_half, -sqrt_half)) // is it even on the sphere?
-            .is_close(&Tuple::new_vector(0.0, 0.97014254, -0.24253564)));
+        assert!(Sphere::plastic(
+            transform::scale(1.0, 0.5, 1.0) * transform::rotate_z(Float::TAU / 10.0),
+        )
+        .normal_at(&Tuple::new_point(0.0, sqrt_half, -sqrt_half)) // is it even on the sphere?
+        .is_close(&Tuple::new_vector(0.0, 0.97014254, -0.24253564)));
     }
 }
