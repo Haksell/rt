@@ -35,6 +35,8 @@ pub trait Object: Debug {
     fn set_material(&mut self, material: Material); // TODO: NO
 }
 
+// TODO: assume intersections is sorted and do a binary search
+// TODO: put in world.rs
 pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>> {
     intersections
         .iter()

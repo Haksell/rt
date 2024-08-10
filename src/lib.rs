@@ -7,6 +7,7 @@ pub mod objects;
 mod ray;
 pub mod transform;
 mod tuple;
+mod world;
 
 // TODO: remove unused pub
 pub use canvas::Canvas;
@@ -16,6 +17,7 @@ pub use material::Material;
 use matrix::Matrix;
 pub use ray::Ray;
 pub use tuple::Tuple;
+pub use world::World;
 
 pub type Float = f32; // TODO: try f64
 
