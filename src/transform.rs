@@ -81,7 +81,7 @@ mod tests {
                 .is_close(&Tuple::new_point(-8.0, 7.0, 3.0))
         );
         assert_eq!(
-            translate(0.5, -3.25, 7.0) * Tuple::new_point(0.0, 0.0, 0.0),
+            translate(0.5, -3.25, 7.0) * Tuple::zero_point(),
             Tuple::new_point(0.5, -3.25, 7.0)
         );
         assert_eq!(
@@ -126,7 +126,10 @@ mod tests {
             scale_constant(1.0) * Tuple::new_point(-3.0, 4.0, 5.0),
             Tuple::new_point(-3.0, 4.0, 5.0)
         );
-        assert_eq!(scale_constant(4.2) * Tuple::zero(), Tuple::zero());
+        assert_eq!(
+            scale_constant(4.2) * Tuple::zero_vector(),
+            Tuple::zero_vector()
+        );
     }
 
     #[test]

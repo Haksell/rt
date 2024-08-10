@@ -81,7 +81,7 @@ mod tests {
     fn test_sphere_unit_intersect() {
         let sphere = Sphere::unit();
         let direction = Tuple::new_vector(0.0, 0.0, 1.0);
-        let ray = Ray::new(&Tuple::new_point(0.0, 0.0, -5.0), &direction.clone());
+        let ray = Ray::new(Tuple::new_point(0.0, 0.0, -5.0), direction.clone());
         assert_eq!(
             sphere.intersect(&ray),
             vec![
@@ -89,7 +89,7 @@ mod tests {
                 Intersection::new(&sphere, 6.0)
             ]
         );
-        let ray = Ray::new(&Tuple::new_point(0.0, 1.0, -5.0), &direction.clone());
+        let ray = Ray::new(Tuple::new_point(0.0, 1.0, -5.0), direction.clone());
         assert_eq!(
             sphere.intersect(&ray),
             vec![
@@ -97,9 +97,9 @@ mod tests {
                 Intersection::new(&sphere, 5.0)
             ]
         ); // at least for now
-        let ray = Ray::new(&Tuple::new_point(0.0, 2.0, -5.0), &direction.clone());
+        let ray = Ray::new(Tuple::new_point(0.0, 2.0, -5.0), direction.clone());
         assert_eq!(sphere.intersect(&ray), vec![]);
-        let ray = Ray::new(&Tuple::new_point(0.0, 0.0, 0.0), &direction.clone());
+        let ray = Ray::new(Tuple::zero_point(), direction.clone());
         assert_eq!(
             sphere.intersect(&ray),
             vec![
@@ -107,7 +107,7 @@ mod tests {
                 Intersection::new(&sphere, 1.0)
             ]
         );
-        let ray = Ray::new(&Tuple::new_point(0.0, 0.0, 5.0), &direction.clone());
+        let ray = Ray::new(Tuple::new_point(0.0, 0.0, 5.0), direction.clone());
         assert_eq!(
             sphere.intersect(&ray),
             vec![
@@ -123,8 +123,8 @@ mod tests {
         sphere.set_transform(&transform::scale_constant(2.0));
         assert_eq!(
             sphere.intersect(&Ray::new(
-                &Tuple::new_point(0.0, 0.0, -5.0),
-                &Tuple::new_vector(0.0, 0.0, 1.0),
+                Tuple::new_point(0.0, 0.0, -5.0),
+                Tuple::new_vector(0.0, 0.0, 1.0),
             )),
             vec![
                 Intersection::new(&sphere, 3.0),
@@ -134,8 +134,8 @@ mod tests {
         sphere.set_transform(&transform::translate(5.0, 0.0, 0.0));
         assert_eq!(
             sphere.intersect(&Ray::new(
-                &Tuple::new_point(0.0, 0.0, -5.0),
-                &Tuple::new_vector(0.0, 0.0, 1.0),
+                Tuple::new_point(0.0, 0.0, -5.0),
+                Tuple::new_vector(0.0, 0.0, 1.0),
             )),
             vec![]
         );

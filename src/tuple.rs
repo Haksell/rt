@@ -25,7 +25,11 @@ impl Tuple {
         Self::new(x, y, z, 0.0)
     }
 
-    pub fn zero() -> Self {
+    pub fn zero_point() -> Self {
+        Self::new(0.0, 0.0, 0.0, 1.0)
+    }
+
+    pub fn zero_vector() -> Self {
         Self::new(0.0, 0.0, 0.0, 0.0)
     }
 

@@ -2,6 +2,7 @@ mod canvas;
 mod color;
 mod matrix;
 pub mod objects;
+mod point_light;
 mod ray;
 pub mod transform;
 mod tuple;
