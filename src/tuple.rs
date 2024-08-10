@@ -80,6 +80,11 @@ impl Tuple {
             self.x * rhs.y - self.y * rhs.x,
         )
     }
+
+    pub fn reflect(&self, normal: &Self) -> Self {
+        // TODO: assert normal is normalized?
+        self.clone() - normal.clone() * 2.0 * self.dot(normal)
+    }
 }
 
 // TODO: implement operators for &Tuple, and remove .clone() from everywhere
@@ -309,5 +314,17 @@ mod tests {
         let b = Tuple::new_vector(2.0, 3.0, 4.0);
         assert_eq!(a.cross(&b), Tuple::new_vector(-1.0, 2.0, -1.0));
         assert_eq!(b.cross(&a), Tuple::new_vector(1.0, -2.0, 1.0));
+    }
+
+    #[test]
+    fn test_reflect() {
+        assert!(Tuple::new_vector(1.0, -1.0, 0.0)
+            .reflect(&Tuple::new_vector(0.0, 1.0, 0.0))
+            .is_close(&Tuple::new_vector(1.0, 1.0, 0.0)));
+        let sqrt_half = (0.5 as Float).sqrt();
+        assert!(Tuple::new_vector(0.0, -1.0, 0.0)
+            .reflect(&Tuple::new_vector(sqrt_half, sqrt_half, 0.0))
+            .is_close(&Tuple::new_vector(1.0, 0.0, 0.0)));
+        // TODO: test with unnormalized normals?
     }
 }
