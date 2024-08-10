@@ -12,7 +12,7 @@ pub use matrix::Matrix;
 pub use ray::Ray;
 pub use tuple::Tuple;
 
-type Float = f32; // TODO: try f64
+pub type Float = f32; // TODO: try f64
 
 // TODO: find a better way to get Float::TAU
 
