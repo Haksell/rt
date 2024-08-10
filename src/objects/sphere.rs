@@ -88,10 +88,23 @@ impl Object for Sphere {
 mod tests {
     use super::super::{Intersection, Object};
     use super::Sphere;
-    use crate::{transform, Float, FloatExt, Matrix, Ray, Tuple};
+    use crate::material::Material;
+    use crate::{transform, Color, Float, FloatExt, Matrix, Ray, Tuple};
 
     #[test]
-    fn test_sphere_constructors() {}
+    fn test_sphere_constructors() {
+        let default = Sphere::default();
+        let red = Sphere::unit(Material {
+            color: Color::red(),
+            ambient: 0.1,
+            diffuse: 0.9,
+            specular: 0.9,
+            shininess: 200.0,
+        });
+        let squashed = Sphere::plastic(transform::scale(1.0, 0.3, 1.0));
+        assert_eq!(default.material, squashed.material);
+        assert_eq!(default.transform, red.transform);
+    }
 
     #[test]
     fn test_sphere_transform() {
