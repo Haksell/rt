@@ -44,8 +44,7 @@ pub fn shade_hit(world: &World, comps: &Computations) -> Color {
 mod tests {
     use super::{lighting, point_light::PointLight, shade_hit};
     use crate::{
-        computations::Computations, objects::Intersection, Color, Float, Material, Ray, Tuple,
-        World,
+        computations::Computations, objects::Intersection, Color, Material, Ray, Tuple, World,
     };
 
     #[test]
@@ -63,7 +62,7 @@ mod tests {
     fn test_lighting_eye_diagonal() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let sqrt_half = (0.5 as Float).sqrt();
+        let sqrt_half = 0.5f32.sqrt();
         let eyev = Tuple::new_vector(0., sqrt_half, -sqrt_half);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
@@ -86,7 +85,7 @@ mod tests {
     fn test_lighting_both_diagonal_full_specular() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let sqrt_half = (0.5 as Float).sqrt();
+        let sqrt_half = 0.5f32.sqrt();
         let eyev = Tuple::new_vector(0., -sqrt_half, -sqrt_half);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));
@@ -108,10 +107,7 @@ mod tests {
     #[test]
     fn test_shade_hit() {
         let world = World::default();
-        let ray = Ray::new(
-            Tuple::new_point(0., 0., -5.),
-            Tuple::new_vector(0., 0., 1.),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
         let intersection = Intersection::new(&*world.objects[0], 4.);
         let comps = Computations::prepare(&intersection, &ray);
         assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));

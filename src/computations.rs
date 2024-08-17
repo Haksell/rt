@@ -1,11 +1,11 @@
 use crate::{
     objects::{Intersection, Object},
-    Float, Ray, Tuple,
+    Ray, Tuple,
 };
 
 #[allow(dead_code)] // TODO: remove
 pub struct Computations<'a> {
-    pub t: Float,
+    pub t: f32,
     pub object: &'a dyn Object,
     pub point: Tuple,
     pub eyev: Tuple,
@@ -46,10 +46,7 @@ mod tests {
     fn test_prepare_computations_outside() {
         let sphere = Sphere::default();
         let intersection = Intersection::new(&sphere, 4.);
-        let ray = Ray::new(
-            Tuple::new_point(0., 0., -5.),
-            Tuple::new_vector(0., 0., 1.),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
         let comps = Computations::prepare(&intersection, &ray);
         assert!(!comps.inside);
         assert_eq!(comps.t, 4.);
@@ -66,10 +63,7 @@ mod tests {
     fn test_prepare_computations_inside() {
         let sphere = Sphere::default();
         let intersection = Intersection::new(&sphere, 1.);
-        let ray = Ray::new(
-            Tuple::new_point(0., 0., 0.),
-            Tuple::new_vector(0., 0., 1.),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., 0.), Tuple::new_vector(0., 0., 1.));
         let comps = Computations::prepare(&intersection, &ray);
         assert!(comps.inside);
         assert_eq!(comps.t, 1.);

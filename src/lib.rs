@@ -24,19 +24,7 @@ pub use ray::Ray;
 pub use tuple::Tuple;
 pub use world::World;
 
-pub type Float = f32; // TODO: try f64
-
-// TODO: find a better way to get Float::TAU
-
-pub trait FloatExt {
-    const TAU: Self;
-}
-
-impl FloatExt for Float {
-    const TAU: Float = std::f32::consts::TAU;
-}
-
-fn is_close(f1: Float, f2: Float) -> bool {
+fn is_close(f1: f32, f2: f32) -> bool {
     (f1 - f2).abs() < 1e-6
 }
 

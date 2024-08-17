@@ -2,7 +2,7 @@ mod sphere;
 
 use std::fmt::Debug;
 
-use crate::{material::Material, Float, Matrix, Ray, Tuple};
+use crate::{material::Material, Matrix, Ray, Tuple};
 pub use sphere::Sphere;
 
 // TODO: automate Intersection.object
@@ -10,11 +10,11 @@ pub use sphere::Sphere;
 #[derive(Debug)]
 pub struct Intersection<'a> {
     pub object: &'a dyn Object,
-    pub t: Float,
+    pub t: f32,
 }
 
 impl<'a> Intersection<'a> {
-    pub fn new(object: &'a dyn Object, t: Float) -> Self {
+    pub fn new(object: &'a dyn Object, t: f32) -> Self {
         Self { object, t }
     }
 }

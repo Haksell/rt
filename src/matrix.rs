@@ -1,13 +1,13 @@
-use crate::{is_close, Float, Tuple};
+use crate::{is_close, Tuple};
 use std::ops::{Div, Index, Mul};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix<const N: usize> {
-    values: [[Float; N]; N], // TODO: [Float; N * N]?
+    values: [[f32; N]; N], // TODO: [f32; N * N]?
 }
 
 impl<const N: usize> Matrix<N> {
-    pub fn new(values: [[Float; N]; N]) -> Self {
+    pub fn new(values: [[f32; N]; N]) -> Self {
         Self { values }
     }
 
@@ -88,9 +88,9 @@ impl<const N: usize> Matrix<N> {
 }
 
 impl<const N: usize> Index<usize> for Matrix<N> {
-    type Output = [Float; N];
+    type Output = [f32; N];
 
-    fn index(&self, row: usize) -> &[Float; N] {
+    fn index(&self, row: usize) -> &[f32; N] {
         &self.values[row]
     }
 }
@@ -136,10 +136,10 @@ impl Mul<Tuple> for Matrix<4> {
     }
 }
 
-impl<const N: usize> Mul<Float> for Matrix<N> {
+impl<const N: usize> Mul<f32> for Matrix<N> {
     type Output = Self;
 
-    fn mul(self, scalar: Float) -> Self {
+    fn mul(self, scalar: f32) -> Self {
         let mut values = self.values.clone();
         for y in 0..N {
             for x in 0..N {
@@ -150,10 +150,10 @@ impl<const N: usize> Mul<Float> for Matrix<N> {
     }
 }
 
-impl<const N: usize> Div<Float> for Matrix<N> {
+impl<const N: usize> Div<f32> for Matrix<N> {
     type Output = Self;
 
-    fn div(self, divisor: Float) -> Self {
+    fn div(self, divisor: f32) -> Self {
         let scalar = 1. / divisor;
         let mut values = self.values.clone();
         for y in 0..N {

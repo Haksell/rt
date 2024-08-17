@@ -1,27 +1,27 @@
 // Do we really need w everywhere?
 
-use crate::{is_close, Float};
+use crate::is_close;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD
 #[derive(Debug, PartialEq, Clone)]
 pub struct Tuple {
-    pub x: Float,
-    pub y: Float,
-    pub z: Float,
-    pub w: Float,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
 }
 
 impl Tuple {
-    pub fn new(x: Float, y: Float, z: Float, w: Float) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
     }
 
-    pub fn new_point(x: Float, y: Float, z: Float) -> Self {
+    pub fn new_point(x: f32, y: f32, z: f32) -> Self {
         Self::new(x, y, z, 1.)
     }
 
-    pub fn new_vector(x: Float, y: Float, z: Float) -> Self {
+    pub fn new_vector(x: f32, y: f32, z: f32) -> Self {
         Self::new(x, y, z, 0.)
     }
 
@@ -60,7 +60,7 @@ impl Tuple {
             && is_close(self.z, rhs.z)
     }
 
-    pub fn magnitude(&self) -> Float {
+    pub fn magnitude(&self) -> f32 {
         (self.dot(self)).sqrt()
     }
 
@@ -75,7 +75,7 @@ impl Tuple {
         }
     }
 
-    pub fn dot(&self, rhs: &Self) -> Float {
+    pub fn dot(&self, rhs: &Self) -> f32 {
         // maybe assert_eq!(self.w, rhs.w, 0.)
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
@@ -136,10 +136,10 @@ impl Neg for Tuple {
     }
 }
 
-impl Mul<Float> for Tuple {
+impl Mul<f32> for Tuple {
     type Output = Self;
 
-    fn mul(self, scalar: Float) -> Self {
+    fn mul(self, scalar: f32) -> Self {
         Self {
             x: self.x * scalar,
             y: self.y * scalar,
@@ -149,7 +149,7 @@ impl Mul<Float> for Tuple {
     }
 }
 
-impl Mul<Tuple> for Float {
+impl Mul<Tuple> for f32 {
     type Output = Tuple;
 
     fn mul(self, tuple: Tuple) -> Tuple {
@@ -162,10 +162,10 @@ impl Mul<Tuple> for Float {
     }
 }
 
-impl Div<Float> for Tuple {
+impl Div<f32> for Tuple {
     type Output = Self;
 
-    fn div(self, divisor: Float) -> Self {
+    fn div(self, divisor: f32) -> Self {
         self * (1. / divisor)
     }
 }
@@ -173,7 +173,6 @@ impl Div<Float> for Tuple {
 #[cfg(test)]
 mod tests {
     use super::Tuple;
-    use crate::Float;
 
     #[test]
     fn test_point() {
@@ -267,11 +266,11 @@ mod tests {
         assert_eq!(Tuple::new_vector(0., 3., 4.).magnitude(), 5.);
         assert_eq!(
             Tuple::new_vector(1., 2., 3.).magnitude(),
-            (14. as Float).sqrt()
+            (14. as f32).sqrt()
         );
         assert_eq!(
             Tuple::new_vector(1., -2., -3.).magnitude(),
-            (14. as Float).sqrt()
+            (14. as f32).sqrt()
         );
     }
 
@@ -284,7 +283,7 @@ mod tests {
         assert!(Tuple::new_vector(3., 4., 0.)
             .normalize()
             .is_close(&Tuple::new_vector(0.6, 0.8, 0.)));
-        let sqrt14 = (14. as Float).sqrt();
+        let sqrt14 = (14. as f32).sqrt();
         assert!(Tuple::new_vector(1., -2., -3.)
             .normalize()
             .is_close(&Tuple::new_vector(1. / sqrt14, -2. / sqrt14, -3. / sqrt14)));
@@ -321,7 +320,7 @@ mod tests {
         assert!(Tuple::new_vector(1., -1., 0.)
             .reflect(&Tuple::up())
             .is_close(&Tuple::new_vector(1., 1., 0.)));
-        let sqrt_half = (0.5 as Float).sqrt();
+        let sqrt_half = 0.5f32.sqrt();
         assert!(Tuple::new_vector(0., -1., 0.)
             .reflect(&Tuple::new_vector(sqrt_half, sqrt_half, 0.))
             .is_close(&Tuple::new_vector(1., 0., 0.)));

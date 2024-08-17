@@ -1,7 +1,5 @@
 use minifb::{Key, Window, WindowOptions};
-use rt::{
-    color_at, objects::Sphere, Canvas, Color, Float, Material, PointLight, Ray, Tuple, World,
-};
+use rt::{color_at, objects::Sphere, Canvas, Color, Material, PointLight, Ray, Tuple, World};
 
 // TODO: args for window or PPM file or just keyboard shortcut?
 
@@ -14,15 +12,15 @@ fn main() {
     let camera_pos = Tuple::new_point(0., 0., -5.);
     let wall_z = 10.;
     let wall_size = 8.;
-    let pixel_size = wall_size / CANVAS_SIZE as Float;
+    let pixel_size = wall_size / CANVAS_SIZE as f32;
     let half_wall_size = wall_size / 2.;
     let object = Sphere::unit(Material::from_color(Color::new(1., 0.2, 1.)));
     let light = PointLight::new(Color::white(), Tuple::new_point(-10., 10., -10.));
     let world = World::new(vec![Box::new(object)], vec![light]);
     for y in 0..HEIGHT {
-        let world_y = half_wall_size - pixel_size * y as Float;
+        let world_y = half_wall_size - pixel_size * y as f32;
         for x in 0..WIDTH {
-            let world_x = -half_wall_size + pixel_size * x as Float;
+            let world_x = -half_wall_size + pixel_size * x as f32;
             let point_on_the_wall = Tuple::new_point(world_x, world_y, wall_z);
             let ray = Ray::new(
                 camera_pos.clone(),

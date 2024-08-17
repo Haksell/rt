@@ -1,4 +1,4 @@
-use crate::{Float, Matrix, Tuple};
+use crate::{Matrix, Tuple};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ray {
@@ -14,7 +14,7 @@ impl Ray {
         Self { origin, direction }
     }
 
-    pub fn position(&self, t: Float) -> Tuple {
+    pub fn position(&self, t: f32) -> Tuple {
         self.origin.clone() + t * self.direction.clone()
     }
 

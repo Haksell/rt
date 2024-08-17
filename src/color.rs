@@ -1,19 +1,18 @@
 // TODO: reuse rt::Tuple or SIMD?
 
+use crate::is_close;
 use std::ops::{Add, Mul, Sub};
-
-use crate::{is_close, Float};
 
 // TODO: not Copy?
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {
-    pub r: Float,
-    pub g: Float,
-    pub b: Float,
+    pub r: f32,
+    pub g: f32,
+    pub b: f32,
 }
 
 impl Color {
-    pub fn new(r: Float, g: Float, b: Float) -> Self {
+    pub fn new(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
     }
 
@@ -85,10 +84,10 @@ impl Sub for Color {
     }
 }
 
-impl Mul<Float> for Color {
+impl Mul<f32> for Color {
     type Output = Self;
 
-    fn mul(self, scalar: Float) -> Self {
+    fn mul(self, scalar: f32) -> Self {
         Self {
             r: self.r * scalar,
             g: self.g * scalar,
@@ -97,7 +96,7 @@ impl Mul<Float> for Color {
     }
 }
 
-impl Mul<Color> for Float {
+impl Mul<Color> for f32 {
     type Output = Color;
 
     fn mul(self, color: Color) -> Color {

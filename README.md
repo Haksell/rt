@@ -2,7 +2,6 @@
 
 ## todo
 
-- [ ] remove `Float` garbage
 - [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] read *The Ray Tracer Challenge*
 - [ ] test speed of `f32` vs `f64`
