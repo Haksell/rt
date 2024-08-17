@@ -1,19 +1,17 @@
 // TODO: in transform.rs, or mod transform
 
-use crate::{matrix::Matrix, transform::translate, Tuple};
+use crate::{matrix::Matrix, Tuple};
 
 pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix<4> {
     let forward = (to.clone() - from.clone()).normalize();
     let left = forward.cross(&up.normalize());
     let true_up = left.cross(&forward);
-    // TODO: multiply manually
-    let orientation = Matrix::new([
-        [left.x, left.y, left.z, 0.],
-        [true_up.x, true_up.y, true_up.z, 0.],
-        [-forward.x, -forward.y, -forward.z, 0.],
+    Matrix::new([
+        [left.x, left.y, left.z, -from.dot(&left)],
+        [true_up.x, true_up.y, true_up.z, -from.dot(&true_up)],
+        [-forward.x, -forward.y, -forward.z, from.dot(&forward)],
         [0., 0., 0., 1.],
-    ]);
-    orientation * translate(-from.x, -from.y, -from.z)
+    ])
 }
 
 #[cfg(test)]
