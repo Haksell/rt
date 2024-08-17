@@ -4,7 +4,7 @@ use crate::Float;
 // TODO: implement methods directly on Tuple when not chaining matrices?
 
 pub fn translate(x: Float, y: Float, z: Float) -> Matrix<4> {
-    Matrix::new(&[
+    Matrix::new([
         [1., 0., 0., x],
         [0., 1., 0., y],
         [0., 0., 1., z],
@@ -13,7 +13,7 @@ pub fn translate(x: Float, y: Float, z: Float) -> Matrix<4> {
 }
 
 pub fn scale(x: Float, y: Float, z: Float) -> Matrix<4> {
-    Matrix::new(&[
+    Matrix::new([
         [x, 0., 0., 0.],
         [0., y, 0., 0.],
         [0., 0., z, 0.],
@@ -27,7 +27,7 @@ pub fn scale_constant(s: Float) -> Matrix<4> {
 
 pub fn rotate_x(angle: Float) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
-    Matrix::new(&[
+    Matrix::new([
         [1., 0., 0., 0.],
         [0., c, -s, 0.],
         [0., s, c, 0.],
@@ -37,7 +37,7 @@ pub fn rotate_x(angle: Float) -> Matrix<4> {
 
 pub fn rotate_y(angle: Float) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
-    Matrix::new(&[
+    Matrix::new([
         [c, 0., s, 0.],
         [0., 1., 0., 0.],
         [-s, 0., c, 0.],
@@ -47,7 +47,7 @@ pub fn rotate_y(angle: Float) -> Matrix<4> {
 
 pub fn rotate_z(angle: Float) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
-    Matrix::new(&[
+    Matrix::new([
         [c, -s, 0., 0.],
         [s, c, 0., 0.],
         [0., 0., 1., 0.],
@@ -57,7 +57,7 @@ pub fn rotate_z(angle: Float) -> Matrix<4> {
 
 // TODO: remove if unused
 pub fn shear(xy: Float, xz: Float, yx: Float, yz: Float, zx: Float, zy: Float) -> Matrix<4> {
-    Matrix::new(&[
+    Matrix::new([
         [1., xy, xz, 0.],
         [yx, 1., yz, 0.],
         [zx, zy, 1., 0.],
@@ -136,9 +136,7 @@ mod tests {
     fn test_rotate_x() {
         let p = Tuple::new_point(3., 1., 0.);
         assert!((rotate_x(Float::TAU) * p.clone()).is_close(&p.clone()));
-        assert!(
-            (rotate_x(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(3., -1., 0.))
-        );
+        assert!((rotate_x(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(3., -1., 0.)));
         assert!((rotate_x(Float::TAU / 4.) * p.clone()).is_close(&Tuple::new_point(3., 0., 1.)));
         assert!(
             (rotate_x(Float::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
@@ -157,9 +155,7 @@ mod tests {
     fn test_rotate_y() {
         let p = Tuple::new_point(0., 4.2, 1.);
         assert!((rotate_y(Float::TAU) * p.clone()).is_close(&p.clone()));
-        assert!(
-            (rotate_y(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(0., 4.2, -1.))
-        );
+        assert!((rotate_y(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(0., 4.2, -1.)));
         assert!((rotate_y(Float::TAU / 4.) * p.clone()).is_close(&Tuple::new_point(1., 4.2, 0.)));
         assert!(
             (rotate_y(Float::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
@@ -174,12 +170,8 @@ mod tests {
     fn test_rotate_z() {
         let p = Tuple::new_point(0., 2., -1.);
         assert!((rotate_z(Float::TAU) * p.clone()).is_close(&p.clone()));
-        assert!(
-            (rotate_z(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(0., -2., -1.))
-        );
-        assert!(
-            (rotate_z(Float::TAU / 4.) * p.clone()).is_close(&Tuple::new_point(-2., 0., -1.))
-        );
+        assert!((rotate_z(Float::TAU / 2.) * p.clone()).is_close(&Tuple::new_point(0., -2., -1.)));
+        assert!((rotate_z(Float::TAU / 4.) * p.clone()).is_close(&Tuple::new_point(-2., 0., -1.)));
         assert!(
             (rotate_z(Float::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
                 -(2. as Float).sqrt(),

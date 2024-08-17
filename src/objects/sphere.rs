@@ -114,7 +114,7 @@ mod tests {
         s.set_transform(transform::translate(2., 3., 4.));
         assert_eq!(
             s.transform,
-            Matrix::new(&[
+            Matrix::new([
                 [1., 0., 0., 2.],
                 [0., 1., 0., 3.],
                 [0., 0., 1., 4.],
