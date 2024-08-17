@@ -5,8 +5,8 @@ use crate::{
 };
 
 pub struct World {
-    objects: Vec<Box<dyn Object>>,
-    lights: Vec<PointLight>,
+    pub objects: Vec<Box<dyn Object>>,
+    pub lights: Vec<PointLight>,
 }
 
 impl World {

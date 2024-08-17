@@ -1,6 +1,6 @@
 mod point_light;
 
-use crate::{Color, Material, Tuple};
+use crate::{computations::Computations, Color, Material, Tuple, World};
 pub use point_light::PointLight;
 
 pub fn lighting(
@@ -28,11 +28,24 @@ pub fn lighting(
     ambient + diffuse + specular
 }
 
+// TODO: put somewhere else
+pub fn shade_hit(world: &World, comps: &Computations) -> Color {
+    lighting(
+        comps.object.get_material(),
+        &world.lights[0], // TODO: all the lights
+        &comps.point,
+        &comps.eyev,
+        &comps.normalv,
+    )
+}
+
 #[cfg(test)]
 mod tests {
-    use super::lighting;
-    use super::point_light::PointLight;
-    use crate::{Color, Float, Material, Tuple};
+    use super::{lighting, point_light::PointLight, shade_hit};
+    use crate::{
+        computations::Computations, objects::Intersection, Color, Float, Material, Ray, Tuple,
+        World,
+    };
 
     #[test]
     fn test_lighting_light_behind_eye() {
@@ -89,5 +102,17 @@ mod tests {
         let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 0.0, 10.0));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(0.1, 0.1, 0.1)))
+    }
+
+    #[test]
+    fn test_shade_hit() {
+        let world = World::default();
+        let ray = Ray::new(
+            Tuple::new_point(0.0, 0.0, -5.0),
+            Tuple::new_vector(0.0, 0.0, 1.0),
+        );
+        let intersection = Intersection::new(&*world.objects[0], 4.0);
+        let comps = Computations::prepare(&intersection, &ray);
+        assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
     }
 }

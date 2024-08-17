@@ -3,13 +3,13 @@ use crate::{
     Float, Ray, Tuple,
 };
 
-struct Computations<'a> {
-    t: Float,
-    object: &'a dyn Object,
-    point: Tuple,
-    eyev: Tuple,
-    normalv: Tuple,
-    inside: bool,
+pub struct Computations<'a> {
+    pub t: Float,
+    pub object: &'a dyn Object,
+    pub point: Tuple,
+    pub eyev: Tuple,
+    pub normalv: Tuple,
+    pub inside: bool,
 }
 
 impl<'a> Computations<'a> {
