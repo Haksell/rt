@@ -1,9 +1,7 @@
-mod point_light;
-
+pub use super::PointLight;
 use crate::{computations::Computations, Color, Material, Tuple, World};
-pub use point_light::PointLight;
 
-pub fn lighting(
+fn lighting(
     material: &Material,
     light: &PointLight,
     point: &Tuple,
@@ -29,7 +27,7 @@ pub fn lighting(
     ambient + diffuse + specular
 }
 
-// TODO: put somewhere else
+// TODO: in impl World
 pub fn shade_hit(world: &World, comps: &Computations) -> Color {
     lighting(
         comps.object.get_material(),
@@ -42,9 +40,10 @@ pub fn shade_hit(world: &World, comps: &Computations) -> Color {
 
 #[cfg(test)]
 mod tests {
-    use super::{lighting, point_light::PointLight, shade_hit};
+    use super::{lighting, shade_hit};
     use crate::{
-        computations::Computations, objects::Intersection, Color, Material, Ray, Tuple, World,
+        computations::Computations, objects::Intersection, Color, Material, PointLight, Ray, Tuple,
+        World,
     };
 
     #[test]
@@ -102,6 +101,18 @@ mod tests {
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., 10.));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(0.1, 0.1, 0.1)))
+    }
+
+    #[test]
+    fn test_lighting_surface_in_shadow() {
+        assert!(false); // TODO: in shadow
+        let material = Material::default();
+        let position = Tuple::zero_point();
+        let eyev = Tuple::new_vector(0., 0., -1.);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
+        assert!(lighting(&material, &light, &position, &eyev, &normalv)
+            .is_close(&Color::new(1.9, 1.9, 1.9)))
     }
 
     #[test]
