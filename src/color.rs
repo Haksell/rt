@@ -18,35 +18,35 @@ impl Color {
     }
 
     pub fn black() -> Self {
-        Self::new(0.0, 0.0, 0.0)
+        Self::new(0., 0., 0.)
     }
 
     pub fn blue() -> Self {
-        Self::new(0.0, 0.0, 1.0)
+        Self::new(0., 0., 1.)
     }
 
     pub fn green() -> Self {
-        Self::new(0.0, 1.0, 0.0)
+        Self::new(0., 1., 0.)
     }
 
     pub fn cyan() -> Self {
-        Self::new(0.0, 1.0, 1.0)
+        Self::new(0., 1., 1.)
     }
 
     pub fn red() -> Self {
-        Self::new(1.0, 0.0, 0.0)
+        Self::new(1., 0., 0.)
     }
 
     pub fn magenta() -> Self {
-        Self::new(1.0, 0.0, 1.0)
+        Self::new(1., 0., 1.)
     }
 
     pub fn yellow() -> Self {
-        Self::new(1.0, 1.0, 0.0)
+        Self::new(1., 1., 0.)
     }
 
     pub fn white() -> Self {
-        Self::new(1.0, 1.0, 1.0)
+        Self::new(1., 1., 1.)
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
@@ -54,9 +54,9 @@ impl Color {
     }
 
     pub fn to_u32(&self) -> u32 {
-        let r = (self.r.clamp(0.0, 1.0) * 255.0).round() as u32;
-        let g = (self.g.clamp(0.0, 1.0) * 255.0).round() as u32;
-        let b = (self.b.clamp(0.0, 1.0) * 255.0).round() as u32;
+        let r = (self.r.clamp(0., 1.) * 255.).round() as u32;
+        let g = (self.g.clamp(0., 1.) * 255.).round() as u32;
+        let b = (self.b.clamp(0., 1.) * 255.).round() as u32;
         (r << 16) | (g << 8) | b
     }
 }
@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn test_addition() {
         assert!((Color::new(0.9, 0.6, 0.75) + Color::new(0.7, 0.1, 0.25))
-            .is_close(&Color::new(1.6, 0.7, 1.0)));
+            .is_close(&Color::new(1.6, 0.7, 1.)));
     }
 
     #[test]
@@ -148,7 +148,7 @@ mod tests {
     #[test]
     fn test_scaling() {
         assert!((Color::new(0.9, 0.6, 0.75) * 0.5).is_close(&Color::new(0.45, 0.3, 0.375)));
-        assert!((3.0 * Color::new(0.9, 0.6, 0.75)).is_close(&Color::new(2.7, 1.8, 2.25)));
+        assert!((3. * Color::new(0.9, 0.6, 0.75)).is_close(&Color::new(2.7, 1.8, 2.25)));
     }
 
     #[test]
@@ -168,7 +168,7 @@ mod tests {
         assert_eq!(Color::yellow().to_u32(), 0xffff00);
         assert_eq!(Color::white().to_u32(), 0xffffff);
         assert_eq!(
-            Color::new(0.333, 0.667, 1.0).to_u32(),
+            Color::new(0.333, 0.667, 1.).to_u32(),
             85 << 16 | 170 << 8 | 255
         );
     }

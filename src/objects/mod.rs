@@ -40,7 +40,7 @@ pub trait Object: Debug {
 pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>> {
     intersections
         .iter()
-        .filter(|&i| i.t > 0.0)
+        .filter(|&i| i.t > 0.)
         .min_by(|a, b| a.t.partial_cmp(&b.t).unwrap())
 }
 
@@ -52,28 +52,28 @@ mod tests {
     fn test_hit_all_positive() {
         let sphere = Sphere::default();
         let intersections = vec![
-            Intersection::new(&sphere, 4.0),
-            Intersection::new(&sphere, 6.0),
+            Intersection::new(&sphere, 4.),
+            Intersection::new(&sphere, 6.),
         ];
-        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 4.0)));
+        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 4.)));
     }
 
     #[test]
     fn test_hit_one_positive() {
         let sphere = Sphere::default();
         let intersections = vec![
-            Intersection::new(&sphere, -1.0),
-            Intersection::new(&sphere, 1.0),
+            Intersection::new(&sphere, -1.),
+            Intersection::new(&sphere, 1.),
         ];
-        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 1.0)));
+        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 1.)));
     }
 
     #[test]
     fn test_hit_all_negative() {
         let sphere = Sphere::default();
         let intersections = vec![
-            Intersection::new(&sphere, -6.0),
-            Intersection::new(&sphere, -4.0),
+            Intersection::new(&sphere, -6.),
+            Intersection::new(&sphere, -4.),
         ];
         assert_eq!(hit(&intersections), None);
     }
@@ -82,11 +82,11 @@ mod tests {
     fn test_hit_more() {
         let sphere = Sphere::default();
         let intersections = vec![
-            Intersection::new(&sphere, 5.0),
-            Intersection::new(&sphere, 7.0),
-            Intersection::new(&sphere, -3.0),
-            Intersection::new(&sphere, 2.0),
+            Intersection::new(&sphere, 5.),
+            Intersection::new(&sphere, 7.),
+            Intersection::new(&sphere, -3.),
+            Intersection::new(&sphere, 2.),
         ];
-        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 2.0)));
+        assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 2.)));
     }
 }

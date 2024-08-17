@@ -8,6 +8,7 @@ pub mod objects;
 mod ray;
 pub mod transform;
 mod tuple;
+mod view_transform;
 mod world;
 
 // TODO: remove unused pub
@@ -53,20 +54,14 @@ mod tests {
     #[test]
     fn test_color_at_void() {
         let world = World::default();
-        let ray = Ray::new(
-            Tuple::new_point(0.0, 0.0, -5.0),
-            Tuple::new_vector(0.0, 1.0, 0.0),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 1., 0.));
         assert_eq!(color_at(&world, &ray), Color::black());
     }
 
     #[test]
     fn test_color_at_sphere() {
         let world = World::default();
-        let ray = Ray::new(
-            Tuple::new_point(0.0, 0.0, -5.0),
-            Tuple::new_vector(0.0, 0.0, 1.0),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
         println!("{:?}", color_at(&world, &ray));
         assert!(color_at(&world, &ray).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
     }
@@ -75,8 +70,8 @@ mod tests {
     fn test_color_at_between() {
         let world = World::default();
         let ray = Ray::new(
-            Tuple::new_point(0.0, 0.0, 0.75),
-            Tuple::new_vector(0.0, 0.0, -1.0),
+            Tuple::new_point(0., 0., 0.75),
+            Tuple::new_vector(0., 0., -1.),
         );
         println!("{:?}", color_at(&world, &ray));
         println!("{:?}", world.objects[1].get_material().color);

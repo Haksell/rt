@@ -34,70 +34,55 @@ mod tests {
     #[test]
     fn test_ray_new_valid() {
         let ray = Ray::new(
-            Tuple::new_point(1.0, 2.0, 3.0),
-            Tuple::new_vector(-4.0, 5.5, 6.0),
+            Tuple::new_point(1., 2., 3.),
+            Tuple::new_vector(-4., 5.5, 6.),
         );
-        assert_eq!(ray.origin.x, 1.0);
-        assert_eq!(ray.origin.y, 2.0);
-        assert_eq!(ray.origin.z, 3.0);
-        assert_eq!(ray.origin.w, 1.0);
-        assert_eq!(ray.direction.x, -4.0);
+        assert_eq!(ray.origin.x, 1.);
+        assert_eq!(ray.origin.y, 2.);
+        assert_eq!(ray.origin.z, 3.);
+        assert_eq!(ray.origin.w, 1.);
+        assert_eq!(ray.direction.x, -4.);
         assert_eq!(ray.direction.y, 5.5);
-        assert_eq!(ray.direction.z, 6.0);
-        assert_eq!(ray.direction.w, 0.0);
+        assert_eq!(ray.direction.z, 6.);
+        assert_eq!(ray.direction.w, 0.);
     }
 
     #[test]
     #[should_panic]
     fn test_ray_new_invalid() {
-        Ray::new(
-            Tuple::new_point(1.0, 2.0, 3.0),
-            Tuple::new_point(-4.0, 5.5, 6.0),
-        );
+        Ray::new(Tuple::new_point(1., 2., 3.), Tuple::new_point(-4., 5.5, 6.));
     }
 
     #[test]
     fn test_ray_position() {
         let ray = Ray::new(
-            Tuple::new_point(1.0, 2.0, 3.0),
-            Tuple::new_vector(-4.0, 5.5, 6.0),
+            Tuple::new_point(1., 2., 3.),
+            Tuple::new_vector(-4., 5.5, 6.),
         );
-        assert_eq!(ray.position(-1.5), Tuple::new_point(7.0, -6.25, -6.0));
-        assert_eq!(ray.position(-1.0), Tuple::new_point(5.0, -3.5, -3.0));
-        assert_eq!(ray.position(-0.5), Tuple::new_point(3.0, -0.75, 0.0));
-        assert_eq!(ray.position(0.0), Tuple::new_point(1.0, 2.0, 3.0));
-        assert_eq!(ray.position(0.5), Tuple::new_point(-1.0, 4.75, 6.0));
-        assert_eq!(ray.position(1.0), Tuple::new_point(-3.0, 7.5, 9.0));
-        assert_eq!(ray.position(1.5), Tuple::new_point(-5.0, 10.25, 12.0));
+        assert_eq!(ray.position(-1.5), Tuple::new_point(7., -6.25, -6.));
+        assert_eq!(ray.position(-1.), Tuple::new_point(5., -3.5, -3.));
+        assert_eq!(ray.position(-0.5), Tuple::new_point(3., -0.75, 0.));
+        assert_eq!(ray.position(0.), Tuple::new_point(1., 2., 3.));
+        assert_eq!(ray.position(0.5), Tuple::new_point(-1., 4.75, 6.));
+        assert_eq!(ray.position(1.), Tuple::new_point(-3., 7.5, 9.));
+        assert_eq!(ray.position(1.5), Tuple::new_point(-5., 10.25, 12.));
     }
 
     #[test]
     fn test_ray_translate() {
         assert_eq!(
-            Ray::new(
-                Tuple::new_point(1.0, 2.0, 3.0),
-                Tuple::new_vector(0.0, 1.0, 0.0)
-            )
-            .transform(&transform::translate(3.0, 4.0, 5.0)),
-            Ray::new(
-                Tuple::new_point(4.0, 6.0, 8.0),
-                Tuple::new_vector(0.0, 1.0, 0.0)
-            )
+            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::new_vector(0., 1., 0.))
+                .transform(&transform::translate(3., 4., 5.)),
+            Ray::new(Tuple::new_point(4., 6., 8.), Tuple::new_vector(0., 1., 0.))
         );
     }
 
     #[test]
     fn test_ray_scale() {
         assert_eq!(
-            Ray::new(
-                Tuple::new_point(1.0, 2.0, 3.0),
-                Tuple::new_vector(0.0, 1.0, 0.0)
-            )
-            .transform(&transform::scale(2.0, 3.0, 4.0)),
-            Ray::new(
-                Tuple::new_point(2.0, 6.0, 12.0),
-                Tuple::new_vector(0.0, 3.0, 0.0)
-            )
+            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::new_vector(0., 1., 0.))
+                .transform(&transform::scale(2., 3., 4.)),
+            Ray::new(Tuple::new_point(2., 6., 12.), Tuple::new_vector(0., 3., 0.))
         );
     }
 }

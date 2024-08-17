@@ -34,9 +34,9 @@ impl Canvas {
             for pix in row {
                 ppm.push_str(&format!(
                     "{} {} {}",
-                    (pix.r.clamp(0.0, 1.0) * 255.0).round() as usize,
-                    (pix.g.clamp(0.0, 1.0) * 255.0).round() as usize,
-                    (pix.b.clamp(0.0, 1.0) * 255.0).round() as usize,
+                    (pix.r.clamp(0., 1.) * 255.).round() as usize,
+                    (pix.g.clamp(0., 1.) * 255.).round() as usize,
+                    (pix.b.clamp(0., 1.) * 255.).round() as usize,
                 ));
                 ppm.push('\n');
             }
@@ -91,7 +91,7 @@ mod tests {
         let mut canvas = Canvas::new(3, 2);
         canvas.set_pixel(0, 0, Color::red());
         canvas.set_pixel(1, 0, Color::green());
-        canvas.set_pixel(2, 0, Color::new(0.333, 0.667, 1.0));
+        canvas.set_pixel(2, 0, Color::new(0.333, 0.667, 1.));
         canvas.set_pixel(2, 1, Color::blue());
         assert_eq!(
             canvas.to_ppm(),

@@ -17,11 +17,11 @@ pub fn lighting(
     let light_dot_normal = lightv.dot(normalv);
     let mut diffuse = Color::black();
     let mut specular = Color::black();
-    if light_dot_normal > 0.0 {
+    if light_dot_normal > 0. {
         diffuse = effective_color * material.diffuse * light_dot_normal;
         let reflectv = (-lightv).reflect(normalv);
         let reflect_dot_eye = reflectv.dot(eyev);
-        if reflect_dot_eye > 0.0 {
+        if reflect_dot_eye > 0. {
             let factor = reflect_dot_eye.powf(material.shininess);
             specular = light.intensity * material.specular * factor;
         }
@@ -52,9 +52,9 @@ mod tests {
     fn test_lighting_light_behind_eye() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let eyev = Tuple::new_vector(0.0, 0.0, -1.0);
-        let normalv = Tuple::new_vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 0.0, -10.0));
+        let eyev = Tuple::new_vector(0., 0., -1.);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(1.9, 1.9, 1.9)))
     }
@@ -64,10 +64,10 @@ mod tests {
         let material = Material::default();
         let position = Tuple::zero_point();
         let sqrt_half = (0.5 as Float).sqrt();
-        let eyev = Tuple::new_vector(0.0, sqrt_half, -sqrt_half);
-        let normalv = Tuple::new_vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 0.0, -10.0));
-        // 0.9 + 0.1 = 1.0, specular has disappeared
+        let eyev = Tuple::new_vector(0., sqrt_half, -sqrt_half);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
+        // 0.9 + 0.1 = 1., specular has disappeared
         assert!(lighting(&material, &light, &position, &eyev, &normalv).is_close(&Color::white()))
     }
 
@@ -75,9 +75,9 @@ mod tests {
     fn test_lighting_light_diagonal() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let eyev = Tuple::new_vector(0.0, 0.0, -1.0);
-        let normalv = Tuple::new_vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 10.0, -10.0));
+        let eyev = Tuple::new_vector(0., 0., -1.);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(0.73639613, 0.73639613, 0.73639613)))
     }
@@ -87,9 +87,9 @@ mod tests {
         let material = Material::default();
         let position = Tuple::zero_point();
         let sqrt_half = (0.5 as Float).sqrt();
-        let eyev = Tuple::new_vector(0.0, -sqrt_half, -sqrt_half);
-        let normalv = Tuple::new_vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 10.0, -10.0));
+        let eyev = Tuple::new_vector(0., -sqrt_half, -sqrt_half);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(1.6363962, 1.6363962, 1.6363962)))
     }
@@ -98,9 +98,9 @@ mod tests {
     fn test_lighting_light_behind_surface() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let eyev = Tuple::new_vector(0.0, 0.0, -1.0);
-        let normalv = Tuple::new_vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Color::white(), Tuple::new_point(0.0, 0.0, 10.0));
+        let eyev = Tuple::new_vector(0., 0., -1.);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., 10.));
         assert!(lighting(&material, &light, &position, &eyev, &normalv)
             .is_close(&Color::new(0.1, 0.1, 0.1)))
     }
@@ -109,10 +109,10 @@ mod tests {
     fn test_shade_hit() {
         let world = World::default();
         let ray = Ray::new(
-            Tuple::new_point(0.0, 0.0, -5.0),
-            Tuple::new_vector(0.0, 0.0, 1.0),
+            Tuple::new_point(0., 0., -5.),
+            Tuple::new_vector(0., 0., 1.),
         );
-        let intersection = Intersection::new(&*world.objects[0], 4.0);
+        let intersection = Intersection::new(&*world.objects[0], 4.);
         let comps = Computations::prepare(&intersection, &ray);
         assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
     }

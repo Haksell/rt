@@ -18,33 +18,33 @@ impl Tuple {
     }
 
     pub fn new_point(x: Float, y: Float, z: Float) -> Self {
-        Self::new(x, y, z, 1.0)
+        Self::new(x, y, z, 1.)
     }
 
     pub fn new_vector(x: Float, y: Float, z: Float) -> Self {
-        Self::new(x, y, z, 0.0)
+        Self::new(x, y, z, 0.)
     }
 
     pub fn zero_point() -> Self {
-        Self::new(0.0, 0.0, 0.0, 1.0)
+        Self::new(0., 0., 0., 1.)
     }
 
     pub fn zero_vector() -> Self {
-        Self::new(0.0, 0.0, 0.0, 0.0)
+        Self::new(0., 0., 0., 0.)
     }
 
     pub fn is_point(&self) -> bool {
         match self.w {
-            0.0 => false,
-            1.0 => true,
+            0. => false,
+            1. => true,
             _ => panic!("Tuple::w is invalid: {}", self.w),
         }
     }
 
     pub fn is_vector(&self) -> bool {
         match self.w {
-            0.0 => true,
-            1.0 => false,
+            0. => true,
+            1. => false,
             _ => panic!("Tuple::w is invalid: {}", self.w),
         }
     }
@@ -62,22 +62,22 @@ impl Tuple {
 
     pub fn normalize(&self) -> Self {
         // what if self.magnitude() == 0?
-        let scalar = 1.0 / self.magnitude();
+        let scalar = 1. / self.magnitude();
         Self {
             x: self.x * scalar,
             y: self.y * scalar,
             z: self.z * scalar,
-            w: self.w, // maybe assert_eq!(self.w, 0.0)
+            w: self.w, // maybe assert_eq!(self.w, 0.)
         }
     }
 
     pub fn dot(&self, rhs: &Self) -> Float {
-        // maybe assert_eq!(self.w, rhs.w, 0.0)
+        // maybe assert_eq!(self.w, rhs.w, 0.)
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
     pub fn cross(&self, rhs: &Self) -> Self {
-        // maybe assert_eq!(self.w, rhs.w, 0.0)
+        // maybe assert_eq!(self.w, rhs.w, 0.)
         Self::new_vector(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
@@ -87,7 +87,7 @@ impl Tuple {
 
     pub fn reflect(&self, normal: &Self) -> Self {
         // TODO: assert normal is normalized?
-        self.clone() - normal.clone() * 2.0 * self.dot(normal)
+        self.clone() - normal.clone() * 2. * self.dot(normal)
     }
 }
 
@@ -162,7 +162,7 @@ impl Div<Float> for Tuple {
     type Output = Self;
 
     fn div(self, divisor: Float) -> Self {
-        self * (1.0 / divisor)
+        self * (1. / divisor)
     }
 }
 
@@ -177,7 +177,7 @@ mod tests {
             x: 4.3,
             y: -4.2,
             z: 3.1,
-            w: 1.0,
+            w: 1.,
         };
         let point_constructor = Tuple::new_point(4.3, -4.2, 3.1);
         assert_eq!(point_manual, point_constructor);
@@ -191,7 +191,7 @@ mod tests {
             x: 4.3,
             y: -4.2,
             z: 3.1,
-            w: 0.0,
+            w: 0.,
         };
         let vector_constructor = Tuple::new_vector(4.3, -4.2, 3.1);
         assert_eq!(vector_manual, vector_constructor);
@@ -202,132 +202,132 @@ mod tests {
     #[test]
     fn test_addition() {
         assert_eq!(
-            Tuple::new_point(3.0, -2.0, 5.0) + Tuple::new_vector(-2.0, 3.0, 1.0),
-            Tuple::new_point(1.0, 1.0, 6.0)
+            Tuple::new_point(3., -2., 5.) + Tuple::new_vector(-2., 3., 1.),
+            Tuple::new_point(1., 1., 6.)
         );
     }
 
     #[test]
     fn test_subtraction() {
         assert_eq!(
-            Tuple::new_point(3.0, 2.0, 1.0) - Tuple::new_point(5.0, 6.0, 7.0),
-            Tuple::new_vector(-2.0, -4.0, -6.0)
+            Tuple::new_point(3., 2., 1.) - Tuple::new_point(5., 6., 7.),
+            Tuple::new_vector(-2., -4., -6.)
         );
         assert_eq!(
-            Tuple::new_vector(3.0, 2.0, 1.0) - Tuple::new_vector(5.0, 6.0, 7.0),
-            Tuple::new_vector(-2.0, -4.0, -6.0)
+            Tuple::new_vector(3., 2., 1.) - Tuple::new_vector(5., 6., 7.),
+            Tuple::new_vector(-2., -4., -6.)
         );
         assert_eq!(
-            Tuple::new_point(3.0, 2.0, 1.0) - Tuple::new_vector(5.0, 6.0, 7.0),
-            Tuple::new_point(-2.0, -4.0, -6.0)
+            Tuple::new_point(3., 2., 1.) - Tuple::new_vector(5., 6., 7.),
+            Tuple::new_point(-2., -4., -6.)
         );
     }
 
     #[test]
     fn test_negation() {
         assert_eq!(
-            -Tuple::new_vector(3.0, 2.0, -1.0),
-            Tuple::new_vector(-3.0, -2.0, 1.0)
+            -Tuple::new_vector(3., 2., -1.),
+            Tuple::new_vector(-3., -2., 1.)
         );
     }
 
     #[test]
     fn test_scaling() {
         assert_eq!(
-            Tuple::new(1.0, -2.0, 3.0, -4.0) * 3.5,
-            Tuple::new(3.5, -7.0, 10.5, -14.0),
+            Tuple::new(1., -2., 3., -4.) * 3.5,
+            Tuple::new(3.5, -7., 10.5, -14.),
         );
         assert_eq!(
-            0.5 * Tuple::new(1.0, -2.0, 3.0, -4.0),
-            Tuple::new(0.5, -1.0, 1.5, -2.0),
+            0.5 * Tuple::new(1., -2., 3., -4.),
+            Tuple::new(0.5, -1., 1.5, -2.),
         );
     }
 
     #[test]
     fn test_division() {
         assert_eq!(
-            Tuple::new_vector(1.0, -2.5, 3.25) / 2.0,
+            Tuple::new_vector(1., -2.5, 3.25) / 2.,
             Tuple::new_vector(0.5, -1.25, 1.625),
         );
         assert_eq!(
-            Tuple::new_point(1.0, -2.5, 3.25) / 2.0,
+            Tuple::new_point(1., -2.5, 3.25) / 2.,
             Tuple::new(0.5, -1.25, 1.625, 0.5,),
         );
     }
 
     #[test]
     fn test_magnitude() {
-        assert_eq!(Tuple::new_vector(1.0, 0.0, 0.0).magnitude(), 1.0);
-        assert_eq!(Tuple::new_vector(0.0, 1.0, 0.0).magnitude(), 1.0);
-        assert_eq!(Tuple::new_vector(0.0, 0.0, 1.0).magnitude(), 1.0);
-        assert_eq!(Tuple::new_vector(0.0, 3.0, 4.0).magnitude(), 5.0);
+        assert_eq!(Tuple::new_vector(1., 0., 0.).magnitude(), 1.);
+        assert_eq!(Tuple::new_vector(0., 1., 0.).magnitude(), 1.);
+        assert_eq!(Tuple::new_vector(0., 0., 1.).magnitude(), 1.);
+        assert_eq!(Tuple::new_vector(0., 3., 4.).magnitude(), 5.);
         assert_eq!(
-            Tuple::new_vector(1.0, 2.0, 3.0).magnitude(),
-            (14.0 as Float).sqrt()
+            Tuple::new_vector(1., 2., 3.).magnitude(),
+            (14. as Float).sqrt()
         );
         assert_eq!(
-            Tuple::new_vector(1.0, -2.0, -3.0).magnitude(),
-            (14.0 as Float).sqrt()
+            Tuple::new_vector(1., -2., -3.).magnitude(),
+            (14. as Float).sqrt()
         );
     }
 
     #[test]
     fn test_normalize() {
         assert_eq!(
-            Tuple::new_vector(3.0, 0.0, 0.0).normalize(),
-            Tuple::new_vector(1.0, 0.0, 0.0)
+            Tuple::new_vector(3., 0., 0.).normalize(),
+            Tuple::new_vector(1., 0., 0.)
         );
-        assert!(Tuple::new_vector(3.0, 4.0, 0.0)
+        assert!(Tuple::new_vector(3., 4., 0.)
             .normalize()
-            .is_close(&Tuple::new_vector(0.6, 0.8, 0.0)));
-        let sqrt14 = (14.0 as Float).sqrt();
-        assert!(Tuple::new_vector(1.0, -2.0, -3.0)
+            .is_close(&Tuple::new_vector(0.6, 0.8, 0.)));
+        let sqrt14 = (14. as Float).sqrt();
+        assert!(Tuple::new_vector(1., -2., -3.)
             .normalize()
             .is_close(&Tuple::new_vector(
-                1.0 / sqrt14,
-                -2.0 / sqrt14,
-                -3.0 / sqrt14
+                1. / sqrt14,
+                -2. / sqrt14,
+                -3. / sqrt14
             )));
     }
 
     #[test]
     fn test_dot() {
         assert_eq!(
-            Tuple::new_vector(1.0, 2.0, 3.0).dot(&Tuple::new_vector(2.0, 3.0, 4.0)),
-            20.0,
+            Tuple::new_vector(1., 2., 3.).dot(&Tuple::new_vector(2., 3., 4.)),
+            20.,
         );
         assert_eq!(
-            Tuple::new_vector(1.0, 0.0, 0.0).dot(&Tuple::new_vector(0.0, 1.0, 0.0)),
-            0.0,
+            Tuple::new_vector(1., 0., 0.).dot(&Tuple::new_vector(0., 1., 0.)),
+            0.,
         );
     }
 
     #[test]
     fn test_cross() {
-        let x = Tuple::new_vector(1.0, 0.0, 0.0);
-        let y = Tuple::new_vector(0.0, 1.0, 0.0);
-        let z = Tuple::new_vector(0.0, 0.0, 1.0);
+        let x = Tuple::new_vector(1., 0., 0.);
+        let y = Tuple::new_vector(0., 1., 0.);
+        let z = Tuple::new_vector(0., 0., 1.);
         assert_eq!(x.cross(&y), z);
         assert_eq!(y.cross(&z), x);
         assert_eq!(z.cross(&x), y);
         assert_eq!(y.cross(&x), -z.clone());
         assert_eq!(z.cross(&y), -x.clone());
         assert_eq!(x.cross(&z), -y.clone());
-        let a = Tuple::new_vector(1.0, 2.0, 3.0);
-        let b = Tuple::new_vector(2.0, 3.0, 4.0);
-        assert_eq!(a.cross(&b), Tuple::new_vector(-1.0, 2.0, -1.0));
-        assert_eq!(b.cross(&a), Tuple::new_vector(1.0, -2.0, 1.0));
+        let a = Tuple::new_vector(1., 2., 3.);
+        let b = Tuple::new_vector(2., 3., 4.);
+        assert_eq!(a.cross(&b), Tuple::new_vector(-1., 2., -1.));
+        assert_eq!(b.cross(&a), Tuple::new_vector(1., -2., 1.));
     }
 
     #[test]
     fn test_reflect() {
-        assert!(Tuple::new_vector(1.0, -1.0, 0.0)
-            .reflect(&Tuple::new_vector(0.0, 1.0, 0.0))
-            .is_close(&Tuple::new_vector(1.0, 1.0, 0.0)));
+        assert!(Tuple::new_vector(1., -1., 0.)
+            .reflect(&Tuple::new_vector(0., 1., 0.))
+            .is_close(&Tuple::new_vector(1., 1., 0.)));
         let sqrt_half = (0.5 as Float).sqrt();
-        assert!(Tuple::new_vector(0.0, -1.0, 0.0)
-            .reflect(&Tuple::new_vector(sqrt_half, sqrt_half, 0.0))
-            .is_close(&Tuple::new_vector(1.0, 0.0, 0.0)));
+        assert!(Tuple::new_vector(0., -1., 0.)
+            .reflect(&Tuple::new_vector(sqrt_half, sqrt_half, 0.))
+            .is_close(&Tuple::new_vector(1., 0., 0.)));
         // TODO: test with unnormalized normals?
     }
 }
