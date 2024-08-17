@@ -1,7 +1,19 @@
-use crate::{matrix::Matrix, Tuple};
+// TODO: in transform.rs, or mod transform
+
+use crate::{matrix::Matrix, transform::translate, Tuple};
 
 pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix<4> {
-    Matrix::identity()
+    let forward = (to.clone() - from.clone()).normalize();
+    let left = forward.cross(&up.normalize());
+    let true_up = left.cross(&forward);
+    // TODO: multiply manually
+    let orientation = Matrix::new([
+        [left.x, left.y, left.z, 0.],
+        [true_up.x, true_up.y, true_up.z, 0.],
+        [-forward.x, -forward.y, -forward.z, 0.],
+        [0., 0., 0., 1.],
+    ]);
+    orientation * translate(-from.x, -from.y, -from.z)
 }
 
 #[cfg(test)]
@@ -41,11 +53,24 @@ mod tests {
         assert_eq!(
             view_transform(&from, &to, &up),
             Matrix::new([
-                [-1., 0., 0., 0.],
+                [1., 0., 0., 0.],
                 [0., 1., 0., 0.],
-                [0., 0., -1., 0.],
+                [0., 0., 1., -8.],
                 [0., 0., 0., 1.],
             ])
         );
+    }
+
+    #[test]
+    fn test_view_transform_complete() {
+        let from = Tuple::new_point(1., 3., 2.);
+        let to = Tuple::new_point(4., -2., 8.);
+        let up = Tuple::new_vector(1., 1., 0.);
+        assert!(view_transform(&from, &to, &up).is_close(&Matrix::new([
+            [-0.50709254, 0.50709254, 0.6761234, -2.366432],
+            [0.76771593, 0.6060915, 0.121218294, -2.828427],
+            [-0.35856858, 0.5976143, -0.71713716, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ])));
     }
 }
