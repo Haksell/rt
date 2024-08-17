@@ -11,8 +11,9 @@ pub fn lighting(
     normalv: &Tuple,
 ) -> Color {
     let effective_color = material.color * light.intensity;
-    let lightv = (light.position.clone() - point.clone()).normalize();
     let ambient = effective_color * material.ambient;
+    let lightv = (light.position.clone() - point.clone()).normalize();
+    // TODO: loop on &[PointLight]
     let light_dot_normal = lightv.dot(normalv);
     let mut diffuse = Color::black();
     let mut specular = Color::black();

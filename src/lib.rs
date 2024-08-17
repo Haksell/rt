@@ -13,9 +13,12 @@ mod world;
 // TODO: remove unused pub
 pub use canvas::Canvas;
 pub use color::Color;
-pub use lighting::{lighting, PointLight};
+use computations::Computations;
+use lighting::shade_hit;
+pub use lighting::PointLight;
 pub use material::Material;
 use matrix::Matrix;
+use objects::hit;
 pub use ray::Ray;
 pub use tuple::Tuple;
 pub use world::World;
@@ -33,6 +36,19 @@ impl FloatExt for Float {
 }
 
 fn is_close(f1: Float, f2: Float) -> bool {
-    const EPSILON: Float = 1e-6;
-    (f1 - f2).abs() < EPSILON
+    (f1 - f2).abs() < 1e-6
+}
+
+pub fn color_at(world: &World, ray: &Ray) -> Color {
+    let mut intersections = vec![];
+    for object in &world.objects {
+        intersections.extend(object.intersect(ray));
+    }
+    match hit(&intersections) {
+        None => Color::black(),
+        Some(intersection) => {
+            let comps = Computations::prepare(intersection, ray);
+            shade_hit(world, &comps)
+        }
+    }
 }
