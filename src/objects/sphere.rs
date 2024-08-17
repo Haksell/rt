@@ -205,7 +205,7 @@ mod tests {
 
     #[test]
     fn test_sphere_translated_normal_at() {
-        let sqrt_half = 0.5f32.sqrt();
+        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
         assert!(Sphere::plastic(transform::translate(0., 1., 0.))
             .normal_at(&Tuple::new_point(0., 1. + sqrt_half, -sqrt_half))
             .is_close(&Tuple::new_vector(0., sqrt_half, -sqrt_half)));
@@ -213,7 +213,7 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_normal_at() {
-        let sqrt_half = 0.5f32.sqrt();
+        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
         assert!(Sphere::plastic(
             transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f32::consts::TAU / 10.),
         )

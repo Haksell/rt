@@ -135,15 +135,16 @@ mod tests {
     fn test_rotate_x() {
         let p = Tuple::new_point(3., 1., 0.);
         assert!((rotate_x(std::f32::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_x(std::f32::consts::TAU / 2.) * p.clone())
-            .is_close(&Tuple::new_point(3., -1., 0.)));
-        assert!((rotate_x(std::f32::consts::TAU / 4.) * p.clone())
+        assert!(
+            (rotate_x(std::f32::consts::PI) * p.clone()).is_close(&Tuple::new_point(3., -1., 0.))
+        );
+        assert!((rotate_x(std::f32::consts::FRAC_PI_2) * p.clone())
             .is_close(&Tuple::new_point(3., 0., 1.)));
         assert!(
-            (rotate_x(std::f32::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
+            (rotate_x(std::f32::consts::FRAC_PI_4) * p.clone()).is_close(&Tuple::new_point(
                 3.,
-                0.5f32.sqrt(),
-                0.5f32.sqrt()
+                std::f32::consts::FRAC_1_SQRT_2,
+                std::f32::consts::FRAC_1_SQRT_2
             ))
         );
         assert!(
@@ -162,9 +163,9 @@ mod tests {
             .is_close(&Tuple::new_point(1., 4.2, 0.)));
         assert!(
             (rotate_y(std::f32::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
-                0.5f32.sqrt(),
+                std::f32::consts::FRAC_1_SQRT_2,
                 4.2,
-                0.5f32.sqrt(),
+                std::f32::consts::FRAC_1_SQRT_2,
             ))
         );
     }

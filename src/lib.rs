@@ -1,3 +1,4 @@
+mod camera;
 mod canvas;
 mod color;
 mod computations; // TODO: find better name

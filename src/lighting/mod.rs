@@ -62,7 +62,7 @@ mod tests {
     fn test_lighting_eye_diagonal() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let sqrt_half = 0.5f32.sqrt();
+        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
         let eyev = Tuple::new_vector(0., sqrt_half, -sqrt_half);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
@@ -85,7 +85,7 @@ mod tests {
     fn test_lighting_both_diagonal_full_specular() {
         let material = Material::default();
         let position = Tuple::zero_point();
-        let sqrt_half = 0.5f32.sqrt();
+        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
         let eyev = Tuple::new_vector(0., -sqrt_half, -sqrt_half);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));

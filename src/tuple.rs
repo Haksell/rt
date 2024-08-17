@@ -320,7 +320,7 @@ mod tests {
         assert!(Tuple::new_vector(1., -1., 0.)
             .reflect(&Tuple::up())
             .is_close(&Tuple::new_vector(1., 1., 0.)));
-        let sqrt_half = 0.5f32.sqrt();
+        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
         assert!(Tuple::new_vector(0., -1., 0.)
             .reflect(&Tuple::new_vector(sqrt_half, sqrt_half, 0.))
             .is_close(&Tuple::new_vector(1., 0., 0.)));
