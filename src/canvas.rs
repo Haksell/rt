@@ -2,8 +2,8 @@ use crate::Color;
 
 #[derive(Debug, PartialEq)]
 pub struct Canvas {
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
     pixels: Vec<Vec<Color>>, // TODO: just Vec<Color>?
 }
 
@@ -22,7 +22,7 @@ impl Canvas {
         self.pixels[y][x] = c;
     }
 
-    pub fn get_pixel(&mut self, x: usize, y: usize) -> Color {
+    pub fn get_pixel(&self, x: usize, y: usize) -> Color {
         assert!(x < self.width);
         assert!(y < self.height);
         self.pixels[y][x]
