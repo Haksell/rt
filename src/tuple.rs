@@ -33,6 +33,10 @@ impl Tuple {
         Self::new(0., 0., 0., 0.)
     }
 
+    pub fn up() -> Self {
+        Self::new_vector(0., 1., 0.)
+    }
+
     pub fn is_point(&self) -> bool {
         match self.w {
             0. => false,
@@ -258,7 +262,7 @@ mod tests {
     #[test]
     fn test_magnitude() {
         assert_eq!(Tuple::new_vector(1., 0., 0.).magnitude(), 1.);
-        assert_eq!(Tuple::new_vector(0., 1., 0.).magnitude(), 1.);
+        assert_eq!(Tuple::up().magnitude(), 1.);
         assert_eq!(Tuple::new_vector(0., 0., 1.).magnitude(), 1.);
         assert_eq!(Tuple::new_vector(0., 3., 4.).magnitude(), 5.);
         assert_eq!(
@@ -283,11 +287,7 @@ mod tests {
         let sqrt14 = (14. as Float).sqrt();
         assert!(Tuple::new_vector(1., -2., -3.)
             .normalize()
-            .is_close(&Tuple::new_vector(
-                1. / sqrt14,
-                -2. / sqrt14,
-                -3. / sqrt14
-            )));
+            .is_close(&Tuple::new_vector(1. / sqrt14, -2. / sqrt14, -3. / sqrt14)));
     }
 
     #[test]
@@ -296,16 +296,13 @@ mod tests {
             Tuple::new_vector(1., 2., 3.).dot(&Tuple::new_vector(2., 3., 4.)),
             20.,
         );
-        assert_eq!(
-            Tuple::new_vector(1., 0., 0.).dot(&Tuple::new_vector(0., 1., 0.)),
-            0.,
-        );
+        assert_eq!(Tuple::new_vector(1., 0., 0.).dot(&Tuple::up()), 0.,);
     }
 
     #[test]
     fn test_cross() {
         let x = Tuple::new_vector(1., 0., 0.);
-        let y = Tuple::new_vector(0., 1., 0.);
+        let y = Tuple::up();
         let z = Tuple::new_vector(0., 0., 1.);
         assert_eq!(x.cross(&y), z);
         assert_eq!(y.cross(&z), x);
@@ -322,7 +319,7 @@ mod tests {
     #[test]
     fn test_reflect() {
         assert!(Tuple::new_vector(1., -1., 0.)
-            .reflect(&Tuple::new_vector(0., 1., 0.))
+            .reflect(&Tuple::up())
             .is_close(&Tuple::new_vector(1., 1., 0.)));
         let sqrt_half = (0.5 as Float).sqrt();
         assert!(Tuple::new_vector(0., -1., 0.)

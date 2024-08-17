@@ -54,7 +54,7 @@ mod tests {
     #[test]
     fn test_color_at_void() {
         let world = World::default();
-        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 1., 0.));
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::up());
         assert_eq!(color_at(&world, &ray), Color::black());
     }
 

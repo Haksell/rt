@@ -193,10 +193,7 @@ mod tests {
             s.normal_at(&Tuple::new_point(1., 0., 0.)),
             Tuple::new_vector(1., 0., 0.)
         );
-        assert_eq!(
-            s.normal_at(&Tuple::new_point(0., 1., 0.)),
-            Tuple::new_vector(0., 1., 0.)
-        );
+        assert_eq!(s.normal_at(&Tuple::new_point(0., 1., 0.)), Tuple::up());
         assert_eq!(
             s.normal_at(&Tuple::new_point(0., 0., 1.)),
             Tuple::new_vector(0., 0., 1.)

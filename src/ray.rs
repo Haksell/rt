@@ -71,16 +71,16 @@ mod tests {
     #[test]
     fn test_ray_translate() {
         assert_eq!(
-            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::new_vector(0., 1., 0.))
+            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::up())
                 .transform(&transform::translate(3., 4., 5.)),
-            Ray::new(Tuple::new_point(4., 6., 8.), Tuple::new_vector(0., 1., 0.))
+            Ray::new(Tuple::new_point(4., 6., 8.), Tuple::up())
         );
     }
 
     #[test]
     fn test_ray_scale() {
         assert_eq!(
-            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::new_vector(0., 1., 0.))
+            Ray::new(Tuple::new_point(1., 2., 3.), Tuple::up())
                 .transform(&transform::scale(2., 3., 4.)),
             Ray::new(Tuple::new_point(2., 6., 12.), Tuple::new_vector(0., 3., 0.))
         );
