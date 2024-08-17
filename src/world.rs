@@ -7,6 +7,7 @@ use crate::{
 pub struct World {
     pub objects: Vec<Box<dyn Object>>,
     pub lights: Vec<PointLight>,
+    // TODO: ambient_color: Color
 }
 
 impl World {
