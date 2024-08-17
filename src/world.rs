@@ -58,10 +58,7 @@ mod tests {
     #[test]
     fn test_world_intersect() {
         let world = World::default();
-        let ray = Ray::new(
-            Tuple::new_point(0., 0., -5.),
-            Tuple::new_vector(0., 0., 1.),
-        );
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
         let intersections = world.intersect(&ray);
         assert_eq!(intersections.len(), 4);
         assert_eq!(intersections[0].t, 4.);
