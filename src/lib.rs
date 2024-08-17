@@ -10,7 +10,6 @@ mod point_light;
 mod ray;
 pub mod transform;
 mod tuple;
-mod view_transform;
 mod world;
 
 // TODO: remove unused pub
@@ -25,7 +24,6 @@ use objects::hit;
 pub use point_light::PointLight;
 use ray::Ray;
 pub use tuple::Tuple;
-pub use view_transform::view_transform;
 pub use world::World;
 
 fn is_close(f1: f32, f2: f32) -> bool {
@@ -53,7 +51,7 @@ pub fn render(camera: &Camera, world: &World) -> Canvas {
 #[cfg(test)]
 mod tests {
     use super::{color_at, render};
-    use crate::{view_transform, Camera, Color, Ray, Tuple, World};
+    use crate::{transform::view_transform, Camera, Color, Ray, Tuple, World};
 
     #[test]
     fn test_color_at_void() {

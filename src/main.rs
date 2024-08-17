@@ -2,8 +2,8 @@ use minifb::{Key, Window, WindowOptions};
 use rt::{
     objects::Sphere,
     render,
-    transform::{rotate_x, rotate_y, scale, scale_constant, translate},
-    view_transform, Camera, Color, Material, PointLight, Tuple, World,
+    transform::{rotate_x, rotate_y, scale, scale_constant, translate, view_transform},
+    Camera, Color, Material, PointLight, Tuple, World,
 };
 
 // TODO: args for window or PPM file or just keyboard shortcut?

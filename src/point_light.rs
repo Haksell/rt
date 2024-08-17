@@ -1,5 +1,3 @@
-// TODO: mod light?
-
 use crate::{Color, Tuple};
 
 pub struct PointLight {
