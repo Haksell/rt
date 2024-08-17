@@ -3,6 +3,7 @@ use crate::{
     Float, Ray, Tuple,
 };
 
+#[allow(dead_code)] // TODO: remove
 pub struct Computations<'a> {
     pub t: Float,
     pub object: &'a dyn Object,
