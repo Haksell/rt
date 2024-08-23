@@ -8,6 +8,7 @@ pub struct Sphere {
     pub material: Material,   // TODO: &Material ?
 }
 
+// TODO: make constructors part of Object trait
 impl Sphere {
     pub fn new(transform: Matrix<4>, material: Material) -> Self {
         Self {
