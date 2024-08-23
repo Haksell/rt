@@ -30,9 +30,7 @@ pub trait Object: Debug {
     fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
     fn normal_at(&self, point: &Tuple) -> Tuple;
     fn get_transform(&self) -> &Matrix<4>;
-    fn set_transform(&mut self, transform: Matrix<4>); // TODO: NO
     fn get_material(&self) -> &Material;
-    fn set_material(&mut self, material: Material); // TODO: NO
 }
 
 // TODO: assume intersections is sorted and do a binary search

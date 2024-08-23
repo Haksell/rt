@@ -68,16 +68,8 @@ impl Object for Sphere {
         world_normal.normalize()
     }
 
-    fn set_transform(&mut self, transform: Matrix<4>) {
-        self.transform = transform;
-    }
-
     fn get_transform(&self) -> &Matrix<4> {
         &self.transform
-    }
-
-    fn set_material(&mut self, material: Material) {
-        self.material = material;
     }
 
     fn get_material(&self) -> &Material {
@@ -108,11 +100,9 @@ mod tests {
 
     #[test]
     fn test_sphere_transform() {
-        let mut s = Sphere::default();
-        assert_eq!(s.transform, Matrix::identity());
-        s.set_transform(transform::translate(2., 3., 4.));
+        assert_eq!(Sphere::default().transform, Matrix::identity());
         assert_eq!(
-            s.transform,
+            Sphere::plastic(transform::translate(2., 3., 4.)).transform,
             Matrix::new([
                 [1., 0., 0., 2.],
                 [0., 1., 0., 3.],
@@ -164,7 +154,7 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_intersect() {
-        let mut sphere = Sphere::plastic(transform::scale_constant(2.));
+        let sphere = Sphere::plastic(transform::scale_constant(2.));
         assert_eq!(
             sphere.intersect(&Ray::new(
                 Tuple::new_point(0., 0., -5.),
@@ -175,7 +165,7 @@ mod tests {
                 Intersection::new(&sphere, 7.)
             ]
         );
-        sphere.set_transform(transform::translate(5., 0., 0.));
+        let sphere = Sphere::plastic(transform::translate(5., 0., 0.));
         assert_eq!(
             sphere.intersect(&Ray::new(
                 Tuple::new_point(0., 0., -5.),
