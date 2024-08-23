@@ -1,5 +1,5 @@
 pub use super::PointLight;
-use crate::{computations::Computations, Color, Material, Tuple, World};
+use crate::{computations::Computations, ray::Ray, Color, Material, Tuple, World};
 
 fn lighting(
     material: &Material,
@@ -31,6 +31,16 @@ fn lighting(
     ambient + diffuse + specular
 }
 
+fn is_shadowed(world: &World, point: &Tuple) -> bool {
+    // TODO: for all lights in world
+    let v = world.lights[0].position.clone() - point.clone();
+    let distance = v.magnitude();
+    let direction = v.normalize();
+    let ray = Ray::new(point.clone(), direction);
+    let intersections = world.intersect(&ray);
+    intersections.iter().any(|i| i.t > 0. && i.t < distance)
+}
+
 // TODO: in impl World
 pub fn shade_hit(world: &World, comps: &Computations) -> Color {
     lighting(
@@ -39,16 +49,18 @@ pub fn shade_hit(world: &World, comps: &Computations) -> Color {
         &comps.point,
         &comps.eyev,
         &comps.normalv,
-        false, //TODO
+        is_shadowed(world, &comps.over_point),
     )
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{lighting, shade_hit};
+    use super::{is_shadowed, lighting, shade_hit};
     use crate::{
-        computations::Computations, objects::Intersection, Color, Material, PointLight, Ray, Tuple,
-        World,
+        computations::Computations,
+        objects::{Intersection, Sphere},
+        transform::translate,
+        Color, Material, PointLight, Ray, Tuple, World,
     };
 
     #[test]
@@ -133,11 +145,61 @@ mod tests {
     }
 
     #[test]
-    fn test_shade_hit() {
+    fn test_shade_hit_not_in_shadow() {
         let world = World::default();
         let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
         let intersection = Intersection::new(&*world.objects[0], 4.);
         let comps = Computations::prepare(&intersection, &ray);
         assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
+    }
+
+    #[test]
+    fn test_shade_hit_in_shadow() {
+        let world = World::new(
+            vec![
+                Box::new(Sphere::default()),
+                Box::new(Sphere::plastic(translate(0., 0., 10.))),
+            ],
+            vec![PointLight::new(
+                Color::white(),
+                Tuple::new_point(0., 0., -10.),
+            )],
+        );
+        let ray = Ray::new(Tuple::new_point(0., 0., 5.), Tuple::new_vector(0., 0., 1.));
+        let intersection = Intersection::new(&*world.objects[1], 4.);
+        let comps = Computations::prepare(&intersection, &ray);
+        assert!(shade_hit(&world, &comps).is_close(&Color::new(0.1, 0.1, 0.1)));
+    }
+
+    #[test]
+    fn test_is_shadowed_diagonal() {
+        assert!(!is_shadowed(
+            &World::default(),
+            &Tuple::new_point(0., 10., 0.)
+        ));
+    }
+
+    #[test]
+    fn test_is_shadowed_sphere_middle() {
+        assert!(is_shadowed(
+            &World::default(),
+            &Tuple::new_point(10., -10., 10.)
+        ));
+    }
+
+    #[test]
+    fn test_is_shadowed_light_middle() {
+        assert!(!is_shadowed(
+            &World::default(),
+            &Tuple::new_point(-20., 20., -20.)
+        ));
+    }
+
+    #[test]
+    fn test_is_shadowed_point_middle() {
+        assert!(!is_shadowed(
+            &World::default(),
+            &Tuple::new_point(-2., 2., -2.)
+        ));
     }
 }

@@ -4,6 +4,7 @@ use crate::{
     Color, Material, PointLight, Ray, Tuple,
 };
 
+#[derive(Debug)]
 pub struct World {
     pub objects: Vec<Box<dyn Object>>,
     pub lights: Vec<PointLight>,
