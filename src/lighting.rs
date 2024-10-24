@@ -56,6 +56,7 @@ mod tests {
     use super::*;
     use crate::{
         objects::{Intersection, Sphere},
+        patterns::Stripe,
         transform::translate,
     };
 
@@ -138,6 +139,44 @@ mod tests {
             lighting(&material, &light, &position, &eyev, &normalv, true)
                 .is_close(&Color::new(0.1, 0.1, 0.1))
         )
+    }
+
+    #[test]
+    fn test_lighting_stripe() {
+        let material = Material::new(
+            Box::new(Stripe::new(Color::white(), Color::black())),
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+        );
+        let eyev = Tuple::new_vector(0., 0., -1.);
+        let normalv = Tuple::new_vector(0., 0., -1.);
+        let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
+
+        assert_eq!(
+            lighting(
+                &material,
+                &light,
+                &Tuple::new_point(0.9, 0.0, 0.0),
+                &eyev,
+                &normalv,
+                true
+            ),
+            Color::white()
+        );
+
+        assert_eq!(
+            lighting(
+                &material,
+                &light,
+                &Tuple::new_point(1.1, 0.0, 0.0),
+                &eyev,
+                &normalv,
+                true
+            ),
+            Color::black()
+        );
     }
 
     #[test]

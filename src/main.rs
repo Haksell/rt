@@ -76,7 +76,7 @@ fn build_world() -> World {
             * rotate_y(-std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
         Material {
-            pattern: Box::new(Stripe::new(Color::cyan(), Color::magenta())),
+            pattern: Box::new(Stripe::new(Color::black(), Color::red())),
             specular: 0.,
             ..Material::default()
         },
@@ -94,7 +94,7 @@ fn build_world() -> World {
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),
         Material {
-            pattern: Box::new(Stripe::new(Color::cyan(), Color::magenta())),
+            pattern: Box::new(Stripe::new(Color::black(), Color::red())),
             diffuse: 0.7,
             specular: 0.3,
             ..Material::default()

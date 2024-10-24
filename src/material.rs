@@ -22,6 +22,22 @@ impl PartialEq for Material {
 }
 
 impl Material {
+    pub fn new(
+        pattern: Box<dyn Pattern>,
+        ambient: f64,
+        diffuse: f64,
+        specular: f64,
+        shininess: f64,
+    ) -> Self {
+        Self {
+            pattern,
+            ambient,
+            diffuse,
+            specular,
+            shininess,
+        }
+    }
+
     pub fn default() -> Self {
         Self {
             pattern: Box::new(Solid::new(Color::white())),
