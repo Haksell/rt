@@ -29,17 +29,18 @@ impl Matrix {
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
-        (0..4).all(|y| (0..4).all(|x| is_close(self.values[y][x], rhs.values[y][x])))
+        (0..4).all(|y| (0..4).all(|x| is_close(self[y][x], rhs[y][x])))
     }
 
     pub fn transpose(&self) -> Self {
-        let mut values = [[0.; 4]; 4];
-        for y in 0..4 {
-            for x in 0..4 {
-                values[y][x] = self[x][y];
-            }
+        Self {
+            values: [
+                [self[(0, 0)], self[(1, 0)], self[(2, 0)], self[(3, 0)]],
+                [self[(0, 1)], self[(1, 1)], self[(2, 1)], self[(3, 1)]],
+                [self[(0, 2)], self[(1, 2)], self[(2, 2)], self[(3, 2)]],
+                [self[(0, 3)], self[(1, 3)], self[(2, 3)], self[(3, 3)]],
+            ],
         }
-        Self { values }
     }
 
     // https://docs.rs/nalgebra/latest/src/nalgebra/linalg/inverse.rs.html
@@ -135,6 +136,14 @@ impl Index<usize> for Matrix {
 
     fn index(&self, row: usize) -> &[f64; 4] {
         &self.values[row]
+    }
+}
+
+impl Index<(usize, usize)> for Matrix {
+    type Output = f64;
+
+    fn index(&self, (y, x): (usize, usize)) -> &f64 {
+        &self.values[y][x]
     }
 }
 
