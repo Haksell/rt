@@ -54,30 +54,28 @@ impl Matrix {
                 e * j * p - e * l * n - i * f * p + i * h * n + m * f * l - m * h * j,
                 -e * j * o + e * k * n + i * f * o - i * g * n - m * f * k + m * g * j,
             ],
-            [0.0; 4],
-            [0.0; 4],
-            [0.0; 4],
+            [
+                -b * k * p + b * l * o + j * c * p - j * d * o - n * c * l + n * d * k,
+                a * k * p - a * l * o - i * c * p + i * d * o + m * c * l - m * d * k,
+                -a * j * p + a * l * n + i * b * p - i * d * n - m * b * l + m * d * j,
+                a * j * o - a * k * n - i * b * o + i * c * n + m * b * k - m * c * j,
+            ],
+            [
+                b * g * p - b * h * o - f * c * p + f * d * o + n * c * h - n * d * g,
+                -a * g * p + a * h * o + e * c * p - e * d * o - m * c * h + m * d * g,
+                a * f * p - a * h * n - e * b * p + e * d * n + m * b * h - m * d * f,
+                -a * f * o + a * g * n + e * b * o - e * c * n - m * b * g + m * c * f,
+            ],
+            [
+                -b * g * l + b * h * k + f * c * l - f * d * k - j * c * h + j * d * g,
+                a * g * l - a * h * k - e * c * l + e * d * k + i * c * h - i * d * g,
+                -a * f * l + a * h * j + e * b * l - e * d * j - i * b * h + i * d * f,
+                a * f * k - a * g * j - e * b * k + e * c * j + i * b * g - i * c * f,
+            ],
         ];
 
         let det = a * out[0][0] + b * out[0][1] + c * out[0][2] + d * out[0][3];
         assert_ne!(det, 0.0);
-
-        out[1][0] = -b * k * p + b * l * o + j * c * p - j * d * o - n * c * l + n * d * k;
-        out[2][0] = b * g * p - b * h * o - f * c * p + f * d * o + n * c * h - n * d * g;
-        out[3][0] = -b * g * l + b * h * k + f * c * l - f * d * k - j * c * h + j * d * g;
-
-        out[1][1] = a * k * p - a * l * o - i * c * p + i * d * o + m * c * l - m * d * k;
-        out[2][1] = -a * g * p + a * h * o + e * c * p - e * d * o - m * c * h + m * d * g;
-        out[3][1] = a * g * l - a * h * k - e * c * l + e * d * k + i * c * h - i * d * g;
-
-        out[1][2] = -a * j * p + a * l * n + i * b * p - i * d * n - m * b * l + m * d * j;
-        out[2][2] = a * f * p - a * h * n - e * b * p + e * d * n + m * b * h - m * d * f;
-        out[3][2] = -a * f * l + a * h * j + e * b * l - e * d * j - i * b * h + i * d * f;
-
-        out[1][3] = a * j * o - a * k * n - i * b * o + i * c * n + m * b * k - m * c * j;
-        out[2][3] = -a * f * o + a * g * n + e * b * o - e * c * n - m * b * g + m * c * f;
-        out[3][3] = a * f * k - a * g * j - e * b * k + e * c * j + i * b * g - i * c * f;
-
         let inv_det = 1.0 / det;
         for j in 0..4 {
             for i in 0..4 {
