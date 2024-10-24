@@ -42,116 +42,80 @@ impl Matrix {
         Self { values }
     }
 
+    // https://docs.rs/nalgebra/latest/src/nalgebra/linalg/inverse.rs.html
     pub fn inverse(&self) -> Self {
-        let m = [
-            self.values[0][0],
-            self.values[1][0],
-            self.values[2][0],
-            self.values[3][0],
-            self.values[0][1],
-            self.values[1][1],
-            self.values[2][1],
-            self.values[3][1],
-            self.values[0][2],
-            self.values[1][2],
-            self.values[2][2],
-            self.values[3][2],
-            self.values[0][3],
-            self.values[1][3],
-            self.values[2][3],
-            self.values[3][3],
-        ];
+        let t = self.transpose();
+        let m = t.values.as_flattened();
+        let mut out = [[0.0; 4]; 4];
 
-        let cofactor00 = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15]
+        out[0][0] = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15]
             + m[9] * m[7] * m[14]
             + m[13] * m[6] * m[11]
             - m[13] * m[7] * m[10];
-
-        let cofactor01 = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15]
+        out[0][1] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15]
             - m[8] * m[7] * m[14]
             - m[12] * m[6] * m[11]
             + m[12] * m[7] * m[10];
-
-        let cofactor02 = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15]
+        out[0][2] = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15]
             + m[8] * m[7] * m[13]
             + m[12] * m[5] * m[11]
             - m[12] * m[7] * m[9];
-
-        let cofactor03 = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14]
+        out[0][3] = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14]
             - m[8] * m[6] * m[13]
             - m[12] * m[5] * m[10]
             + m[12] * m[6] * m[9];
 
-        let det = m[0] * cofactor00 + m[1] * cofactor01 + m[2] * cofactor02 + m[3] * cofactor03;
-
+        let det = m[0] * out[0][0] + m[1] * out[0][1] + m[2] * out[0][2] + m[3] * out[0][3];
         assert_ne!(det, 0.0);
 
-        let mut values = [[0.0; 4]; 4];
-
-        values[0][0] = cofactor00;
-
-        values[1][0] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15]
+        out[1][0] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15]
             - m[9] * m[3] * m[14]
             - m[13] * m[2] * m[11]
             + m[13] * m[3] * m[10];
-
-        values[2][0] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15]
+        out[2][0] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15]
             + m[5] * m[3] * m[14]
             + m[13] * m[2] * m[7]
             - m[13] * m[3] * m[6];
-
-        values[3][0] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11]
+        out[3][0] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11]
             - m[5] * m[3] * m[10]
             - m[9] * m[2] * m[7]
             + m[9] * m[3] * m[6];
 
-        values[0][1] = cofactor01;
-
-        values[1][1] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15]
+        out[1][1] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15]
             + m[8] * m[3] * m[14]
             + m[12] * m[2] * m[11]
             - m[12] * m[3] * m[10];
-
-        values[2][1] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15]
+        out[2][1] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15]
             - m[4] * m[3] * m[14]
             - m[12] * m[2] * m[7]
             + m[12] * m[3] * m[6];
-
-        values[3][1] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11]
+        out[3][1] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11]
             + m[4] * m[3] * m[10]
             + m[8] * m[2] * m[7]
             - m[8] * m[3] * m[6];
 
-        values[0][2] = cofactor02;
-
-        values[1][2] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15]
+        out[1][2] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15]
             - m[8] * m[3] * m[13]
             - m[12] * m[1] * m[11]
             + m[12] * m[3] * m[9];
-
-        values[2][2] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15]
+        out[2][2] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15]
             + m[4] * m[3] * m[13]
             + m[12] * m[1] * m[7]
             - m[12] * m[3] * m[5];
-
-        values[0][3] = cofactor03;
-
-        values[3][2] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11]
+        out[3][2] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11]
             - m[4] * m[3] * m[9]
             - m[8] * m[1] * m[7]
             + m[8] * m[3] * m[5];
 
-        values[1][3] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14]
+        out[1][3] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14]
             + m[8] * m[2] * m[13]
             + m[12] * m[1] * m[10]
             - m[12] * m[2] * m[9];
-
-        values[2][3] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14]
+        out[2][3] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14]
             - m[4] * m[2] * m[13]
             - m[12] * m[1] * m[6]
             + m[12] * m[2] * m[5];
-
-        values[3][3] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10]
+        out[3][3] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10]
             + m[4] * m[2] * m[9]
             + m[8] * m[1] * m[6]
             - m[8] * m[2] * m[5];
@@ -159,10 +123,10 @@ impl Matrix {
         let inv_det = 1.0 / det;
         for j in 0..4 {
             for i in 0..4 {
-                values[i][j] *= inv_det.clone();
+                out[i][j] *= inv_det.clone();
             }
         }
-        Matrix::new(values)
+        Matrix::new(out)
     }
 }
 
