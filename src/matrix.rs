@@ -1,5 +1,3 @@
-use nalgebra::SMatrix;
-
 use crate::{is_close, Tuple};
 use std::ops::{Div, Index, Mul};
 
@@ -44,25 +42,127 @@ impl Matrix {
         Self { values }
     }
 
-    fn to_nalgebra(&self) -> SMatrix<f64, 4, 4> {
-        SMatrix::<f64, 4, 4>::from_row_slice(&self.values.concat())
-    }
+    pub fn inverse(&self) -> Self {
+        let m = [
+            self.values[0][0],
+            self.values[1][0],
+            self.values[2][0],
+            self.values[3][0],
+            self.values[0][1],
+            self.values[1][1],
+            self.values[2][1],
+            self.values[3][1],
+            self.values[0][2],
+            self.values[1][2],
+            self.values[2][2],
+            self.values[3][2],
+            self.values[0][3],
+            self.values[1][3],
+            self.values[2][3],
+            self.values[3][3],
+        ];
 
-    // Convert from nalgebra's SMatrix back to your Matrix struct
-    fn from_nalgebra(matrix: SMatrix<f64, 4, 4>) -> Self {
+        let cofactor00 = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15]
+            + m[9] * m[7] * m[14]
+            + m[13] * m[6] * m[11]
+            - m[13] * m[7] * m[10];
+
+        let cofactor01 = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15]
+            - m[8] * m[7] * m[14]
+            - m[12] * m[6] * m[11]
+            + m[12] * m[7] * m[10];
+
+        let cofactor02 = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15]
+            + m[8] * m[7] * m[13]
+            + m[12] * m[5] * m[11]
+            - m[12] * m[7] * m[9];
+
+        let cofactor03 = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14]
+            - m[8] * m[6] * m[13]
+            - m[12] * m[5] * m[10]
+            + m[12] * m[6] * m[9];
+
+        let det = m[0] * cofactor00 + m[1] * cofactor01 + m[2] * cofactor02 + m[3] * cofactor03;
+
+        assert_ne!(det, 0.0);
+
         let mut values = [[0.0; 4]; 4];
-        for i in 0..4 {
-            for j in 0..4 {
-                values[i][j] = matrix[(i, j)];
+
+        values[0][0] = cofactor00;
+
+        values[1][0] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15]
+            - m[9] * m[3] * m[14]
+            - m[13] * m[2] * m[11]
+            + m[13] * m[3] * m[10];
+
+        values[2][0] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15]
+            + m[5] * m[3] * m[14]
+            + m[13] * m[2] * m[7]
+            - m[13] * m[3] * m[6];
+
+        values[3][0] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11]
+            - m[5] * m[3] * m[10]
+            - m[9] * m[2] * m[7]
+            + m[9] * m[3] * m[6];
+
+        values[0][1] = cofactor01;
+
+        values[1][1] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15]
+            + m[8] * m[3] * m[14]
+            + m[12] * m[2] * m[11]
+            - m[12] * m[3] * m[10];
+
+        values[2][1] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15]
+            - m[4] * m[3] * m[14]
+            - m[12] * m[2] * m[7]
+            + m[12] * m[3] * m[6];
+
+        values[3][1] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11]
+            + m[4] * m[3] * m[10]
+            + m[8] * m[2] * m[7]
+            - m[8] * m[3] * m[6];
+
+        values[0][2] = cofactor02;
+
+        values[1][2] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15]
+            - m[8] * m[3] * m[13]
+            - m[12] * m[1] * m[11]
+            + m[12] * m[3] * m[9];
+
+        values[2][2] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15]
+            + m[4] * m[3] * m[13]
+            + m[12] * m[1] * m[7]
+            - m[12] * m[3] * m[5];
+
+        values[0][3] = cofactor03;
+
+        values[3][2] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11]
+            - m[4] * m[3] * m[9]
+            - m[8] * m[1] * m[7]
+            + m[8] * m[3] * m[5];
+
+        values[1][3] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14]
+            + m[8] * m[2] * m[13]
+            + m[12] * m[1] * m[10]
+            - m[12] * m[2] * m[9];
+
+        values[2][3] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14]
+            - m[4] * m[2] * m[13]
+            - m[12] * m[1] * m[6]
+            + m[12] * m[2] * m[5];
+
+        values[3][3] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10]
+            + m[4] * m[2] * m[9]
+            + m[8] * m[1] * m[6]
+            - m[8] * m[2] * m[5];
+
+        let inv_det = 1.0 / det;
+        for j in 0..4 {
+            for i in 0..4 {
+                values[i][j] *= inv_det.clone();
             }
         }
         Matrix::new(values)
-    }
-
-    pub fn inverse(&self) -> Self {
-        let nalgebra_matrix = self.to_nalgebra();
-        // Compute the inverse using nalgebra's inversion method
-        Matrix::from_nalgebra(nalgebra_matrix.try_inverse().unwrap())
     }
 }
 
