@@ -45,41 +45,41 @@ impl Matrix {
 
     // https://docs.rs/nalgebra/latest/src/nalgebra/linalg/inverse.rs.html
     pub fn inverse(&self) -> Self {
-        let [[a, e, i, m], [b, f, j, n], [c, g, k, o], [d, h, l, p]] = self.values;
+        let [[a, b, c, d], [e, f, g, h], [i, j, k, l], [m, n, o, p]] = self.values;
 
         let mut out = [
             [
-                f * k * p - f * l * o - j * g * p + j * h * o + n * g * l - n * h * k,
-                -e * k * p + e * l * o + i * g * p - i * h * o - m * g * l + m * h * k,
-                e * j * p - e * l * n - i * f * p + i * h * n + m * f * l - m * h * j,
-                -e * j * o + e * k * n + i * f * o - i * g * n - m * f * k + m * g * j,
+                f * k * p - f * o * l - g * j * p + g * n * l + h * j * o - h * n * k,
+                -b * k * p + b * o * l + c * j * p - c * n * l - d * j * o + d * n * k,
+                b * g * p - b * o * h - c * f * p + c * n * h + d * f * o - d * n * g,
+                -b * g * l + b * k * h + c * f * l - c * j * h - d * f * k + d * j * g,
             ],
             [
-                -b * k * p + b * l * o + j * c * p - j * d * o - n * c * l + n * d * k,
-                a * k * p - a * l * o - i * c * p + i * d * o + m * c * l - m * d * k,
-                -a * j * p + a * l * n + i * b * p - i * d * n - m * b * l + m * d * j,
-                a * j * o - a * k * n - i * b * o + i * c * n + m * b * k - m * c * j,
+                -e * k * p + e * o * l + g * i * p - g * m * l - h * i * o + h * m * k,
+                a * k * p - a * o * l - c * i * p + c * m * l + d * i * o - d * m * k,
+                -a * g * p + a * o * h + c * e * p - c * m * h - d * e * o + d * m * g,
+                a * g * l - a * k * h - c * e * l + c * i * h + d * e * k - d * i * g,
             ],
             [
-                b * g * p - b * h * o - f * c * p + f * d * o + n * c * h - n * d * g,
-                -a * g * p + a * h * o + e * c * p - e * d * o - m * c * h + m * d * g,
-                a * f * p - a * h * n - e * b * p + e * d * n + m * b * h - m * d * f,
-                -a * f * o + a * g * n + e * b * o - e * c * n - m * b * g + m * c * f,
+                e * j * p - e * n * l - f * i * p + f * m * l + h * i * n - h * m * j,
+                -a * j * p + a * n * l + b * i * p - b * m * l - d * i * n + d * m * j,
+                a * f * p - a * n * h - b * e * p + b * m * h + d * e * n - d * m * f,
+                -a * f * l + a * j * h + b * e * l - b * i * h - d * e * j + d * i * f,
             ],
             [
-                -b * g * l + b * h * k + f * c * l - f * d * k - j * c * h + j * d * g,
-                a * g * l - a * h * k - e * c * l + e * d * k + i * c * h - i * d * g,
-                -a * f * l + a * h * j + e * b * l - e * d * j - i * b * h + i * d * f,
-                a * f * k - a * g * j - e * b * k + e * c * j + i * b * g - i * c * f,
+                -e * j * o + e * n * k + f * i * o - f * m * k - g * i * n + g * m * j,
+                a * j * o - a * n * k - b * i * o + b * m * k + c * i * n - c * m * j,
+                -a * f * o + a * n * g + b * e * o - b * m * g - c * e * n + c * m * f,
+                a * f * k - a * j * g - b * e * k + b * i * g + c * e * j - c * i * f,
             ],
         ];
 
-        let det = a * out[0][0] + b * out[0][1] + c * out[0][2] + d * out[0][3];
+        let det = a * out[0][0] + e * out[0][1] + i * out[0][2] + m * out[0][3];
         assert_ne!(det, 0.0);
         let inv_det = 1.0 / det;
-        for j in 0..4 {
-            for i in 0..4 {
-                out[i][j] *= inv_det.clone();
+        for y in 0..4 {
+            for x in 0..4 {
+                out[y][x] *= inv_det.clone();
             }
         }
         Matrix::new(out)
