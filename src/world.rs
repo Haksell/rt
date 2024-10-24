@@ -1,9 +1,8 @@
 use crate::{
     computations::Computations,
     lighting::shade_hit,
-    objects::{hit, Intersection, Object, Sphere},
-    transform::scale_constant,
-    Color, Material, PointLight, Ray, Tuple,
+    objects::{hit, Intersection, Object},
+    Color, PointLight, Ray,
 };
 
 #[derive(Debug)]
@@ -14,34 +13,8 @@ pub struct World {
 }
 
 impl World {
-    pub fn empty() -> Self {
-        Self {
-            objects: vec![],
-            lights: vec![],
-        }
-    }
-
     pub fn new(objects: Vec<Box<dyn Object>>, lights: Vec<PointLight>) -> Self {
         Self { objects, lights }
-    }
-
-    // TODO: remove
-    pub fn default() -> Self {
-        Self {
-            objects: vec![
-                Box::new(Sphere::unit(Material {
-                    color: Color::new(0.8, 1., 0.6),
-                    diffuse: 0.7,
-                    specular: 0.2,
-                    ..Material::default()
-                })),
-                Box::new(Sphere::plastic(scale_constant(0.5))),
-            ],
-            lights: vec![PointLight::new(
-                Color::white(),
-                Tuple::new_point(-10., 10., -10.),
-            )],
-        }
     }
 
     pub fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
@@ -63,7 +36,29 @@ impl World {
 
 #[cfg(test)]
 mod tests {
+    use crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple};
+
     use super::*;
+
+    impl World {
+        pub fn default() -> Self {
+            Self {
+                objects: vec![
+                    Box::new(Sphere::unit(Material {
+                        color: Color::new(0.8, 1., 0.6),
+                        diffuse: 0.7,
+                        specular: 0.2,
+                        ..Material::default()
+                    })),
+                    Box::new(Sphere::plastic(scale_constant(0.5))),
+                ],
+                lights: vec![PointLight::new(
+                    Color::white(),
+                    Tuple::new_point(-10., 10., -10.),
+                )],
+            }
+        }
+    }
 
     #[test]
     fn test_world_intersect() {
