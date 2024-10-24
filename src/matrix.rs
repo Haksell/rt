@@ -45,81 +45,33 @@ impl Matrix {
 
     // https://docs.rs/nalgebra/latest/src/nalgebra/linalg/inverse.rs.html
     pub fn inverse(&self) -> Self {
-        let t = self.transpose();
-        let m = t.values.as_flattened();
+        let [[a, e, i, m], [b, f, j, n], [c, g, k, o], [d, h, l, p]] = self.values;
+
         let mut out = [[0.0; 4]; 4];
 
-        out[0][0] = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15]
-            + m[9] * m[7] * m[14]
-            + m[13] * m[6] * m[11]
-            - m[13] * m[7] * m[10];
-        out[0][1] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15]
-            - m[8] * m[7] * m[14]
-            - m[12] * m[6] * m[11]
-            + m[12] * m[7] * m[10];
-        out[0][2] = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15]
-            + m[8] * m[7] * m[13]
-            + m[12] * m[5] * m[11]
-            - m[12] * m[7] * m[9];
-        out[0][3] = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14]
-            - m[8] * m[6] * m[13]
-            - m[12] * m[5] * m[10]
-            + m[12] * m[6] * m[9];
+        out[0][0] = f * k * p - f * l * o - j * g * p + j * h * o + n * g * l - n * h * k;
+        out[0][1] = -e * k * p + e * l * o + i * g * p - i * h * o - m * g * l + m * h * k;
+        out[0][2] = e * j * p - e * l * n - i * f * p + i * h * n + m * f * l - m * h * j;
+        out[0][3] = -e * j * o + e * k * n + i * f * o - i * g * n - m * f * k + m * g * j;
 
-        let det = m[0] * out[0][0] + m[1] * out[0][1] + m[2] * out[0][2] + m[3] * out[0][3];
+        let det = a * out[0][0] + b * out[0][1] + c * out[0][2] + d * out[0][3];
         assert_ne!(det, 0.0);
 
-        out[1][0] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15]
-            - m[9] * m[3] * m[14]
-            - m[13] * m[2] * m[11]
-            + m[13] * m[3] * m[10];
-        out[2][0] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15]
-            + m[5] * m[3] * m[14]
-            + m[13] * m[2] * m[7]
-            - m[13] * m[3] * m[6];
-        out[3][0] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11]
-            - m[5] * m[3] * m[10]
-            - m[9] * m[2] * m[7]
-            + m[9] * m[3] * m[6];
+        out[1][0] = -b * k * p + b * l * o + j * c * p - j * d * o - n * c * l + n * d * k;
+        out[2][0] = b * g * p - b * h * o - f * c * p + f * d * o + n * c * h - n * d * g;
+        out[3][0] = -b * g * l + b * h * k + f * c * l - f * d * k - j * c * h + j * d * g;
 
-        out[1][1] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15]
-            + m[8] * m[3] * m[14]
-            + m[12] * m[2] * m[11]
-            - m[12] * m[3] * m[10];
-        out[2][1] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15]
-            - m[4] * m[3] * m[14]
-            - m[12] * m[2] * m[7]
-            + m[12] * m[3] * m[6];
-        out[3][1] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11]
-            + m[4] * m[3] * m[10]
-            + m[8] * m[2] * m[7]
-            - m[8] * m[3] * m[6];
+        out[1][1] = a * k * p - a * l * o - i * c * p + i * d * o + m * c * l - m * d * k;
+        out[2][1] = -a * g * p + a * h * o + e * c * p - e * d * o - m * c * h + m * d * g;
+        out[3][1] = a * g * l - a * h * k - e * c * l + e * d * k + i * c * h - i * d * g;
 
-        out[1][2] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15]
-            - m[8] * m[3] * m[13]
-            - m[12] * m[1] * m[11]
-            + m[12] * m[3] * m[9];
-        out[2][2] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15]
-            + m[4] * m[3] * m[13]
-            + m[12] * m[1] * m[7]
-            - m[12] * m[3] * m[5];
-        out[3][2] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11]
-            - m[4] * m[3] * m[9]
-            - m[8] * m[1] * m[7]
-            + m[8] * m[3] * m[5];
+        out[1][2] = -a * j * p + a * l * n + i * b * p - i * d * n - m * b * l + m * d * j;
+        out[2][2] = a * f * p - a * h * n - e * b * p + e * d * n + m * b * h - m * d * f;
+        out[3][2] = -a * f * l + a * h * j + e * b * l - e * d * j - i * b * h + i * d * f;
 
-        out[1][3] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14]
-            + m[8] * m[2] * m[13]
-            + m[12] * m[1] * m[10]
-            - m[12] * m[2] * m[9];
-        out[2][3] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14]
-            - m[4] * m[2] * m[13]
-            - m[12] * m[1] * m[6]
-            + m[12] * m[2] * m[5];
-        out[3][3] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10]
-            + m[4] * m[2] * m[9]
-            + m[8] * m[1] * m[6]
-            - m[8] * m[2] * m[5];
+        out[1][3] = a * j * o - a * k * n - i * b * o + i * c * n + m * b * k - m * c * j;
+        out[2][3] = -a * f * o + a * g * n + e * b * o - e * c * n - m * b * g + m * c * f;
+        out[3][3] = a * f * k - a * g * j - e * b * k + e * c * j + i * b * g - i * c * f;
 
         let inv_det = 1.0 / det;
         for j in 0..4 {
