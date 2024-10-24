@@ -22,6 +22,7 @@ use material::Material;
 use matrix::Matrix;
 use minifb::{Key, Window, WindowOptions};
 use objects::{Plane, Sphere};
+use patterns::{Solid, Stripe};
 use point_light::PointLight;
 use ray::Ray;
 use transform::{rotate_x, rotate_y, scale_constant, translate, view_transform};
@@ -65,7 +66,7 @@ fn build_world() -> World {
     let floor = Plane::new(
         Matrix::identity(),
         Material {
-            color: Color::new(1., 0.9, 0.9),
+            pattern: Box::new(Solid::new(Color::new(1., 0.9, 0.9))),
             specular: 0.,
             ..Material::default()
         },
@@ -75,7 +76,7 @@ fn build_world() -> World {
             * rotate_y(-std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
         Material {
-            color: Color::new(1., 0.9, 0.9),
+            pattern: Box::new(Stripe::new(Color::cyan(), Color::magenta())),
             specular: 0.,
             ..Material::default()
         },
@@ -85,7 +86,7 @@ fn build_world() -> World {
             * rotate_y(std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
         Material {
-            color: Color::new(1., 0.9, 0.9),
+            pattern: Box::new(Solid::new(Color::new(1., 0.9, 0.9))),
             specular: 0.,
             ..Material::default()
         },
@@ -93,7 +94,7 @@ fn build_world() -> World {
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),
         Material {
-            color: Color::new(0.1, 1., 0.5),
+            pattern: Box::new(Stripe::new(Color::cyan(), Color::magenta())),
             diffuse: 0.7,
             specular: 0.3,
             ..Material::default()
@@ -102,14 +103,14 @@ fn build_world() -> World {
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale_constant(0.5),
         Material {
-            color: Color::new(0.5, 1., 0.1),
+            pattern: Box::new(Solid::new(Color::new(0.5, 1., 0.1))),
             ..middle.material
         },
     );
     let left = Sphere::new(
         translate(-1.5, 0.33, -0.75) * scale_constant(0.33),
         Material {
-            color: Color::new(1., 0.8, 0.1),
+            pattern: Box::new(Solid::new(Color::new(1., 0.8, 0.1))),
             ..middle.material
         },
     );

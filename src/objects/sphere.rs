@@ -74,13 +74,13 @@ impl Object for Sphere {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{transform, Color};
+    use crate::{patterns::Solid, transform, Color};
 
     #[test]
     fn test_sphere_constructors() {
         let default = Sphere::default();
         let red = Sphere::unit(Material {
-            color: Color::red(),
+            pattern: Box::new(Solid::new(Color::red())),
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,

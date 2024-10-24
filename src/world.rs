@@ -36,16 +36,18 @@ impl World {
 
 #[cfg(test)]
 mod tests {
-    use crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple};
-
     use super::*;
+    use crate::{
+        material::Material, objects::Sphere, patterns::Solid, transform::scale_constant,
+        tuple::Tuple,
+    };
 
     impl World {
         pub fn default() -> Self {
             Self {
                 objects: vec![
                     Box::new(Sphere::unit(Material {
-                        color: Color::new(0.8, 1., 0.6),
+                        pattern: Box::new(Solid::new(Color::new(0.8, 1., 0.6))),
                         diffuse: 0.7,
                         specular: 0.2,
                         ..Material::default()
@@ -95,8 +97,8 @@ mod tests {
             Tuple::new_point(0., 0., 0.75),
             Tuple::new_vector(0., 0., -1.),
         );
-        assert!(world.color_at(&ray).is_close(
-            &(world.objects[1].get_material().color * world.objects[1].get_material().ambient)
-        ));
+        assert!(world
+            .color_at(&ray)
+            .is_close(&(Color::white() * world.objects[1].get_material().ambient)));
     }
 }
