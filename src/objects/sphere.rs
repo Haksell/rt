@@ -3,30 +3,30 @@ use crate::{material::Material, Matrix, Ray, Tuple};
 
 #[derive(Debug)]
 pub struct Sphere {
-    // TODO: store inverse transform instead?
-    pub transform: Matrix,  // TODO: &'a Matrix ?
-    pub material: Material, // TODO: &Material ?
+    pub inverse_transform: Matrix, // TODO: &'a Matrix ?
+    pub material: Material,        // TODO: &Material ?
 }
 
 // TODO: make constructors part of Object trait
+// TODO: accept inverse transform directly
 impl Sphere {
     pub fn new(transform: Matrix, material: Material) -> Self {
         Self {
-            transform,
+            inverse_transform: transform.inverse(),
             material,
         }
     }
 
     pub fn default() -> Self {
         Self {
-            transform: Matrix::identity(),
+            inverse_transform: Matrix::identity(),
             material: Material::default(),
         }
     }
 
     pub fn unit(material: Material) -> Self {
         Self {
-            transform: Matrix::identity(),
+            inverse_transform: Matrix::identity(),
             material,
         }
     }
@@ -34,7 +34,7 @@ impl Sphere {
     // Is it really plastic though?
     pub fn plastic(transform: Matrix) -> Self {
         Self {
-            transform,
+            inverse_transform: transform.inverse(),
             material: Material::default(),
         }
     }
@@ -62,8 +62,8 @@ impl Object for Sphere {
         Tuple::new_vector(object_point.x, object_point.y, object_point.z)
     }
 
-    fn get_transform(&self) -> &Matrix {
-        &self.transform
+    fn get_inverse_transform(&self) -> &Matrix {
+        &self.inverse_transform
     }
 
     fn get_material(&self) -> &Material {
@@ -89,18 +89,18 @@ mod tests {
         });
         let squashed = Sphere::plastic(transform::scale(1., 0.3, 1.));
         assert_eq!(default.material, squashed.material);
-        assert_eq!(default.transform, red.transform);
+        assert_eq!(default.inverse_transform, red.inverse_transform);
     }
 
     #[test]
     fn test_sphere_transform() {
-        assert_eq!(Sphere::default().transform, Matrix::identity());
+        assert_eq!(Sphere::default().inverse_transform, Matrix::identity());
         assert_eq!(
-            Sphere::plastic(transform::translate(2., 3., 4.)).transform,
+            Sphere::plastic(transform::translate(2., 3., 4.)).inverse_transform,
             Matrix::new([
-                [1., 0., 0., 2.],
-                [0., 1., 0., 3.],
-                [0., 0., 1., 4.],
+                [1., 0., 0., -2.],
+                [0., 1., 0., -3.],
+                [0., 0., 1., -4.],
                 [0., 0., 0., 1.],
             ])
         );
