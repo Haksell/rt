@@ -47,12 +47,17 @@ impl Matrix {
     pub fn inverse(&self) -> Self {
         let [[a, e, i, m], [b, f, j, n], [c, g, k, o], [d, h, l, p]] = self.values;
 
-        let mut out = [[0.0; 4]; 4];
-
-        out[0][0] = f * k * p - f * l * o - j * g * p + j * h * o + n * g * l - n * h * k;
-        out[0][1] = -e * k * p + e * l * o + i * g * p - i * h * o - m * g * l + m * h * k;
-        out[0][2] = e * j * p - e * l * n - i * f * p + i * h * n + m * f * l - m * h * j;
-        out[0][3] = -e * j * o + e * k * n + i * f * o - i * g * n - m * f * k + m * g * j;
+        let mut out = [
+            [
+                f * k * p - f * l * o - j * g * p + j * h * o + n * g * l - n * h * k,
+                -e * k * p + e * l * o + i * g * p - i * h * o - m * g * l + m * h * k,
+                e * j * p - e * l * n - i * f * p + i * h * n + m * f * l - m * h * j,
+                -e * j * o + e * k * n + i * f * o - i * g * n - m * f * k + m * g * j,
+            ],
+            [0.0; 4],
+            [0.0; 4],
+            [0.0; 4],
+        ];
 
         let det = a * out[0][0] + b * out[0][1] + c * out[0][2] + d * out[0][3];
         assert_ne!(det, 0.0);
