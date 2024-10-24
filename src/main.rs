@@ -1,9 +1,9 @@
 use minifb::{Key, Window, WindowOptions};
 use rt::{
-    objects::Sphere,
+    objects::{Plane, Sphere},
     render,
-    transform::{rotate_x, rotate_y, scale, scale_constant, translate, view_transform},
-    Camera, Color, Material, PointLight, Tuple, World,
+    transform::{rotate_x, rotate_y, scale_constant, translate, view_transform},
+    Camera, Color, Material, Matrix, PointLight, Tuple, World,
 };
 
 // TODO: args for window or PPM file or just keyboard shortcut?
@@ -38,27 +38,33 @@ fn main() {
 }
 
 fn build_world() -> World {
-    let floor = Sphere::new(
-        scale(10., 0.01, 10.),
+    let floor = Plane::new(
+        Matrix::identity(),
         Material {
             color: Color::new(1., 0.9, 0.9),
             specular: 0.,
             ..Material::default()
         },
     );
-    let left_wall = Sphere::new(
+    let left_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(-std::f64::consts::FRAC_PI_4)
-            * rotate_x(std::f64::consts::FRAC_PI_2)
-            * scale(10., 0.01, 10.),
-        floor.material.clone(),
+            * rotate_x(std::f64::consts::FRAC_PI_2),
+        Material {
+            color: Color::new(1., 0.9, 0.9),
+            specular: 0.,
+            ..Material::default()
+        },
     );
-    let right_wall = Sphere::new(
+    let right_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(std::f64::consts::FRAC_PI_4)
-            * rotate_x(std::f64::consts::FRAC_PI_2)
-            * scale(10., 0.01, 10.),
-        floor.material.clone(),
+            * rotate_x(std::f64::consts::FRAC_PI_2),
+        Material {
+            color: Color::new(1., 0.9, 0.9),
+            specular: 0.,
+            ..Material::default()
+        },
     );
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),

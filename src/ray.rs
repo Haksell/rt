@@ -28,8 +28,9 @@ impl Ray {
 
 #[cfg(test)]
 mod tests {
-    use super::Ray;
-    use crate::{transform, Tuple};
+    use crate::transform;
+
+    use super::*;
 
     #[test]
     fn test_ray_new_valid() {

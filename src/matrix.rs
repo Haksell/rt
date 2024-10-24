@@ -222,10 +222,8 @@ impl Div<f64> for Matrix {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use rand::Rng as _;
-
-    use super::Matrix;
-    use crate::Tuple;
 
     #[test]
     fn test_new() {

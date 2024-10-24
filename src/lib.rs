@@ -19,7 +19,7 @@ pub use color::Color;
 use computations::Computations;
 use lighting::shade_hit;
 pub use material::Material;
-use matrix::Matrix;
+pub use matrix::Matrix;
 use objects::hit;
 pub use point_light::PointLight;
 use ray::Ray;
@@ -50,8 +50,8 @@ pub fn render(camera: &Camera, world: &World) -> Canvas {
 
 #[cfg(test)]
 mod tests {
-    use super::{color_at, render};
-    use crate::{transform::view_transform, Camera, Color, Ray, Tuple, World};
+    use super::*;
+    use transform::view_transform;
 
     #[test]
     fn test_color_at_void() {

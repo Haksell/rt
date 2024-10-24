@@ -17,8 +17,7 @@ impl PointLight {
 
 #[cfg(test)]
 mod tests {
-    use super::PointLight;
-    use crate::{Color, Tuple};
+    use super::*;
 
     #[test]
     fn test_point_light_new() {

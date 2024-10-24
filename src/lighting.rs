@@ -54,12 +54,10 @@ pub fn shade_hit(world: &World, comps: &Computations) -> Color {
 
 #[cfg(test)]
 mod tests {
-    use super::{is_shadowed, lighting, shade_hit};
+    use super::*;
     use crate::{
-        computations::Computations,
         objects::{Intersection, Sphere},
         transform::translate,
-        Color, Material, PointLight, Ray, Tuple, World,
     };
 
     #[test]

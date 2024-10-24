@@ -41,12 +41,8 @@ impl<'a> Computations<'a> {
 
 #[cfg(test)]
 mod tests {
-    use super::{Computations, ACNE_EPSILON};
-    use crate::{
-        objects::{Intersection, Sphere},
-        transform::translate,
-        Ray, Tuple,
-    };
+    use super::*;
+    use crate::{objects::Sphere, transform::translate};
 
     #[test]
     fn test_prepare_computations_outside() {

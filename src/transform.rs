@@ -79,8 +79,7 @@ pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
 
 #[cfg(test)]
 mod tests {
-    use super::{rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform};
-    use crate::{matrix::Matrix, transform::shear, Tuple};
+    use super::*;
 
     #[test]
     fn test_translate() {

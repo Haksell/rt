@@ -3,6 +3,7 @@
 ## todo
 
 - [ ] read *The Ray Tracer Challenge*
+- [ ] no `lib.rs`
 - [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] fix TODO
 - [ ] clean code/architecture

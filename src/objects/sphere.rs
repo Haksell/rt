@@ -73,9 +73,8 @@ impl Object for Sphere {
 
 #[cfg(test)]
 mod tests {
-    use super::super::{Intersection, Object};
-    use super::Sphere;
-    use crate::{material::Material, transform, Color, Matrix, Ray, Tuple};
+    use super::*;
+    use crate::{transform, Color};
 
     #[test]
     fn test_sphere_constructors() {

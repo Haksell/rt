@@ -54,8 +54,7 @@ impl World {
 
 #[cfg(test)]
 mod tests {
-    use super::World;
-    use crate::{Ray, Tuple};
+    use super::*;
 
     #[test]
     fn test_world_intersect() {

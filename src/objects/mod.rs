@@ -1,7 +1,10 @@
+mod plane;
 mod sphere;
 
-use crate::{material::Material, Matrix, Ray, Tuple};
+pub use plane::Plane;
 pub use sphere::Sphere;
+
+use crate::{material::Material, Matrix, Ray, Tuple};
 use std::fmt::Debug;
 
 // TODO: automate Intersection.object
@@ -29,6 +32,7 @@ pub trait Object: Debug {
     fn get_inverse_transform(&self) -> &Matrix;
     fn get_material(&self) -> &Material;
 
+    //TODO: return Vec<f64> instead?
     fn local_intersect(&self, object_ray: &Ray) -> Vec<Intersection>;
     fn local_normal_at(&self, object_point: &Tuple) -> Tuple;
 
@@ -57,7 +61,7 @@ pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>
 
 #[cfg(test)]
 mod tests {
-    use super::{hit, Intersection, Sphere};
+    use super::*;
 
     #[test]
     fn test_hit_all_positive() {

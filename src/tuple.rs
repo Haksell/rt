@@ -166,7 +166,7 @@ impl Div<f64> for Tuple {
 
 #[cfg(test)]
 mod tests {
-    use super::Tuple;
+    use super::*;
 
     #[test]
     fn test_point() {

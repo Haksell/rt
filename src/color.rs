@@ -122,7 +122,7 @@ impl Mul<Color> for Color {
 
 #[cfg(test)]
 mod tests {
-    use super::Color;
+    use super::*;
 
     #[test]
     fn test_new() {

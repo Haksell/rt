@@ -54,12 +54,10 @@ impl Camera {
 
 #[cfg(test)]
 mod tests {
-    use super::Camera;
+    use super::*;
     use crate::{
         is_close,
-        matrix::Matrix,
         transform::{rotate_y, translate},
-        Tuple,
     };
 
     #[test]
