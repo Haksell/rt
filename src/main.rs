@@ -41,11 +41,13 @@ fn main() {
             &Tuple::new_vector(0., 1., 0.),
         ),
     );
+    let world = build_world();
+    let canvas = camera.render(&world);
 
-    let canvas = camera.render(&build_world());
     let mut window = Window::new("rt", canvas.width, canvas.height, WindowOptions::default())
         .unwrap_or_else(|e| panic!("{}", e));
-    window.set_target_fps(12); // TODO: remove once incremental raytracing is implemented
+    window.set_target_fps(10); // TODO: set to 0 once incremental raytracing is implemented
+
     let mut buffer: Vec<u32> = vec![0; canvas.width * canvas.height];
     while window.is_open() && !window.is_key_down(Key::Escape) {
         for (i, pixel) in buffer.iter_mut().enumerate() {
