@@ -3,13 +3,12 @@ use crate::{computations::Computations, ray::Ray, Color, Material, Tuple, World}
 
 fn lighting(
     material: &Material,
-    light: &PointLight,
+    light: &PointLight, // TODO: &[PointLight]
     point: &Tuple,
     eyev: &Tuple,
     normalv: &Tuple,
     in_shadow: bool, // TODO: not an argument
 ) -> Color {
-    // TODO: loop on &[PointLight]
     let effective_color = material.color * light.intensity;
     let ambient = effective_color * material.ambient; // TODO: shouldn't depend on light.intensity
     if in_shadow {
