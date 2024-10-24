@@ -9,6 +9,7 @@ mod lighting;
 mod material;
 mod matrix;
 mod objects;
+mod patterns;
 mod point_light;
 mod ray;
 mod transform;
