@@ -1,6 +1,6 @@
 // TODO: reuse rt::Tuple or SIMD?
 
-use crate::is_close;
+use crate::floats::is_close;
 use std::ops::{Add, Mul, Sub};
 
 // TODO: not Copy?

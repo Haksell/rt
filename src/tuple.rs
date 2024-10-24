@@ -1,6 +1,6 @@
 // Do we really need w everywhere?
 
-use crate::is_close;
+use crate::floats::is_close;
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
 // TODO: SIMD

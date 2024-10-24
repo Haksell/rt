@@ -1,10 +1,29 @@
+mod camera;
+mod canvas;
+mod color;
+mod computations; // TODO: find better name
+mod floats;
+mod lighting;
+mod material;
+mod matrix;
+mod objects;
+mod point_light;
+mod ray;
+mod transform;
+mod tuple;
+mod world;
+
+use camera::Camera;
+use color::Color;
+use material::Material;
+use matrix::Matrix;
 use minifb::{Key, Window, WindowOptions};
-use rt::{
-    objects::{Plane, Sphere},
-    render,
-    transform::{rotate_x, rotate_y, scale_constant, translate, view_transform},
-    Camera, Color, Material, Matrix, PointLight, Tuple, World,
-};
+use objects::{Plane, Sphere};
+use point_light::PointLight;
+use ray::Ray;
+use transform::{rotate_x, rotate_y, scale_constant, translate, view_transform};
+use tuple::Tuple;
+use world::World;
 
 // TODO: args for window or PPM file or just keyboard shortcut?
 
@@ -20,7 +39,7 @@ fn main() {
         ),
     );
 
-    let canvas = render(&camera, &build_world());
+    let canvas = camera.render(&build_world());
     let mut window = Window::new("rt", canvas.width, canvas.height, WindowOptions::default())
         .unwrap_or_else(|e| panic!("{}", e));
     window.set_target_fps(12); // TODO: remove once incremental raytracing is implemented

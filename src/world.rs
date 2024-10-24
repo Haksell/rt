@@ -1,5 +1,7 @@
 use crate::{
-    objects::{Intersection, Object, Sphere},
+    computations::Computations,
+    lighting::shade_hit,
+    objects::{hit, Intersection, Object, Sphere},
     transform::scale_constant,
     Color, Material, PointLight, Ray, Tuple,
 };
@@ -50,6 +52,13 @@ impl World {
         intersections.sort_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
         intersections
     }
+
+    pub fn color_at(&self, ray: &Ray) -> Color {
+        match hit(&self.intersect(ray)) {
+            None => Color::black(), // TODO: ambient color instead?
+            Some(intersection) => shade_hit(self, &Computations::prepare(intersection, ray)),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -66,5 +75,33 @@ mod tests {
         assert_eq!(intersections[1].t, 4.5);
         assert_eq!(intersections[2].t, 5.5);
         assert_eq!(intersections[3].t, 6.);
+    }
+
+    #[test]
+    fn test_color_at_void() {
+        let world = World::default();
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::up());
+        assert_eq!(world.color_at(&ray), Color::black());
+    }
+
+    #[test]
+    fn test_color_at_sphere() {
+        let world = World::default();
+        let ray = Ray::new(Tuple::new_point(0., 0., -5.), Tuple::new_vector(0., 0., 1.));
+        assert!(world
+            .color_at(&ray)
+            .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
+    }
+
+    #[test]
+    fn test_color_at_between() {
+        let world = World::default();
+        let ray = Ray::new(
+            Tuple::new_point(0., 0., 0.75),
+            Tuple::new_vector(0., 0., -1.),
+        );
+        assert!(world.color_at(&ray).is_close(
+            &(world.objects[1].get_material().color * world.objects[1].get_material().ambient)
+        ));
     }
 }

@@ -1,5 +1,4 @@
-pub use super::PointLight;
-use crate::{computations::Computations, ray::Ray, Color, Material, Tuple, World};
+use crate::{computations::Computations, ray::Ray, Color, Material, PointLight, Tuple, World};
 
 fn lighting(
     material: &Material,

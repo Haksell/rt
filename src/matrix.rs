@@ -1,4 +1,4 @@
-use crate::{is_close, Tuple};
+use crate::{floats::is_close, Tuple};
 use std::ops::{Div, Index, Mul};
 
 #[derive(Debug, PartialEq, Clone)]

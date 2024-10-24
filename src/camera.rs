@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, Ray, Tuple};
+use crate::{canvas::Canvas, matrix::Matrix, world::World, Ray, Tuple};
 
 pub struct Camera {
     pub hsize: usize,
@@ -50,14 +50,25 @@ impl Camera {
         let direction = (pixel - origin.clone()).normalize();
         Ray { origin, direction }
     }
+
+    pub fn render(&self, world: &World) -> Canvas {
+        let mut canvas = Canvas::new(self.hsize, self.vsize);
+        for py in 0..self.vsize {
+            for px in 0..self.hsize {
+                canvas.set_pixel(px, py, world.color_at(&self.ray_for_pixel(px, py)));
+            }
+        }
+        canvas
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
-        is_close,
-        transform::{rotate_y, translate},
+        color::Color,
+        floats::is_close,
+        transform::{rotate_y, translate, view_transform},
     };
 
     #[test]
@@ -114,5 +125,26 @@ mod tests {
             0.,
             -std::f64::consts::FRAC_1_SQRT_2
         )));
+    }
+
+    #[test]
+    fn test_render_center() {
+        let camera = Camera::with_transform(
+            11,
+            11,
+            std::f64::consts::FRAC_PI_2,
+            view_transform(
+                &Tuple::new_point(0., 0., -5.),
+                &Tuple::zero_point(),
+                &Tuple::up(),
+            ),
+        );
+        let world = World::default();
+        let canvas = camera.render(&world);
+        assert_eq!(canvas.height, 11);
+        assert_eq!(canvas.width, 11);
+        assert!(canvas
+            .get_pixel(5, 5)
+            .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
     }
 }
