@@ -2,8 +2,8 @@
 
 ## todo
 
-- [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] read *The Ray Tracer Challenge*
+- [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] fix TODO
 - [ ] clean code/architecture
 - [ ] SIMD (`#[repr(simd)]`, `stdsimd`, `packed_simd`)
