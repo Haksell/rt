@@ -12,15 +12,6 @@ pub struct Material {
     pub shininess: f64,
 }
 
-impl PartialEq for Material {
-    fn eq(&self, other: &Self) -> bool {
-        self.ambient == other.ambient
-            && self.diffuse == other.diffuse
-            && self.specular == other.specular
-            && self.shininess == other.shininess
-    }
-}
-
 impl Material {
     pub fn new(
         pattern: Box<dyn Pattern>,

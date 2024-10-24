@@ -87,7 +87,10 @@ mod tests {
             shininess: 200.,
         });
         let squashed = Sphere::plastic(transform::scale(1., 0.3, 1.));
-        assert_eq!(default.material, squashed.material);
+        assert_eq!(default.material.ambient, squashed.material.ambient);
+        assert_eq!(default.material.diffuse, squashed.material.diffuse);
+        assert_eq!(default.material.shininess, squashed.material.shininess);
+        assert_eq!(default.material.specular, squashed.material.specular);
         assert_eq!(default.inverse_transform, red.inverse_transform);
     }
 
