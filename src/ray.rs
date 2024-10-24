@@ -9,8 +9,8 @@ pub struct Ray {
 impl Ray {
     pub fn new(origin: Tuple, direction: Tuple) -> Self {
         // TODO: remove asserts for optimization?
-        assert!(origin.is_point());
-        assert!(direction.is_vector());
+        // assert!(origin.is_point());
+        // assert!(direction.is_vector());
         Self { origin, direction }
     }
 

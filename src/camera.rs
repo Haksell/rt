@@ -56,6 +56,7 @@ impl Camera {
 mod tests {
     use super::Camera;
     use crate::{
+        is_close,
         matrix::Matrix,
         transform::{rotate_y, translate},
         Tuple,
@@ -72,14 +73,14 @@ mod tests {
 
     #[test]
     fn test_camera_pixel_size() {
-        assert_eq!(
+        assert!(is_close(
             Camera::new(200, 125, std::f64::consts::FRAC_PI_2).pixel_size,
             0.01
-        );
-        assert_eq!(
+        ));
+        assert!(is_close(
             Camera::new(125, 200, std::f64::consts::FRAC_PI_2).pixel_size,
             0.01
-        );
+        ));
     }
 
     #[test]

@@ -1,3 +1,5 @@
+use nalgebra::SMatrix;
+
 use crate::{is_close, Tuple};
 use std::ops::{Div, Index, Mul};
 
@@ -39,51 +41,72 @@ impl<const N: usize> Matrix<N> {
         Self { values }
     }
 
+    // pub fn inverse(&self) -> Self {
+    //     // TODO: implement only for Matrix<4> so we can use arrays instead of vectors
+    //     let mut augmented_matrix = vec![vec![0.; 2 * N]; N];
+    //     for y in 0..N {
+    //         for x in 0..N {
+    //             augmented_matrix[y][x] = self.values[y][x];
+    //         }
+    //         augmented_matrix[y][N + y] = 1.;
+    //     }
+
+    //     for y in 0..N {
+    //         if augmented_matrix[y][y] == 0. {
+    //             let y_swap = (y + 1..N)
+    //                 .find(|&y2| augmented_matrix[y2][y] != 0.)
+    //                 .expect("matrix is singular and cannot be inverted");
+    //             if y != y_swap {
+    //                 augmented_matrix.swap(y, y_swap);
+    //             }
+    //         }
+
+    //         let scalar = 1. / augmented_matrix[y][y];
+    //         for x in y..2 * N {
+    //             augmented_matrix[y][x] *= scalar;
+    //         }
+
+    //         for y_other in 0..N {
+    //             if y_other != y {
+    //                 let factor = augmented_matrix[y_other][y];
+    //                 for x in y..2 * N {
+    //                     augmented_matrix[y_other][x] -= factor * augmented_matrix[y][x];
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     let mut inverse_values = [[0.; N]; N];
+    //     for y in 0..N {
+    //         for x in 0..N {
+    //             inverse_values[y][x] = augmented_matrix[y][N + x];
+    //         }
+    //     }
+
+    //     Self {
+    //         values: inverse_values,
+    //     }
+    // }
+
+    fn to_nalgebra(&self) -> SMatrix<f64, N, N> {
+        SMatrix::<f64, N, N>::from_row_slice(&self.values.concat())
+    }
+
+    // Convert from nalgebra's SMatrix back to your Matrix struct
+    fn from_nalgebra(matrix: SMatrix<f64, N, N>) -> Self {
+        let mut values = [[0.0; N]; N];
+        for i in 0..N {
+            for j in 0..N {
+                values[i][j] = matrix[(i, j)];
+            }
+        }
+        Matrix::new(values)
+    }
+
     pub fn inverse(&self) -> Self {
-        // TODO: implement only for Matrix<4> so we can use arrays instead of vectors
-        let mut augmented_matrix = vec![vec![0.; 2 * N]; N];
-        for y in 0..N {
-            for x in 0..N {
-                augmented_matrix[y][x] = self.values[y][x];
-            }
-            augmented_matrix[y][N + y] = 1.;
-        }
-
-        for y in 0..N {
-            if augmented_matrix[y][y] == 0. {
-                let y_swap = (y + 1..N)
-                    .find(|&y2| augmented_matrix[y2][y] != 0.)
-                    .expect("matrix is singular and cannot be inverted");
-                if y != y_swap {
-                    augmented_matrix.swap(y, y_swap);
-                }
-            }
-
-            let scalar = 1. / augmented_matrix[y][y];
-            for x in y..2 * N {
-                augmented_matrix[y][x] *= scalar;
-            }
-
-            for y_other in 0..N {
-                if y_other != y {
-                    let factor = augmented_matrix[y_other][y];
-                    for x in y..2 * N {
-                        augmented_matrix[y_other][x] -= factor * augmented_matrix[y][x];
-                    }
-                }
-            }
-        }
-
-        let mut inverse_values = [[0.; N]; N];
-        for y in 0..N {
-            for x in 0..N {
-                inverse_values[y][x] = augmented_matrix[y][N + x];
-            }
-        }
-
-        Self {
-            values: inverse_values,
-        }
+        let nalgebra_matrix = self.to_nalgebra();
+        // Compute the inverse using nalgebra's inversion method
+        Matrix::from_nalgebra(nalgebra_matrix.try_inverse().unwrap())
     }
 }
 
@@ -167,6 +190,8 @@ impl<const N: usize> Div<f64> for Matrix<N> {
 
 #[cfg(test)]
 mod tests {
+    use rand::Rng as _;
+
     use super::Matrix;
     use crate::Tuple;
 
@@ -377,6 +402,64 @@ mod tests {
             [-0.54436334, -0.50218978, 0.11159773, -0.49137605],
         ]);
         assert!(mat.inverse().is_close(&inv));
+    }
+
+    #[test]
+    fn test_random_matrix_inverses() {
+        let mut rng = rand::thread_rng();
+
+        for _ in 0..1000 {
+            let mat_data: [[f64; 4]; 4] = [
+                [
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                ],
+                [
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                ],
+                [
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                ],
+                [
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                    rng.gen_range(-10.0..10.0),
+                ],
+            ];
+
+            let mat = Matrix::<4>::new(mat_data);
+
+            let inv = mat.inverse();
+            let identity = Matrix::<4>::identity();
+            let mat_mul_inv = mat.clone() * inv.clone();
+
+            assert!(
+                mat_mul_inv.is_close(&identity),
+                "Matrix * Inverse is not close to identity"
+            );
+
+            let inv_mul_mat = inv.clone() * mat.clone();
+            assert!(
+                inv_mul_mat.is_close(&identity),
+                "Inverse * Matrix is not close to identity"
+            );
+
+            let inv_transpose = inv.transpose();
+            let mat_transpose_inv = mat.transpose().inverse();
+            assert!(
+                inv_transpose.is_close(&mat_transpose_inv),
+                "Inverse(Transpose) is not close to Transpose(Inverse)"
+            );
+        }
     }
 
     #[test]
