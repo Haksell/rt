@@ -156,7 +156,7 @@ impl Mul<Matrix> for Matrix {
         for y in 0..4 {
             for x in 0..4 {
                 for i in 0..4 {
-                    values[y][x] += self.values[y][i] * rhs.values[i][x];
+                    values[y][x] += self[y][i] * rhs[i][x];
                 }
             }
         }
@@ -169,22 +169,10 @@ impl Mul<Tuple> for Matrix {
 
     fn mul(self, rhs: Tuple) -> Tuple {
         Tuple::new(
-            self.values[0][0] * rhs.x
-                + self.values[0][1] * rhs.y
-                + self.values[0][2] * rhs.z
-                + self.values[0][3] * rhs.w,
-            self.values[1][0] * rhs.x
-                + self.values[1][1] * rhs.y
-                + self.values[1][2] * rhs.z
-                + self.values[1][3] * rhs.w,
-            self.values[2][0] * rhs.x
-                + self.values[2][1] * rhs.y
-                + self.values[2][2] * rhs.z
-                + self.values[2][3] * rhs.w,
-            self.values[3][0] * rhs.x
-                + self.values[3][1] * rhs.y
-                + self.values[3][2] * rhs.z
-                + self.values[3][3] * rhs.w,
+            self[0][0] * rhs.x + self[0][1] * rhs.y + self[0][2] * rhs.z + self[0][3] * rhs.w,
+            self[1][0] * rhs.x + self[1][1] * rhs.y + self[1][2] * rhs.z + self[1][3] * rhs.w,
+            self[2][0] * rhs.x + self[2][1] * rhs.y + self[2][2] * rhs.z + self[2][3] * rhs.w,
+            self[3][0] * rhs.x + self[3][1] * rhs.y + self[3][2] * rhs.z + self[3][3] * rhs.w,
         )
     }
 }
