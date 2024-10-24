@@ -41,7 +41,7 @@ impl Sphere {
 }
 
 impl Object for Sphere {
-    fn object_space_intersect(&self, object_ray: &Ray) -> Vec<Intersection> {
+    fn local_intersect(&self, object_ray: &Ray) -> Vec<Intersection> {
         let a = object_ray.direction.magnitude_squared();
         let b = 2. * object_ray.direction.dot(&object_ray.origin);
         let c = object_ray.origin.magnitude_squared() - 1.;
@@ -58,7 +58,7 @@ impl Object for Sphere {
         ]
     }
 
-    fn object_space_normal_at(&self, object_point: &Tuple) -> Tuple {
+    fn local_normal_at(&self, object_point: &Tuple) -> Tuple {
         Tuple::new_vector(object_point.x, object_point.y, object_point.z)
     }
 
