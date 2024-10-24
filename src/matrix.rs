@@ -3,11 +3,11 @@ use std::ops::{Div, Index, Mul};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix<const N: usize> {
-    values: [[f32; N]; N], // TODO: [f32; N * N]?
+    values: [[f64; N]; N], // TODO: [f64; N * N]?
 }
 
 impl<const N: usize> Matrix<N> {
-    pub fn new(values: [[f32; N]; N]) -> Self {
+    pub fn new(values: [[f64; N]; N]) -> Self {
         Self { values }
     }
 
@@ -88,9 +88,9 @@ impl<const N: usize> Matrix<N> {
 }
 
 impl<const N: usize> Index<usize> for Matrix<N> {
-    type Output = [f32; N];
+    type Output = [f64; N];
 
-    fn index(&self, row: usize) -> &[f32; N] {
+    fn index(&self, row: usize) -> &[f64; N] {
         &self.values[row]
     }
 }
@@ -136,10 +136,10 @@ impl Mul<Tuple> for Matrix<4> {
     }
 }
 
-impl<const N: usize> Mul<f32> for Matrix<N> {
+impl<const N: usize> Mul<f64> for Matrix<N> {
     type Output = Self;
 
-    fn mul(self, scalar: f32) -> Self {
+    fn mul(self, scalar: f64) -> Self {
         let mut values = self.values.clone();
         for y in 0..N {
             for x in 0..N {
@@ -150,10 +150,10 @@ impl<const N: usize> Mul<f32> for Matrix<N> {
     }
 }
 
-impl<const N: usize> Div<f32> for Matrix<N> {
+impl<const N: usize> Div<f64> for Matrix<N> {
     type Output = Self;
 
-    fn div(self, divisor: f32) -> Self {
+    fn div(self, divisor: f64) -> Self {
         let scalar = 1. / divisor;
         let mut values = self.values.clone();
         for y in 0..N {

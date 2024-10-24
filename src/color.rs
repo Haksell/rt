@@ -6,13 +6,13 @@ use std::ops::{Add, Mul, Sub};
 // TODO: not Copy?
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
 }
 
 impl Color {
-    pub fn new(r: f32, g: f32, b: f32) -> Self {
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
     }
 
@@ -84,10 +84,10 @@ impl Sub for Color {
     }
 }
 
-impl Mul<f32> for Color {
+impl Mul<f64> for Color {
     type Output = Self;
 
-    fn mul(self, scalar: f32) -> Self {
+    fn mul(self, scalar: f64) -> Self {
         Self {
             r: self.r * scalar,
             g: self.g * scalar,
@@ -96,7 +96,7 @@ impl Mul<f32> for Color {
     }
 }
 
-impl Mul<Color> for f32 {
+impl Mul<Color> for f64 {
     type Output = Color;
 
     fn mul(self, color: Color) -> Color {

@@ -10,11 +10,11 @@ pub use sphere::Sphere;
 #[derive(Debug)]
 pub struct Intersection<'a> {
     pub object: &'a dyn Object,
-    pub t: f32,
+    pub t: f64,
 }
 
 impl<'a> Intersection<'a> {
-    pub fn new(object: &'a dyn Object, t: f32) -> Self {
+    pub fn new(object: &'a dyn Object, t: f64) -> Self {
         Self { object, t }
     }
 }

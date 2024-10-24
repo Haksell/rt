@@ -14,7 +14,7 @@ impl Ray {
         Self { origin, direction }
     }
 
-    pub fn position(&self, t: f32) -> Tuple {
+    pub fn position(&self, t: f64) -> Tuple {
         self.origin.clone() + t * self.direction.clone()
     }
 

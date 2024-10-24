@@ -188,7 +188,7 @@ mod tests {
             s.normal_at(&Tuple::new_point(0., 0., 1.)),
             Tuple::new_vector(0., 0., 1.)
         );
-        let sqrt3_third = (3. as f32).sqrt() / 3.;
+        let sqrt3_third = (3. as f64).sqrt() / 3.;
         assert!(s
             .normal_at(&Tuple::new_point(sqrt3_third, sqrt3_third, sqrt3_third))
             .is_close(&Tuple::new_vector(sqrt3_third, sqrt3_third, sqrt3_third)));
@@ -196,7 +196,7 @@ mod tests {
 
     #[test]
     fn test_sphere_translated_normal_at() {
-        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
+        let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         assert!(Sphere::plastic(transform::translate(0., 1., 0.))
             .normal_at(&Tuple::new_point(0., 1. + sqrt_half, -sqrt_half))
             .is_close(&Tuple::new_vector(0., sqrt_half, -sqrt_half)));
@@ -204,9 +204,9 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_normal_at() {
-        let sqrt_half = std::f32::consts::FRAC_1_SQRT_2;
+        let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         assert!(Sphere::plastic(
-            transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f32::consts::TAU / 10.),
+            transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f64::consts::TAU / 10.),
         )
         .normal_at(&Tuple::new_point(0., sqrt_half, -sqrt_half)) // is it even on the sphere?
         .is_close(&Tuple::new_vector(0., 0.97014254, -0.24253564)));

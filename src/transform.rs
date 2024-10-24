@@ -4,7 +4,7 @@ use super::Matrix;
 
 // TODO: implement methods directly on Tuple when not chaining matrices?
 
-pub fn translate(x: f32, y: f32, z: f32) -> Matrix<4> {
+pub fn translate(x: f64, y: f64, z: f64) -> Matrix<4> {
     Matrix::new([
         [1., 0., 0., x],
         [0., 1., 0., y],
@@ -13,7 +13,7 @@ pub fn translate(x: f32, y: f32, z: f32) -> Matrix<4> {
     ])
 }
 
-pub fn scale(x: f32, y: f32, z: f32) -> Matrix<4> {
+pub fn scale(x: f64, y: f64, z: f64) -> Matrix<4> {
     Matrix::new([
         [x, 0., 0., 0.],
         [0., y, 0., 0.],
@@ -22,11 +22,11 @@ pub fn scale(x: f32, y: f32, z: f32) -> Matrix<4> {
     ])
 }
 
-pub fn scale_constant(s: f32) -> Matrix<4> {
+pub fn scale_constant(s: f64) -> Matrix<4> {
     scale(s, s, s)
 }
 
-pub fn rotate_x(angle: f32) -> Matrix<4> {
+pub fn rotate_x(angle: f64) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [1., 0., 0., 0.],
@@ -36,7 +36,7 @@ pub fn rotate_x(angle: f32) -> Matrix<4> {
     ])
 }
 
-pub fn rotate_y(angle: f32) -> Matrix<4> {
+pub fn rotate_y(angle: f64) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [c, 0., s, 0.],
@@ -46,7 +46,7 @@ pub fn rotate_y(angle: f32) -> Matrix<4> {
     ])
 }
 
-pub fn rotate_z(angle: f32) -> Matrix<4> {
+pub fn rotate_z(angle: f64) -> Matrix<4> {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [c, -s, 0., 0.],
@@ -56,7 +56,7 @@ pub fn rotate_z(angle: f32) -> Matrix<4> {
     ])
 }
 
-pub fn shear(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32) -> Matrix<4> {
+pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix<4> {
     Matrix::new([
         [1., xy, xz, 0.],
         [yx, 1., yz, 0.],
@@ -147,21 +147,21 @@ mod tests {
     #[test]
     fn test_rotate_x() {
         let p = Tuple::new_point(3., 1., 0.);
-        assert!((rotate_x(std::f32::consts::TAU) * p.clone()).is_close(&p.clone()));
+        assert!((rotate_x(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
         assert!(
-            (rotate_x(std::f32::consts::PI) * p.clone()).is_close(&Tuple::new_point(3., -1., 0.))
+            (rotate_x(std::f64::consts::PI) * p.clone()).is_close(&Tuple::new_point(3., -1., 0.))
         );
-        assert!((rotate_x(std::f32::consts::FRAC_PI_2) * p.clone())
+        assert!((rotate_x(std::f64::consts::FRAC_PI_2) * p.clone())
             .is_close(&Tuple::new_point(3., 0., 1.)));
         assert!(
-            (rotate_x(std::f32::consts::FRAC_PI_4) * p.clone()).is_close(&Tuple::new_point(
+            (rotate_x(std::f64::consts::FRAC_PI_4) * p.clone()).is_close(&Tuple::new_point(
                 3.,
-                std::f32::consts::FRAC_1_SQRT_2,
-                std::f32::consts::FRAC_1_SQRT_2
+                std::f64::consts::FRAC_1_SQRT_2,
+                std::f64::consts::FRAC_1_SQRT_2
             ))
         );
         assert!(
-            (rotate_x(std::f32::consts::TAU * 0.75) * Tuple::new_point(7., -2., 4.5))
+            (rotate_x(std::f64::consts::TAU * 0.75) * Tuple::new_point(7., -2., 4.5))
                 .is_close(&Tuple::new_point(7., 4.5, 2.))
         );
     }
@@ -169,16 +169,16 @@ mod tests {
     #[test]
     fn test_rotate_y() {
         let p = Tuple::new_point(0., 4.2, 1.);
-        assert!((rotate_y(std::f32::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_y(std::f32::consts::TAU / 2.) * p.clone())
+        assert!((rotate_y(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
+        assert!((rotate_y(std::f64::consts::TAU / 2.) * p.clone())
             .is_close(&Tuple::new_point(0., 4.2, -1.)));
-        assert!((rotate_y(std::f32::consts::TAU / 4.) * p.clone())
+        assert!((rotate_y(std::f64::consts::TAU / 4.) * p.clone())
             .is_close(&Tuple::new_point(1., 4.2, 0.)));
         assert!(
-            (rotate_y(std::f32::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
-                std::f32::consts::FRAC_1_SQRT_2,
+            (rotate_y(std::f64::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
+                std::f64::consts::FRAC_1_SQRT_2,
                 4.2,
-                std::f32::consts::FRAC_1_SQRT_2,
+                std::f64::consts::FRAC_1_SQRT_2,
             ))
         );
     }
@@ -186,15 +186,15 @@ mod tests {
     #[test]
     fn test_rotate_z() {
         let p = Tuple::new_point(0., 2., -1.);
-        assert!((rotate_z(std::f32::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_z(std::f32::consts::TAU / 2.) * p.clone())
+        assert!((rotate_z(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
+        assert!((rotate_z(std::f64::consts::TAU / 2.) * p.clone())
             .is_close(&Tuple::new_point(0., -2., -1.)));
-        assert!((rotate_z(std::f32::consts::TAU / 4.) * p.clone())
+        assert!((rotate_z(std::f64::consts::TAU / 4.) * p.clone())
             .is_close(&Tuple::new_point(-2., 0., -1.)));
         assert!(
-            (rotate_z(std::f32::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
-                -(2. as f32).sqrt(),
-                (2. as f32).sqrt(),
+            (rotate_z(std::f64::consts::TAU / 8.) * p.clone()).is_close(&Tuple::new_point(
+                -(2. as f64).sqrt(),
+                (2. as f64).sqrt(),
                 -1.
             ))
         );
@@ -235,7 +235,7 @@ mod tests {
     #[test]
     fn test_mixed_transforms() {
         let p1 = Tuple::new_point(1., 0., 1.);
-        let a = rotate_x(std::f32::consts::TAU / 4.);
+        let a = rotate_x(std::f64::consts::TAU / 4.);
         let b = scale_constant(5.);
         let c = translate(10., 5., 7.);
         let p2 = a.clone() * p1.clone();

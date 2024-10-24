@@ -26,7 +26,7 @@ use ray::Ray;
 pub use tuple::Tuple;
 pub use world::World;
 
-fn is_close(f1: f32, f2: f32) -> bool {
+fn is_close(f1: f64, f2: f64) -> bool {
     (f1 - f2).abs() < 1e-6
 }
 
@@ -84,7 +84,7 @@ mod tests {
         let camera = Camera::with_transform(
             11,
             11,
-            std::f32::consts::FRAC_PI_2,
+            std::f64::consts::FRAC_PI_2,
             view_transform(
                 &Tuple::new_point(0., 0., -5.),
                 &Tuple::zero_point(),
