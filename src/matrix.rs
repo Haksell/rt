@@ -236,21 +236,37 @@ mod tests {
             [13.5, 14.5, 15.5, 16.5],
         ]);
         assert_eq!(matrix[0][0], 1.);
+        assert_eq!(matrix[(0, 0)], 1.);
         assert_eq!(matrix[0][1], 2.);
+        assert_eq!(matrix[(0, 1)], 2.);
         assert_eq!(matrix[0][2], 3.);
+        assert_eq!(matrix[(0, 2)], 3.);
         assert_eq!(matrix[0][3], 4.);
+        assert_eq!(matrix[(0, 3)], 4.);
         assert_eq!(matrix[1][0], 5.5);
+        assert_eq!(matrix[(1, 0)], 5.5);
         assert_eq!(matrix[1][1], 6.5);
+        assert_eq!(matrix[(1, 1)], 6.5);
         assert_eq!(matrix[1][2], 7.5);
+        assert_eq!(matrix[(1, 2)], 7.5);
         assert_eq!(matrix[1][3], 8.5);
+        assert_eq!(matrix[(1, 3)], 8.5);
         assert_eq!(matrix[2][0], 9.);
+        assert_eq!(matrix[(2, 0)], 9.);
         assert_eq!(matrix[2][1], 10.);
+        assert_eq!(matrix[(2, 1)], 10.);
         assert_eq!(matrix[2][2], 11.);
+        assert_eq!(matrix[(2, 2)], 11.);
         assert_eq!(matrix[2][3], 12.);
+        assert_eq!(matrix[(2, 3)], 12.);
         assert_eq!(matrix[3][0], 13.5);
+        assert_eq!(matrix[(3, 0)], 13.5);
         assert_eq!(matrix[3][1], 14.5);
+        assert_eq!(matrix[(3, 1)], 14.5);
         assert_eq!(matrix[3][2], 15.5);
+        assert_eq!(matrix[(3, 2)], 15.5);
         assert_eq!(matrix[3][3], 16.5);
+        assert_eq!(matrix[(3, 3)], 16.5);
     }
 
     #[test]
