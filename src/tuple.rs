@@ -38,32 +38,24 @@ impl Tuple {
     }
 
     pub fn is_point(&self) -> bool {
-        // match self.w {
-        //     0. => false,
-        //     1. => true,
-        //     _ => panic!("Tuple::w is invalid: {}", self.w),
-        // }
         is_close(self.w, 1.0)
     }
 
     pub fn is_vector(&self) -> bool {
-        // match self.w {
-        //     0. => true,
-        //     1. => false,
-        //     _ => panic!("Tuple::w is invalid: {}", self.w),
-        // }
         is_close(self.w, 0.0)
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
-        self.w == rhs.w // maybe even assert for .w
-            && is_close(self.x, rhs.x)
-            && is_close(self.y, rhs.y)
-            && is_close(self.z, rhs.z)
+        assert!(is_close(self.w, rhs.w));
+        is_close(self.x, rhs.x) && is_close(self.y, rhs.y) && is_close(self.z, rhs.z)
+    }
+
+    pub fn magnitude_squared(&self) -> f64 {
+        self.dot(self)
     }
 
     pub fn magnitude(&self) -> f64 {
-        (self.dot(self)).sqrt()
+        self.magnitude_squared().sqrt()
     }
 
     pub fn normalize(&self) -> Self {

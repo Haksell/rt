@@ -1,9 +1,8 @@
 mod sphere;
 
-use std::fmt::Debug;
-
 use crate::{material::Material, Matrix, Ray, Tuple};
 pub use sphere::Sphere;
+use std::fmt::Debug;
 
 // TODO: automate Intersection.object
 // TODO: no lifetime?
@@ -27,10 +26,24 @@ impl<'a> PartialEq for Intersection<'a> {
 }
 
 pub trait Object: Debug {
-    fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
-    fn normal_at(&self, point: &Tuple) -> Tuple;
     fn get_transform(&self) -> &Matrix;
     fn get_material(&self) -> &Material;
+
+    fn object_space_intersect(&self, object_ray: &Ray) -> Vec<Intersection>;
+    fn object_space_normal_at(&self, object_point: &Tuple) -> Tuple;
+
+    fn intersect(&self, world_ray: &Ray) -> Vec<Intersection> {
+        let object_ray = world_ray.transform(&self.get_transform().inverse());
+        self.object_space_intersect(&object_ray)
+    }
+
+    fn normal_at(&self, world_point: &Tuple) -> Tuple {
+        let object_point = self.get_transform().inverse() * world_point.clone();
+        let object_normal = self.object_space_normal_at(&object_point);
+        let mut world_normal = self.get_transform().inverse().transpose() * object_normal;
+        world_normal.w = 0.;
+        world_normal.normalize()
+    }
 }
 
 // TODO: assume intersections is sorted and do a binary search

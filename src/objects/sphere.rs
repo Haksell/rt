@@ -41,12 +41,10 @@ impl Sphere {
 }
 
 impl Object for Sphere {
-    fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-        let ray = ray.transform(&self.transform.inverse());
-        let sphere_to_ray = ray.origin.clone();
-        let a = ray.direction.dot(&ray.direction);
-        let b = 2. * ray.direction.dot(&sphere_to_ray);
-        let c = sphere_to_ray.dot(&sphere_to_ray) - 1.;
+    fn object_space_intersect(&self, object_ray: &Ray) -> Vec<Intersection> {
+        let a = object_ray.direction.magnitude_squared();
+        let b = 2. * object_ray.direction.dot(&object_ray.origin);
+        let c = object_ray.origin.magnitude_squared() - 1.;
         let discriminant = b * b - 4. * a * c;
         if discriminant < 0. {
             return vec![];
@@ -60,13 +58,8 @@ impl Object for Sphere {
         ]
     }
 
-    fn normal_at(&self, world_point: &Tuple) -> Tuple {
-        let object_point = self.transform.inverse() * world_point.clone();
-        let object_normal = Tuple::new_vector(object_point.x, object_point.y, object_point.z);
-        // TODO: understand why the transpose
-        let mut world_normal = self.transform.inverse().transpose() * object_normal;
-        world_normal.w = 0.;
-        world_normal.normalize()
+    fn object_space_normal_at(&self, object_point: &Tuple) -> Tuple {
+        Tuple::new_vector(object_point.x, object_point.y, object_point.z)
     }
 
     fn get_transform(&self) -> &Matrix {
