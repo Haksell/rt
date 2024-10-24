@@ -4,7 +4,7 @@ use super::Matrix;
 
 // TODO: implement methods directly on Tuple when not chaining matrices?
 
-pub fn translate(x: f64, y: f64, z: f64) -> Matrix<4> {
+pub fn translate(x: f64, y: f64, z: f64) -> Matrix {
     Matrix::new([
         [1., 0., 0., x],
         [0., 1., 0., y],
@@ -13,7 +13,7 @@ pub fn translate(x: f64, y: f64, z: f64) -> Matrix<4> {
     ])
 }
 
-pub fn scale(x: f64, y: f64, z: f64) -> Matrix<4> {
+pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
     Matrix::new([
         [x, 0., 0., 0.],
         [0., y, 0., 0.],
@@ -22,11 +22,11 @@ pub fn scale(x: f64, y: f64, z: f64) -> Matrix<4> {
     ])
 }
 
-pub fn scale_constant(s: f64) -> Matrix<4> {
+pub fn scale_constant(s: f64) -> Matrix {
     scale(s, s, s)
 }
 
-pub fn rotate_x(angle: f64) -> Matrix<4> {
+pub fn rotate_x(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [1., 0., 0., 0.],
@@ -36,7 +36,7 @@ pub fn rotate_x(angle: f64) -> Matrix<4> {
     ])
 }
 
-pub fn rotate_y(angle: f64) -> Matrix<4> {
+pub fn rotate_y(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [c, 0., s, 0.],
@@ -46,7 +46,7 @@ pub fn rotate_y(angle: f64) -> Matrix<4> {
     ])
 }
 
-pub fn rotate_z(angle: f64) -> Matrix<4> {
+pub fn rotate_z(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
     Matrix::new([
         [c, -s, 0., 0.],
@@ -56,7 +56,7 @@ pub fn rotate_z(angle: f64) -> Matrix<4> {
     ])
 }
 
-pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix<4> {
+pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
     Matrix::new([
         [1., xy, xz, 0.],
         [yx, 1., yz, 0.],
@@ -65,7 +65,7 @@ pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix<4> 
     ])
 }
 
-pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix<4> {
+pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
     let forward = (to.clone() - from.clone()).normalize();
     let left = forward.cross(&up.normalize());
     let true_up = left.cross(&forward);

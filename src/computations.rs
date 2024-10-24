@@ -3,7 +3,7 @@ use crate::{
     Ray, Tuple,
 };
 
-const ACNE_EPSILON: f64 = 1e-5; // TODO: test best value
+const ACNE_EPSILON: f64 = 1e-6;
 
 #[allow(dead_code)] // TODO: remove
 pub struct Computations<'a> {

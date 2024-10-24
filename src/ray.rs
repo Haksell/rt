@@ -9,8 +9,8 @@ pub struct Ray {
 impl Ray {
     pub fn new(origin: Tuple, direction: Tuple) -> Self {
         // TODO: remove asserts for optimization?
-        // assert!(origin.is_point());
-        // assert!(direction.is_vector());
+        assert!(origin.is_point());
+        assert!(direction.is_vector());
         Self { origin, direction }
     }
 
@@ -18,7 +18,7 @@ impl Ray {
         self.origin.clone() + t * self.direction.clone()
     }
 
-    pub fn transform(&self, m: &Matrix<4>) -> Self {
+    pub fn transform(&self, m: &Matrix) -> Self {
         Self {
             origin: m.clone() * self.origin.clone(),
             direction: m.clone() * self.direction.clone(),

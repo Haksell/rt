@@ -11,7 +11,7 @@ use rt::{
 fn main() {
     let camera = Camera::with_transform(
         600,
-        600,
+        400,
         std::f64::consts::FRAC_PI_3,
         view_transform(
             &Tuple::new_point(0., 1.5, -5.),

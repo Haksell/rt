@@ -29,7 +29,7 @@ impl<'a> PartialEq for Intersection<'a> {
 pub trait Object: Debug {
     fn intersect(&self, ray: &Ray) -> Vec<Intersection>;
     fn normal_at(&self, point: &Tuple) -> Tuple;
-    fn get_transform(&self) -> &Matrix<4>;
+    fn get_transform(&self) -> &Matrix;
     fn get_material(&self) -> &Material;
 }
 

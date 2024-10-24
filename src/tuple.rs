@@ -38,19 +38,21 @@ impl Tuple {
     }
 
     pub fn is_point(&self) -> bool {
-        match self.w {
-            0. => false,
-            1. => true,
-            _ => panic!("Tuple::w is invalid: {}", self.w),
-        }
+        // match self.w {
+        //     0. => false,
+        //     1. => true,
+        //     _ => panic!("Tuple::w is invalid: {}", self.w),
+        // }
+        is_close(self.w, 1.0)
     }
 
     pub fn is_vector(&self) -> bool {
-        match self.w {
-            0. => true,
-            1. => false,
-            _ => panic!("Tuple::w is invalid: {}", self.w),
-        }
+        // match self.w {
+        //     0. => true,
+        //     1. => false,
+        //     _ => panic!("Tuple::w is invalid: {}", self.w),
+        // }
+        is_close(self.w, 0.0)
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {

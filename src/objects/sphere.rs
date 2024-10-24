@@ -4,13 +4,13 @@ use crate::{material::Material, Matrix, Ray, Tuple};
 #[derive(Debug)]
 pub struct Sphere {
     // TODO: store inverse transform instead?
-    pub transform: Matrix<4>, // TODO: &'a Matrix<4> ?
-    pub material: Material,   // TODO: &Material ?
+    pub transform: Matrix,  // TODO: &'a Matrix ?
+    pub material: Material, // TODO: &Material ?
 }
 
 // TODO: make constructors part of Object trait
 impl Sphere {
-    pub fn new(transform: Matrix<4>, material: Material) -> Self {
+    pub fn new(transform: Matrix, material: Material) -> Self {
         Self {
             transform,
             material,
@@ -32,7 +32,7 @@ impl Sphere {
     }
 
     // Is it really plastic though?
-    pub fn plastic(transform: Matrix<4>) -> Self {
+    pub fn plastic(transform: Matrix) -> Self {
         Self {
             transform,
             material: Material::default(),
@@ -69,7 +69,7 @@ impl Object for Sphere {
         world_normal.normalize()
     }
 
-    fn get_transform(&self) -> &Matrix<4> {
+    fn get_transform(&self) -> &Matrix {
         &self.transform
     }
 

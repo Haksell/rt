@@ -4,7 +4,7 @@ pub struct Camera {
     pub hsize: usize,
     pub vsize: usize,
     pub fov: f64,
-    pub transform: Matrix<4>,
+    pub transform: Matrix,
     pub aspect_ratio: f64,
     pub half_width: f64,
     pub half_height: f64,
@@ -18,7 +18,7 @@ impl Camera {
     }
 
     // TODO: new
-    pub fn with_transform(hsize: usize, vsize: usize, fov: f64, transform: Matrix<4>) -> Self {
+    pub fn with_transform(hsize: usize, vsize: usize, fov: f64, transform: Matrix) -> Self {
         let aspect_ratio = hsize as f64 / vsize as f64;
         let half_view = (fov / 2.0).tan();
         let (half_width, half_height) = if hsize > vsize {
