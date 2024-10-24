@@ -33,14 +33,14 @@ pub trait Object: Debug {
     fn local_normal_at(&self, object_point: &Tuple) -> Tuple;
 
     fn intersect(&self, world_ray: &Ray) -> Vec<Intersection> {
-        let object_ray = world_ray.transform(&self.get_inverse_transform());
-        self.local_intersect(&object_ray)
+        let local_ray = world_ray.transform(&self.get_inverse_transform());
+        self.local_intersect(&local_ray)
     }
 
     fn normal_at(&self, world_point: &Tuple) -> Tuple {
-        let object_point = self.get_inverse_transform().clone() * world_point.clone();
-        let object_normal = self.local_normal_at(&object_point);
-        let mut world_normal = self.get_inverse_transform().transpose() * object_normal;
+        let local_point = self.get_inverse_transform().clone() * world_point.clone();
+        let local_normal = self.local_normal_at(&local_point);
+        let mut world_normal = self.get_inverse_transform().transpose() * local_normal;
         world_normal.w = 0.;
         world_normal.normalize()
     }
