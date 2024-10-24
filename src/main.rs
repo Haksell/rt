@@ -26,7 +26,6 @@ fn main() {
     window.set_target_fps(12); // TODO: remove once incremental raytracing is implemented
     let mut buffer: Vec<u32> = vec![0; canvas.width * canvas.height];
     while window.is_open() && !window.is_key_down(Key::Escape) {
-        let canvas = render(&camera, &build_world());
         for (i, pixel) in buffer.iter_mut().enumerate() {
             *pixel = canvas
                 .get_pixel(i % canvas.width, i / canvas.width)
