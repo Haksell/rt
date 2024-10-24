@@ -150,17 +150,83 @@ impl Index<(usize, usize)> for Matrix {
 impl Mul<Matrix> for Matrix {
     type Output = Self;
 
-    // TODO: no loop
     fn mul(self, rhs: Self) -> Self {
-        let mut values = [[0.; 4]; 4];
-        for y in 0..4 {
-            for x in 0..4 {
-                for i in 0..4 {
-                    values[y][x] += self[y][i] * rhs[i][x];
-                }
-            }
+        Self {
+            values: [
+                [
+                    self[0][0] * rhs[0][0]
+                        + self[0][1] * rhs[1][0]
+                        + self[0][2] * rhs[2][0]
+                        + self[0][3] * rhs[3][0],
+                    self[0][0] * rhs[0][1]
+                        + self[0][1] * rhs[1][1]
+                        + self[0][2] * rhs[2][1]
+                        + self[0][3] * rhs[3][1],
+                    self[0][0] * rhs[0][2]
+                        + self[0][1] * rhs[1][2]
+                        + self[0][2] * rhs[2][2]
+                        + self[0][3] * rhs[3][2],
+                    self[0][0] * rhs[0][3]
+                        + self[0][1] * rhs[1][3]
+                        + self[0][2] * rhs[2][3]
+                        + self[0][3] * rhs[3][3],
+                ],
+                [
+                    self[1][0] * rhs[0][0]
+                        + self[1][1] * rhs[1][0]
+                        + self[1][2] * rhs[2][0]
+                        + self[1][3] * rhs[3][0],
+                    self[1][0] * rhs[0][1]
+                        + self[1][1] * rhs[1][1]
+                        + self[1][2] * rhs[2][1]
+                        + self[1][3] * rhs[3][1],
+                    self[1][0] * rhs[0][2]
+                        + self[1][1] * rhs[1][2]
+                        + self[1][2] * rhs[2][2]
+                        + self[1][3] * rhs[3][2],
+                    self[1][0] * rhs[0][3]
+                        + self[1][1] * rhs[1][3]
+                        + self[1][2] * rhs[2][3]
+                        + self[1][3] * rhs[3][3],
+                ],
+                [
+                    self[2][0] * rhs[0][0]
+                        + self[2][1] * rhs[1][0]
+                        + self[2][2] * rhs[2][0]
+                        + self[2][3] * rhs[3][0],
+                    self[2][0] * rhs[0][1]
+                        + self[2][1] * rhs[1][1]
+                        + self[2][2] * rhs[2][1]
+                        + self[2][3] * rhs[3][1],
+                    self[2][0] * rhs[0][2]
+                        + self[2][1] * rhs[1][2]
+                        + self[2][2] * rhs[2][2]
+                        + self[2][3] * rhs[3][2],
+                    self[2][0] * rhs[0][3]
+                        + self[2][1] * rhs[1][3]
+                        + self[2][2] * rhs[2][3]
+                        + self[2][3] * rhs[3][3],
+                ],
+                [
+                    self[3][0] * rhs[0][0]
+                        + self[3][1] * rhs[1][0]
+                        + self[3][2] * rhs[2][0]
+                        + self[3][3] * rhs[3][0],
+                    self[3][0] * rhs[0][1]
+                        + self[3][1] * rhs[1][1]
+                        + self[3][2] * rhs[2][1]
+                        + self[3][3] * rhs[3][1],
+                    self[3][0] * rhs[0][2]
+                        + self[3][1] * rhs[1][2]
+                        + self[3][2] * rhs[2][2]
+                        + self[3][3] * rhs[3][2],
+                    self[3][0] * rhs[0][3]
+                        + self[3][1] * rhs[1][3]
+                        + self[3][2] * rhs[2][3]
+                        + self[3][3] * rhs[3][3],
+                ],
+            ],
         }
-        Self { values }
     }
 }
 
