@@ -5,6 +5,7 @@
 - [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] read *The Ray Tracer Challenge*
 - [ ] fix TODO
+- [ ] clean code/architecture
 - [ ] SIMD (`#[repr(simd)]`, `stdsimd`, `packed_simd`)
 - [ ] multithreading (`std::thread`, `rayon`, `crossbeam`?)
 - [ ] read scene from file (JSON?)
