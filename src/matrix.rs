@@ -207,14 +207,7 @@ impl Div<f64> for Matrix {
     type Output = Self;
 
     fn div(self, divisor: f64) -> Self {
-        let scalar = 1. / divisor;
-        let mut values = self.values.clone();
-        for y in 0..4 {
-            for x in 0..4 {
-                values[y][x] *= scalar
-            }
-        }
-        Self { values }
+        self * (1. / divisor)
     }
 }
 
