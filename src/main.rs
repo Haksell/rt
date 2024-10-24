@@ -1,3 +1,5 @@
+#![allow(unused)] // TODO: remove before push
+
 mod camera;
 mod canvas;
 mod color;
