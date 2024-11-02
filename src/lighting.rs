@@ -11,7 +11,6 @@ fn lighting(
     normalv: &Tuple,
     in_shadow: bool, // TODO: not an argument
 ) -> Color {
-    // TODO: object.color_at?
     let material = object.get_material();
     let effective_color = object.color_at(&point).clone() * light.intensity;
     let ambient = effective_color * material.ambient; // TODO: shouldn't depend on light.intensity
