@@ -1,8 +1,10 @@
 mod gradient;
+mod ring;
 mod solid;
 mod stripe;
 
 pub use gradient::Gradient;
+pub use ring::Ring;
 pub use solid::Solid;
 pub use stripe::Stripe;
 

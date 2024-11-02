@@ -22,7 +22,7 @@ use material::Material;
 use matrix::Matrix;
 use minifb::{Key, Window, WindowOptions};
 use objects::{Plane, Sphere};
-use patterns::{Gradient, Solid, Stripe};
+use patterns::{Gradient, Ring, Solid, Stripe};
 use point_light::PointLight;
 use ray::Ray;
 use transform::{rotate_x, rotate_y, rotate_z, scale_constant, translate, view_transform};
@@ -62,12 +62,16 @@ fn main() {
     }
 }
 
-fn build_stripe() -> Material {
+fn wall_material() -> Material {
+    sphere_material()
+}
+
+fn sphere_material() -> Material {
     Material {
-        pattern: Box::new(Gradient::new(
+        pattern: Box::new(Ring::new(
             Color::white(),
-            Color::red(),
-            scale_constant(0.3),
+            Color::black(),
+            scale_constant(0.1),
         )),
         diffuse: 0.7,
         specular: 0.3,
@@ -76,27 +80,27 @@ fn build_stripe() -> Material {
 }
 
 fn build_world() -> World {
-    let floor = Plane::new(Matrix::identity(), build_stripe());
+    let floor = Plane::new(Matrix::identity(), wall_material());
     let left_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(-std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        build_stripe(),
+        wall_material(),
     );
     let right_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        build_stripe(),
+        wall_material(),
     );
-    let middle = Sphere::new(translate(-0.5, 1., 0.5), build_stripe());
+    let middle = Sphere::new(translate(-0.5, 1., 0.5), sphere_material());
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale_constant(0.5),
-        build_stripe(),
+        sphere_material(),
     );
     let left = Sphere::new(
         translate(-1.5, 0.33, -0.75) * scale_constant(0.33),
-        build_stripe(),
+        sphere_material(),
     );
     World::new(
         vec![

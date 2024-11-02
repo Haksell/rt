@@ -2,13 +2,13 @@ use super::Pattern;
 use crate::{color::Color, matrix::Matrix, transform, tuple::Tuple};
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Gradient {
+pub struct Ring {
     a: Color,
     b: Color,
     inverse_transform: Matrix,
 }
 
-impl Gradient {
+impl Ring {
     pub fn default() -> Self {
         Self {
             a: Color::white(),
@@ -26,9 +26,13 @@ impl Gradient {
     }
 }
 
-impl Pattern for Gradient {
+impl Pattern for Ring {
     fn color_at(&self, point: &Tuple) -> Color {
-        self.a + (self.b - self.a) * point.x.rem_euclid(1.0)
+        if point.x.hypot(point.z).rem_euclid(2.0) < 1.0 {
+            self.a
+        } else {
+            self.b
+        }
     }
 
     fn get_inverse_transform(&self) -> &Matrix {
@@ -41,19 +45,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_gradient() {
-        let gradient = Gradient::default();
-        assert!(gradient
+    fn test_ring() {
+        let ring = Ring::default();
+        assert!(ring
             .color_at(&Tuple::new_point(0., 0., 0.))
             .is_close(&Color::white()));
-        assert!(gradient
-            .color_at(&Tuple::new_point(0.25, 0., 0.))
-            .is_close(&Color::new(0.75, 0.75, 0.75)));
-        assert!(gradient
-            .color_at(&Tuple::new_point(0.5, 0., 0.))
-            .is_close(&Color::new(0.5, 0.5, 0.5)));
-        assert!(gradient
-            .color_at(&Tuple::new_point(0.75, 0., 0.))
-            .is_close(&Color::new(0.25, 0.25, 0.25)));
+        assert!(ring
+            .color_at(&Tuple::new_point(1., 0., 0.))
+            .is_close(&Color::black()));
+        assert!(ring
+            .color_at(&Tuple::new_point(0., 0., 1.))
+            .is_close(&Color::black()));
+        assert!(ring
+            .color_at(&Tuple::new_point(0.71, 0., 0.71))
+            .is_close(&Color::black()));
     }
 }
