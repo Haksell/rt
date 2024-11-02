@@ -1,7 +1,10 @@
-use crate::{computations::Computations, ray::Ray, Color, Material, PointLight, Tuple, World};
+use crate::{
+    computations::Computations, objects::Object, ray::Ray, Color, Material, PointLight, Tuple,
+    World,
+};
 
 fn lighting(
-    material: &Material,
+    object: &dyn Object,
     light: &PointLight, // TODO: &[PointLight]
     point: &Tuple,
     eyev: &Tuple,
@@ -9,6 +12,7 @@ fn lighting(
     in_shadow: bool, // TODO: not an argument
 ) -> Color {
     // TODO: object.color_at?
+    let material = object.get_material();
     let effective_color = material.pattern.color_at(&point).clone() * light.intensity;
     let ambient = effective_color * material.ambient; // TODO: shouldn't depend on light.intensity
     if in_shadow {
@@ -43,7 +47,7 @@ fn is_shadowed(world: &World, point: &Tuple) -> bool {
 // TODO: in impl World
 pub fn shade_hit(world: &World, comps: &Computations) -> Color {
     lighting(
-        comps.object.get_material(),
+        comps.object,
         &world.lights[0], // TODO: all the lights
         &comps.point,
         &comps.eyev,
@@ -63,20 +67,18 @@ mod tests {
 
     #[test]
     fn test_lighting_light_behind_eye() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let eyev = Tuple::new_vector(0., 0., -1.);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
-        assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, false)
-                .is_close(&Color::new(1.9, 1.9, 1.9))
-        )
+        assert!(lighting(&sphere, &light, &position, &eyev, &normalv, false)
+            .is_close(&Color::new(1.9, 1.9, 1.9)))
     }
 
     #[test]
     fn test_lighting_eye_diagonal() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         let eyev = Tuple::new_vector(0., sqrt_half, -sqrt_half);
@@ -84,62 +86,53 @@ mod tests {
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
         // 0.9 + 0.1 = 1., specular has disappeared
         assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, false)
-                .is_close(&Color::white())
+            lighting(&sphere, &light, &position, &eyev, &normalv, false).is_close(&Color::white())
         )
     }
 
     #[test]
     fn test_lighting_light_diagonal() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let eyev = Tuple::new_vector(0., 0., -1.);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));
-        assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, false)
-                .is_close(&Color::new(0.73639613, 0.73639613, 0.73639613))
-        )
+        assert!(lighting(&sphere, &light, &position, &eyev, &normalv, false)
+            .is_close(&Color::new(0.73639613, 0.73639613, 0.73639613)))
     }
 
     #[test]
     fn test_lighting_both_diagonal_full_specular() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         let eyev = Tuple::new_vector(0., -sqrt_half, -sqrt_half);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 10., -10.));
-        assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, false)
-                .is_close(&Color::new(1.6363962, 1.6363962, 1.6363962))
-        )
+        assert!(lighting(&sphere, &light, &position, &eyev, &normalv, false)
+            .is_close(&Color::new(1.6363962, 1.6363962, 1.6363962)))
     }
 
     #[test]
     fn test_lighting_light_behind_surface() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let eyev = Tuple::new_vector(0., 0., -1.);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., 10.));
-        assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, false)
-                .is_close(&Color::new(0.1, 0.1, 0.1))
-        )
+        assert!(lighting(&sphere, &light, &position, &eyev, &normalv, false)
+            .is_close(&Color::new(0.1, 0.1, 0.1)))
     }
 
     #[test]
     fn test_lighting_surface_in_shadow() {
-        let material = Material::default();
+        let sphere = Sphere::default();
         let position = Tuple::zero_point();
         let eyev = Tuple::new_vector(0., 0., -1.);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
-        assert!(
-            lighting(&material, &light, &position, &eyev, &normalv, true)
-                .is_close(&Color::new(0.1, 0.1, 0.1))
-        )
+        assert!(lighting(&sphere, &light, &position, &eyev, &normalv, true)
+            .is_close(&Color::new(0.1, 0.1, 0.1)))
     }
 
     #[test]
@@ -151,13 +144,14 @@ mod tests {
             0.0,
             0.0,
         );
+        let sphere = Sphere::unit(material);
         let eyev = Tuple::new_vector(0., 0., -1.);
         let normalv = Tuple::new_vector(0., 0., -1.);
         let light = PointLight::new(Color::white(), Tuple::new_point(0., 0., -10.));
 
         assert_eq!(
             lighting(
-                &material,
+                &sphere,
                 &light,
                 &Tuple::new_point(0.9, 0.0, 0.0),
                 &eyev,
@@ -169,7 +163,7 @@ mod tests {
 
         assert_eq!(
             lighting(
-                &material,
+                &sphere,
                 &light,
                 &Tuple::new_point(1.1, 0.0, 0.0),
                 &eyev,
