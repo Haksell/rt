@@ -64,7 +64,11 @@ fn main() {
 
 fn build_stripe() -> Material {
     Material {
-        pattern: Box::new(Stripe::new(Color::white(), Color::red())),
+        pattern: Box::new(Stripe::new(
+            Color::white(),
+            Color::red(),
+            Matrix::identity(),
+        )),
         diffuse: 0.7,
         specular: 0.3,
         ..Material::default()

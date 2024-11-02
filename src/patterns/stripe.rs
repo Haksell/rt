@@ -1,10 +1,11 @@
 use super::Pattern;
-use crate::{color::Color, tuple::Tuple};
+use crate::{color::Color, matrix::Matrix, transform, tuple::Tuple};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Stripe {
     a: Color,
     b: Color,
+    inverse_transform: Matrix,
 }
 
 impl Stripe {
@@ -12,11 +13,16 @@ impl Stripe {
         Self {
             a: Color::white(),
             b: Color::black(),
+            inverse_transform: Matrix::identity(),
         }
     }
 
-    pub fn new(a: Color, b: Color) -> Self {
-        Self { a, b }
+    pub fn new(a: Color, b: Color, transform: Matrix) -> Self {
+        Self {
+            a,
+            b,
+            inverse_transform: transform.inverse(),
+        }
     }
 }
 
@@ -27,6 +33,10 @@ impl Pattern for Stripe {
         } else {
             &self.b
         }
+    }
+
+    fn get_inverse_transform(&self) -> &Matrix {
+        &self.inverse_transform
     }
 }
 

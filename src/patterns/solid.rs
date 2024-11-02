@@ -1,20 +1,28 @@
 use super::Pattern;
-use crate::{color::Color, tuple::Tuple};
+use crate::{color::Color, matrix::Matrix, tuple::Tuple};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Solid {
     c: Color,
+    inverse_transform: Matrix,
 }
 
 impl Solid {
     pub fn new(c: Color) -> Self {
-        Self { c }
+        Self {
+            c,
+            inverse_transform: Matrix::identity(),
+        }
     }
 }
 
 impl Pattern for Solid {
     fn color_at(&self, _: &Tuple) -> &Color {
         &self.c
+    }
+
+    fn get_inverse_transform(&self) -> &Matrix {
+        &self.inverse_transform
     }
 }
 

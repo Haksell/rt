@@ -4,7 +4,7 @@ mod sphere;
 pub use plane::Plane;
 pub use sphere::Sphere;
 
-use crate::{color::Color, material::Material, Matrix, Ray, Tuple};
+use crate::{color::Color, material::Material, world, Matrix, Ray, Tuple};
 use std::fmt::Debug;
 
 // TODO: automate Intersection.object
@@ -32,7 +32,7 @@ pub trait Object: Debug {
     fn get_inverse_transform(&self) -> &Matrix;
     fn get_material(&self) -> &Material;
 
-    //TODO: return Vec<f64> instead?
+    // TODO: return Vec<f64> instead?
     fn local_intersect(&self, object_ray: &Ray) -> Vec<Intersection>;
     fn local_normal_at(&self, object_point: &Tuple) -> Tuple;
 
@@ -49,8 +49,11 @@ pub trait Object: Debug {
         world_normal.normalize()
     }
 
-    fn color_at(&self, point: &Tuple) -> &Color {
-        self.get_material().pattern.color_at(&point)
+    fn color_at(&self, world_point: &Tuple) -> &Color {
+        let object_point = self.get_inverse_transform().clone() * world_point.clone();
+        let pattern = &self.get_material().pattern;
+        let pattern_point = pattern.get_inverse_transform().clone() * object_point;
+        pattern.color_at(&pattern_point)
     }
 }
 
@@ -66,6 +69,10 @@ pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<&'a Intersection<'a>
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{
+        patterns::Stripe,
+        transform::{scale, scale_constant, translate},
+    };
 
     #[test]
     fn test_hit_all_positive() {
@@ -107,5 +114,55 @@ mod tests {
             Intersection::new(&sphere, 2.),
         ];
         assert_eq!(hit(&intersections), Some(&Intersection::new(&sphere, 2.)));
+    }
+
+    #[test]
+    fn test_color_at_object_transform() {
+        assert_eq!(
+            *Sphere::new(
+                scale_constant(2.0),
+                Material {
+                    pattern: Box::new(Stripe::default()),
+                    ..Material::default()
+                },
+            )
+            .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+            Color::white()
+        );
+    }
+
+    #[test]
+    fn test_color_at_pattern_transform() {
+        assert_eq!(
+            *Sphere::unit(Material {
+                pattern: Box::new(Stripe::new(
+                    Color::white(),
+                    Color::black(),
+                    scale_constant(2.0),
+                )),
+                ..Material::default()
+            })
+            .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+            Color::white()
+        );
+    }
+
+    #[test]
+    fn test_color_at_both_transform() {
+        assert_eq!(
+            *Sphere::new(
+                scale_constant(2.0),
+                Material {
+                    pattern: Box::new(Stripe::new(
+                        Color::white(),
+                        Color::black(),
+                        translate(0.5, 0.0, 0.0),
+                    )),
+                    ..Material::default()
+                }
+            )
+            .color_at(&Tuple::new_point(2.5, 0.0, 0.0)),
+            Color::white()
+        );
     }
 }
