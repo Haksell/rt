@@ -60,5 +60,7 @@
 
 ## bonus
 
-- [ ] patterns: stripe, checkerboard...
+- [x] pattern: stripe
+- [ ] pattern: checkerboard
+- [ ] pattern: gradient
 - [ ] `.obj` files
