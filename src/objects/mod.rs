@@ -49,7 +49,8 @@ pub trait Object: Debug {
         world_normal.normalize()
     }
 
-    fn color_at(&self, world_point: &Tuple) -> &Color {
+    // TODO: find a way to avoid cloning the colors most of the time
+    fn color_at(&self, world_point: &Tuple) -> Color {
         let object_point = self.get_inverse_transform().clone() * world_point.clone();
         let pattern = &self.get_material().pattern;
         let pattern_point = pattern.get_inverse_transform().clone() * object_point;
@@ -119,7 +120,7 @@ mod tests {
     #[test]
     fn test_color_at_object_transform() {
         assert_eq!(
-            *Sphere::new(
+            Sphere::new(
                 scale_constant(2.0),
                 Material {
                     pattern: Box::new(Stripe::default()),
@@ -134,7 +135,7 @@ mod tests {
     #[test]
     fn test_color_at_pattern_transform() {
         assert_eq!(
-            *Sphere::unit(Material {
+            Sphere::unit(Material {
                 pattern: Box::new(Stripe::new(
                     Color::white(),
                     Color::black(),
@@ -150,7 +151,7 @@ mod tests {
     #[test]
     fn test_color_at_both_transform() {
         assert_eq!(
-            *Sphere::new(
+            Sphere::new(
                 scale_constant(2.0),
                 Material {
                     pattern: Box::new(Stripe::new(

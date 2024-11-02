@@ -22,7 +22,7 @@ use material::Material;
 use matrix::Matrix;
 use minifb::{Key, Window, WindowOptions};
 use objects::{Plane, Sphere};
-use patterns::{Solid, Stripe};
+use patterns::{Gradient, Solid, Stripe};
 use point_light::PointLight;
 use ray::Ray;
 use transform::{rotate_x, rotate_y, rotate_z, scale_constant, translate, view_transform};
@@ -64,7 +64,7 @@ fn main() {
 
 fn build_stripe() -> Material {
     Material {
-        pattern: Box::new(Stripe::new(
+        pattern: Box::new(Gradient::new(
             Color::white(),
             Color::red(),
             scale_constant(0.3),
