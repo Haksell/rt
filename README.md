@@ -60,4 +60,5 @@
 
 ## bonus
 
+- [ ] patterns: stripe, checkerboard...
 - [ ] `.obj` files
