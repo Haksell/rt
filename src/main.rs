@@ -25,7 +25,7 @@ use objects::{Plane, Sphere};
 use patterns::{Solid, Stripe};
 use point_light::PointLight;
 use ray::Ray;
-use transform::{rotate_x, rotate_y, scale_constant, translate, view_transform};
+use transform::{rotate_x, rotate_y, rotate_z, scale_constant, translate, view_transform};
 use tuple::Tuple;
 use world::World;
 
@@ -67,7 +67,7 @@ fn build_stripe() -> Material {
         pattern: Box::new(Stripe::new(
             Color::white(),
             Color::red(),
-            Matrix::identity(),
+            scale_constant(0.3),
         )),
         diffuse: 0.7,
         specular: 0.3,
