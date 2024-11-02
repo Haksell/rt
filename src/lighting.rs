@@ -13,7 +13,7 @@ fn lighting(
 ) -> Color {
     // TODO: object.color_at?
     let material = object.get_material();
-    let effective_color = material.pattern.color_at(&point).clone() * light.intensity;
+    let effective_color = object.color_at(&point).clone() * light.intensity;
     let ambient = effective_color * material.ambient; // TODO: shouldn't depend on light.intensity
     if in_shadow {
         return ambient;

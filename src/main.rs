@@ -62,57 +62,37 @@ fn main() {
     }
 }
 
+fn build_stripe() -> Material {
+    Material {
+        pattern: Box::new(Stripe::new(Color::white(), Color::red())),
+        diffuse: 0.7,
+        specular: 0.3,
+        ..Material::default()
+    }
+}
+
 fn build_world() -> World {
-    let floor = Plane::new(
-        Matrix::identity(),
-        Material {
-            pattern: Box::new(Solid::new(Color::new(1., 0.9, 0.9))),
-            specular: 0.,
-            ..Material::default()
-        },
-    );
+    let floor = Plane::new(Matrix::identity(), build_stripe());
     let left_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(-std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        Material {
-            pattern: Box::new(Stripe::new(Color::black(), Color::red())),
-            specular: 0.,
-            ..Material::default()
-        },
+        build_stripe(),
     );
     let right_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        Material {
-            pattern: Box::new(Solid::new(Color::new(1., 0.9, 0.9))),
-            specular: 0.,
-            ..Material::default()
-        },
+        build_stripe(),
     );
-    let middle = Sphere::new(
-        translate(-0.5, 1., 0.5),
-        Material {
-            pattern: Box::new(Stripe::new(Color::black(), Color::red())),
-            diffuse: 0.7,
-            specular: 0.3,
-            ..Material::default()
-        },
-    );
+    let middle = Sphere::new(translate(-0.5, 1., 0.5), build_stripe());
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale_constant(0.5),
-        Material {
-            pattern: Box::new(Solid::new(Color::new(0.5, 1., 0.1))),
-            ..middle.material
-        },
+        build_stripe(),
     );
     let left = Sphere::new(
         translate(-1.5, 0.33, -0.75) * scale_constant(0.33),
-        Material {
-            pattern: Box::new(Solid::new(Color::new(1., 0.8, 0.1))),
-            ..middle.material
-        },
+        build_stripe(),
     );
     World::new(
         vec![
@@ -125,7 +105,7 @@ fn build_world() -> World {
         ],
         vec![PointLight::new(
             Color::white(),
-            Tuple::new_point(-10., 10., -10.),
+            Tuple::new_point(0., 10., -10.),
         )],
     )
 }

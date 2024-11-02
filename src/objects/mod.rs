@@ -4,7 +4,7 @@ mod sphere;
 pub use plane::Plane;
 pub use sphere::Sphere;
 
-use crate::{material::Material, Matrix, Ray, Tuple};
+use crate::{color::Color, material::Material, Matrix, Ray, Tuple};
 use std::fmt::Debug;
 
 // TODO: automate Intersection.object
@@ -47,6 +47,10 @@ pub trait Object: Debug {
         let mut world_normal = self.get_inverse_transform().transpose() * local_normal;
         world_normal.w = 0.;
         world_normal.normalize()
+    }
+
+    fn color_at(&self, point: &Tuple) -> &Color {
+        self.get_material().pattern.color_at(&point)
     }
 }
 
