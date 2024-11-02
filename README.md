@@ -3,26 +3,40 @@
 ## todo
 
 - [ ] read *The Ray Tracer Challenge*
-- [ ] no `lib.rs`
 - [ ] implement operator overloading for `&Tuple` and `&Matrix` to avoid `.clone()` everywhere
 - [ ] fix TODO
 - [ ] clean code/architecture
+- [ ] multithreading (`std::thread`)
 - [ ] SIMD (`#[repr(simd)]`, `stdsimd`, `packed_simd`)
-- [ ] multithreading (`std::thread`, `rayon`, `crossbeam`?)
+- [ ] GPU (`wgpu`?)
 - [ ] read scene from file (JSON?)
 - [ ] reproduce 3 images from subject
-- [ ] use `pub(crate)` where appropriate
+
+## objects
+
+- [x] geometric object: plane
+- [x] geometric object: sphere
+- [ ] geometric object: cylinder
+- [ ] geometric object: cone
+- [ ] limited object: parallelogram
+- [ ] limited object: disk
+- [ ] limited object: half-sphere
+- [ ] limited object: tube
+- [ ] composed element: cube
+- [ ] composed element: pyramid
+- [ ] composed element: tetrahedron
+- [ ] native element: ellipsoid (just scaled spheres?)
+- [ ] native element: paraboloid
+- [ ] native element: hyperboloid
+- [ ] native element: tablecloth
+- [ ] native element: toroid
 
 ## mandatory part
 
 - [x] code in ~~C, C++ or~~ Rust
-- [ ] implement the ray tracing method to create a computer generated image (important)
-- [ ] geometric object: plane
-- [ ] geometric object: sphere
-- [ ] geometric object: cylinder
-- [ ] geometric object: cone
-- [ ] your program must be able to apply translation translation
-- [ ] your program must be able to apply translation rotation
+- [ ] implement the ray tracing method to create a computer generated image
+- [x] your program must be able to apply translation
+- [x] your program must be able to apply rotation
 - [ ] position and direction of the camera can be changed easily
 - [ ] manage to redraw the view or part of the view without recalculating the entire image (???)
 - [ ] light management: different brightness
@@ -33,9 +47,6 @@
 ## options
 
 - [ ] external files for scene description
-- [ ] limited objects: parallelograms, disks, half-spheres, tubes etc...
-- [ ] composed elements: cubes, pyramids, tetrahedrons...
-- [ ] more native elements: paraboloid, hyperboloid, tablecloth, toroid...
 - [ ] ambiance light
 - [ ] direct light
 - [ ] parallel light
@@ -50,4 +61,3 @@
 ## bonus
 
 - [ ] `.obj` files
-- [ ] ellipsoids (scaled spheres)
