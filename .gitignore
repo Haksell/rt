@@ -1,2 +1,8 @@
-/target/
-/rust_analyzer/
+/target
+
+
+# Added by cargo
+#
+# already existing elements were commented out
+
+#/target
