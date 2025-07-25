@@ -8,14 +8,12 @@ macro_rules! matrix {
         [$a20:expr, $a21:expr, $a22:expr, $a23:expr $(,)?],
         [$a30:expr, $a31:expr, $a32:expr, $a33:expr $(,)?] $(,)?
     ) => {
-        crate::matrix::Matrix {
-            values: [
-                [$a00, $a01, $a02, $a03],
-                [$a10, $a11, $a12, $a13],
-                [$a20, $a21, $a22, $a23],
-                [$a30, $a31, $a32, $a33],
-            ],
-        }
+        crate::matrix::Matrix::new([
+            [$a00, $a01, $a02, $a03],
+            [$a10, $a11, $a12, $a13],
+            [$a20, $a21, $a22, $a23],
+            [$a30, $a31, $a32, $a33],
+        ])
     };
 }
 
@@ -236,13 +234,32 @@ macro_rules! impl_matrix_f64 {
             type Output = Matrix;
 
             fn mul(self, scalar: $rhs) -> Matrix {
-                let mut values = self.values.clone();
-                for y in 0..4 {
-                    for x in 0..4 {
-                        values[y][x] *= scalar
-                    }
-                }
-                Matrix { values }
+                matrix![
+                    [
+                        self[(0, 0)] * scalar,
+                        self[(0, 1)] * scalar,
+                        self[(0, 2)] * scalar,
+                        self[(0, 3)] * scalar
+                    ],
+                    [
+                        self[(1, 0)] * scalar,
+                        self[(1, 1)] * scalar,
+                        self[(1, 2)] * scalar,
+                        self[(1, 3)] * scalar
+                    ],
+                    [
+                        self[(2, 0)] * scalar,
+                        self[(2, 1)] * scalar,
+                        self[(2, 2)] * scalar,
+                        self[(2, 3)] * scalar
+                    ],
+                    [
+                        self[(3, 0)] * scalar,
+                        self[(3, 1)] * scalar,
+                        self[(3, 2)] * scalar,
+                        self[(3, 3)] * scalar
+                    ],
+                ]
             }
         }
 

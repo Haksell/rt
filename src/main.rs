@@ -1,9 +1,13 @@
 #![allow(unused)] // TODO: remove before push
 
 mod canvas;
+#[macro_use]
 mod color;
 mod floats;
+#[macro_use]
 mod matrix;
+mod transform;
+#[macro_use]
 mod tuple;
 
 use {
