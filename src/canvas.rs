@@ -59,7 +59,7 @@ impl IndexMut<(usize, usize)> for Canvas {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use {super::*, crate::color};
 
     #[test]
     fn test_new() {
@@ -111,7 +111,7 @@ mod tests {
         let mut canvas = Canvas::new(3, 2);
         canvas[(0, 0)] = Color::red();
         canvas[(0, 1)] = Color::green();
-        canvas[(0, 2)] = Color::new(0.333, 0.667, 1.);
+        canvas[(0, 2)] = color![0.333, 0.667, 1.];
         canvas[(1, 2)] = Color::blue();
         assert_eq!(
             canvas.to_ppm(),

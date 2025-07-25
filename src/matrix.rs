@@ -1,5 +1,24 @@
 use crate::{floats::is_close, tuple::Tuple};
 
+#[macro_export]
+macro_rules! matrix {
+    (
+        [$a00:expr, $a01:expr, $a02:expr, $a03:expr $(,)?],
+        [$a10:expr, $a11:expr, $a12:expr, $a13:expr $(,)?],
+        [$a20:expr, $a21:expr, $a22:expr, $a23:expr $(,)?],
+        [$a30:expr, $a31:expr, $a32:expr, $a33:expr $(,)?] $(,)?
+    ) => {
+        crate::matrix::Matrix {
+            values: [
+                [$a00, $a01, $a02, $a03],
+                [$a10, $a11, $a12, $a13],
+                [$a20, $a21, $a22, $a23],
+                [$a30, $a31, $a32, $a33],
+            ],
+        }
+    };
+}
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix {
     values: [[f64; 4]; 4],
@@ -11,20 +30,16 @@ impl Matrix {
     }
 
     pub fn zero() -> Self {
-        Self {
-            values: [[0.; 4]; 4],
-        }
+        Matrix::new([[0.; 4]; 4])
     }
 
     pub fn identity() -> Self {
-        Self {
-            values: [
-                [1., 0., 0., 0.],
-                [0., 1., 0., 0.],
-                [0., 0., 1., 0.],
-                [0., 0., 0., 1.],
-            ],
-        }
+        matrix![
+            [1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [0., 0., 1., 0.],
+            [0., 0., 0., 1.],
+        ]
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
@@ -109,7 +124,7 @@ macro_rules! impl_matrix_matrix {
 
             // TODO: optimize with Strassen
             fn mul(self, rhs: $rhs) -> Matrix {
-                Matrix::new([
+                matrix![
                     [
                         self[0][0] * rhs[0][0]
                             + self[0][1] * rhs[1][0]
@@ -182,7 +197,7 @@ macro_rules! impl_matrix_matrix {
                             + self[3][2] * rhs[2][3]
                             + self[3][3] * rhs[3][3],
                     ],
-                ])
+                ]
             }
         }
     };
@@ -255,16 +270,16 @@ impl_matrix_f64!(&Matrix, &f64);
 
 #[cfg(test)]
 mod tests {
-    use {super::*, rand::Rng as _};
+    use {super::*, crate::point, rand::Rng as _};
 
     #[test]
     fn test_new() {
-        let matrix = Matrix::new([
+        let matrix = matrix![
             [1., 2., 3., 4.],
             [5.5, 6.5, 7.5, 8.5],
             [9., 10., 11., 12.],
             [13.5, 14.5, 15.5, 16.5],
-        ]);
+        ];
         assert_eq!(matrix[0][0], 1.);
         assert_eq!(matrix[(0, 0)], 1.);
         assert_eq!(matrix[0][1], 2.);
@@ -303,12 +318,12 @@ mod tests {
     fn test_zero() {
         assert_eq!(
             Matrix::zero(),
-            Matrix::new([
+            matrix![
                 [0., 0., 0., 0.],
                 [0., 0., 0., 0.],
                 [0., 0., 0., 0.],
                 [0., 0., 0., 0.]
-            ])
+            ]
         );
     }
 
@@ -316,12 +331,12 @@ mod tests {
     fn test_identity() {
         assert_eq!(
             Matrix::identity(),
-            Matrix::new([
+            matrix![
                 [1., 0., 0., 0.],
                 [0., 1., 0., 0.],
                 [0., 0., 1., 0.],
                 [0., 0., 0., 1.]
-            ])
+            ]
         );
     }
 
@@ -329,21 +344,21 @@ mod tests {
     fn test_scaling() {
         assert_eq!(
             Matrix::identity() * &4.2,
-            Matrix::new([
+            matrix![
                 [4.2, 0., 0., 0.],
                 [0., 4.2, 0., 0.],
                 [0., 0., 4.2, 0.],
                 [0., 0., 0., 4.2]
-            ])
+            ]
         );
         assert_eq!(
             &Matrix::identity() / 2.,
-            Matrix::new([
+            matrix![
                 [0.5, 0., 0., 0.],
                 [0., 0.5, 0., 0.],
                 [0., 0., 0.5, 0.],
                 [0., 0., 0., 0.5]
-            ])
+            ]
         );
     }
 
@@ -354,91 +369,88 @@ mod tests {
         assert_eq!(Matrix::identity() * Matrix::zero(), Matrix::zero());
         assert_eq!(Matrix::identity() * Matrix::identity(), Matrix::identity());
         assert_eq!(
-            &Matrix::new([
+            &matrix![
                 [2., 0., 0., 0.],
                 [0., 2., 0., 0.],
                 [0., 0., 2., 0.],
                 [0., 0., 0., 2.],
-            ]) * &Matrix::new([
+            ] * &matrix![
                 [0., 1., 2., 3.],
                 [4., 5., 6., 7.],
                 [8., 9., 10., 11.],
                 [12., 13., 14., 15.],
-            ]),
-            Matrix::new([
+            ],
+            matrix![
                 [0., 2., 4., 6.],
                 [8., 10., 12., 14.],
                 [16., 18., 20., 22.],
                 [24., 26., 28., 30.],
-            ])
+            ]
         );
         assert_eq!(
-            Matrix::new([
+            matrix![
                 [0., 1., 0., 0.],
                 [1., 0., 0., 0.],
                 [0., 0., 1., 0.],
                 [0., 0., 0., 1.],
-            ]) * &Matrix::new([
+            ] * &matrix![
                 [0., 1., 2., 3.],
                 [4., 5., 6., 7.],
                 [8., 9., 10., 11.],
                 [12., 13., 14., 15.],
-            ]),
-            Matrix::new([
+            ],
+            matrix![
                 [4., 5., 6., 7.],
                 [0., 1., 2., 3.],
                 [8., 9., 10., 11.],
                 [12., 13., 14., 15.],
-            ])
+            ]
         );
         assert_eq!(
-            &Matrix::new([
+            &matrix![
                 [1., 2., 3., 4.],
                 [5., 6., 7., 8.],
                 [9., 8., 7., 6.],
                 [5., 4., 3., 2.],
-            ]) * Matrix::new([
+            ] * matrix![
                 [-2., 1., 2., 3.],
                 [3., 2., 1., -1.],
                 [4., 3., 6., 5.],
                 [1., 2., 7., 8.]
-            ]),
-            Matrix::new([
+            ],
+            matrix![
                 [20., 22., 50., 48.],
                 [44., 54., 114., 108.],
                 [40., 58., 110., 102.],
                 [16., 26., 46., 42.],
-            ])
+            ]
         );
     }
 
     #[test]
     fn test_tup_mul() {
-        assert_eq!(
-            Matrix::identity() * Tuple::new(1., 2., 3., 4.),
-            Tuple::new(1., 2., 3., 4.)
-        );
+        assert_eq!(Matrix::identity() * point![1., 2., 3.], point![1., 2., 3.]);
         assert_eq!(
             Matrix::identity() * 2. * &Tuple::new(1., 2., 3., 4.),
             Tuple::new(2., 4., 6., 8.)
         );
         assert_eq!(
-            &Matrix::new([
+            &matrix![
                 [0., 1., 0., 0.],
                 [1., 0., 0., 0.],
                 [0., 0., 1., 0.],
                 [0., 0., 0., 1.],
-            ]) * Tuple::new(1., 2., 3., 4.),
+            ] * Tuple::new(1., 2., 3., 4.),
             Tuple::new(2., 1., 3., 4.),
         );
         assert_eq!(
-            &Matrix::new([
+            &matrix![
                 [1., 2., 3., 4.],
                 [2., 4., 4., 2.],
                 [8., 6., 4., 1.],
                 [0., 0., 0., 1.],
-            ]) * &Tuple::new(1., 2., 3., 1.),
-            Tuple::new(18., 24., 33., 1.),
+            ] * &point![1., 2., 3.],
+            point![18., 24., 33.],
         );
     }
 
@@ -447,74 +459,74 @@ mod tests {
         assert_eq!(Matrix::zero().transpose(), Matrix::zero());
         assert_eq!(Matrix::identity().transpose(), Matrix::identity());
         assert_eq!(
-            Matrix::new([
+            matrix![
                 [1., 2., 3., 4.],
                 [5., 6., 7., 8.],
                 [9., 10., 11., 12.],
                 [13., 14., 15., 16.],
-            ])
+            ]
             .transpose(),
-            Matrix::new([
+            matrix![
                 [1., 5., 9., 13.],
                 [2., 6., 10., 14.],
                 [3., 7., 11., 15.],
                 [4., 8., 12., 16.],
-            ])
+            ]
         );
     }
 
     #[test]
     fn test_inverse() {
         assert_eq!(Matrix::identity().inverse(), Matrix::identity());
-        let swap = Matrix::new([
+        let swap = matrix![
             [0., 0., 1., 0.],
             [0., 1., 0., 0.],
             [1., 0., 0., 0.],
             [0., 0., 0., 1.],
-        ]);
+        ];
         assert_eq!(swap.inverse(), swap);
         assert!(
-            Matrix::new([
+            matrix![
                 [1., 2., 3., 4.],
                 [12., 13., 14., 5.],
                 [11., 0., 15., 6.],
                 [10., 9., 8., 7.]
-            ])
+            ]
             .inverse()
             .is_close(
-                &(Matrix::new([
+                &(matrix![
                     [-411., -132., 55., 282.],
                     [68., 121., -110., -31.],
                     [187., 154., 55., -264.],
                     [286., -143., 0., 143.]
-                ]) / 1430.)
+                ] / 1430.)
             )
         );
         assert!(
-            Matrix::new([
+            matrix![
                 [-0.5, -4., -0.5, -1.25],
                 [-2.75, 0.5, -4.75, -4.25],
                 [5., -0.75, -4., 0.25],
                 [4.5, 3.75, 4.5, 3.75],
-            ])
+            ]
             .inverse()
-            .is_close(&Matrix::new([
+            .is_close(&matrix![
                 [0.26050284, 0.16642336, 0.07412814, 0.27050554],
                 [-0.15247364, 0.11678832, -0.02595296, 0.08326575],
                 [0.32019465, 0.15474453, -0.14549878, 0.29180860],
                 [-0.54436334, -0.50218978, 0.11159773, -0.49137605],
-            ]))
+            ])
         );
     }
 
     #[test]
     fn test_inverse_rules() {
-        let mat = Matrix::new([
+        let mat = matrix![
             [-0.5, -4., -0.5, -1.25],
             [-2.75, 0.5, -4.75, -4.25],
             [5., -0.75, -4., 0.25],
             [4.5, 3.75, 4.5, 3.75],
-        ]);
+        ];
         let inv = mat.inverse();
         assert!((&mat * &inv).is_close(&Matrix::identity()));
         assert!((&inv * &mat).is_close(&Matrix::identity()));
@@ -583,12 +595,12 @@ mod tests {
     fn test_inverse_singular() {
         if cfg!(debug_assertions) {
             let result = std::panic::catch_unwind(|| {
-                Matrix::new([
+                matrix![
                     [1., 2., 3., 4.],
                     [5., 6., 7., 8.],
                     [9., 10., 11., 12.],
                     [15., 18., 21., 24.],
-                ])
+                ]
                 .inverse();
             });
             assert!(result.is_err(), "Expected panic in debug mode");

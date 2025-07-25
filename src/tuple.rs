@@ -1,14 +1,16 @@
 use crate::floats::is_close;
 
-macro_rules! p {
+#[macro_export]
+macro_rules! point {
     ($x:expr, $y:expr, $z:expr $(,)?) => {
-        Tuple::new($x, $y, $z, 1.)
+        crate::tuple::Tuple::new($x, $y, $z, 1.)
     };
 }
 
-macro_rules! v {
+#[macro_export]
+macro_rules! vector {
     ($x:expr, $y:expr, $z:expr $(,)?) => {
-        Tuple::new($x, $y, $z, 0.)
+        crate::tuple::Tuple::new($x, $y, $z, 0.)
     };
 }
 
@@ -26,15 +28,15 @@ impl Tuple {
     }
 
     pub fn zero_point() -> Self {
-        p![0., 0., 0.]
+        point![0., 0., 0.]
     }
 
     pub fn zero_vector() -> Self {
-        v![0., 0., 0.]
+        vector![0., 0., 0.]
     }
 
     pub fn up() -> Self {
-        v![0., 1., 0.]
+        vector![0., 1., 0.]
     }
 
     pub fn is_point(&self) -> bool {
@@ -75,7 +77,7 @@ impl Tuple {
     pub fn cross(&self, rhs: &Self) -> Self {
         debug_assert!(self.is_vector());
         debug_assert!(rhs.is_vector());
-        v![
+        vector![
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
             self.x * rhs.y - self.y * rhs.x,
@@ -212,7 +214,7 @@ mod tests {
             z: 3.1,
             w: 1.,
         };
-        let point_constructor = p![4.3, -4.2, 3.1];
+        let point_constructor = point![4.3, -4.2, 3.1];
         assert_eq!(point_manual, point_constructor);
         assert!(point_constructor.is_point());
         assert!(!point_constructor.is_vector());
@@ -226,7 +228,7 @@ mod tests {
             z: 3.1,
             w: 0.,
         };
-        let vector_constructor = v![4.3, -4.2, 3.1];
+        let vector_constructor = vector![4.3, -4.2, 3.1];
         assert_eq!(vector_manual, vector_constructor);
         assert!(vector_constructor.is_vector());
         assert!(!vector_constructor.is_point());
@@ -234,63 +236,79 @@ mod tests {
 
     #[test]
     fn test_addition() {
-        assert_eq!(p![3., -2., 5.] + v![-2., 3., 1.], p![1., 1., 6.]);
+        assert_eq!(
+            point![3., -2., 5.] + vector![-2., 3., 1.],
+            point![1., 1., 6.]
+        );
     }
 
     #[test]
     fn test_subtraction() {
-        assert_eq!(p![3., 2., 1.] - &p![5., 6., 7.], v![-2., -4., -6.]);
-        assert_eq!(&v![3., 2., 1.] - v![5., 6., 7.], v![-2., -4., -6.]);
-        assert_eq!(&p![3., 2., 1.] - &v![5., 6., 7.], p![-2., -4., -6.]);
+        assert_eq!(
+            point![3., 2., 1.] - &point![5., 6., 7.],
+            vector![-2., -4., -6.]
+        );
+        assert_eq!(
+            &vector![3., 2., 1.] - vector![5., 6., 7.],
+            vector![-2., -4., -6.]
+        );
+        assert_eq!(
+            &point![3., 2., 1.] - &vector![5., 6., 7.],
+            point![-2., -4., -6.]
+        );
     }
 
     #[test]
     fn test_negation() {
-        assert_eq!(-v![3., 2., -1.], v![-3., -2., 1.]);
+        assert_eq!(-vector![3., 2., -1.], vector![-3., -2., 1.]);
         assert_eq!(-&Tuple::zero_vector(), Tuple::zero_vector());
     }
 
     #[test]
     fn test_scaling() {
-        assert_eq!(&v![1., -2., 3.] * 3.5, v![3.5, -7., 10.5],);
-        assert_eq!(&0.5 * v![1., -2., 3.], v![0.5, -1., 1.5],);
+        assert_eq!(&vector![1., -2., 3.] * 3.5, vector![3.5, -7., 10.5],);
+        assert_eq!(&0.5 * vector![1., -2., 3.], vector![0.5, -1., 1.5],);
     }
 
     #[test]
     fn test_division() {
-        assert_eq!(&v![1., -2.5, 3.25] / &2., v![0.5, -1.25, 1.625],);
+        assert_eq!(&vector![1., -2.5, 3.25] / &2., vector![0.5, -1.25, 1.625],);
     }
 
     #[test]
     fn test_magnitude() {
-        assert_eq!(v![1., 0., 0.].magnitude(), 1.);
+        assert_eq!(vector![1., 0., 0.].magnitude(), 1.);
         assert_eq!(Tuple::up().magnitude(), 1.);
-        assert_eq!(v![0., 0., 1.].magnitude(), 1.);
-        assert_eq!(v![0., 3., 4.].magnitude(), 5.);
-        assert_eq!(v![1., 2., 3.].magnitude(), 14.0f64.sqrt());
-        assert_eq!(v![1., -2., -3.].magnitude(), 14.0f64.sqrt());
+        assert_eq!(vector![0., 0., 1.].magnitude(), 1.);
+        assert_eq!(vector![0., 3., 4.].magnitude(), 5.);
+        assert_eq!(vector![1., 2., 3.].magnitude(), 14.0f64.sqrt());
+        assert_eq!(vector![1., -2., -3.].magnitude(), 14.0f64.sqrt());
     }
 
     #[test]
     fn test_is_normalized() {
         assert!(Tuple::up().is_normalized(),);
         assert!(
-            v!(
+            vector!(
                 core::f64::consts::FRAC_1_SQRT_2,
                 core::f64::consts::FRAC_1_SQRT_2,
                 0.
             )
             .is_normalized(),
         );
-        assert!(!v![0.5, 0.5, 0.].is_normalized(),);
+        assert!(!vector![0.5, 0.5, 0.].is_normalized(),);
     }
 
     #[test]
     fn test_normalize() {
-        assert_eq!(v![3., 0., 0.].normalize(), v![1., 0., 0.]);
-        assert!(v![3., 4., 0.].normalize().is_close(&v![0.6, 0.8, 0.]));
+        assert_eq!(vector![3., 0., 0.].normalize(), vector![1., 0., 0.]);
+        assert!(
+            vector![3., 4., 0.]
+                .normalize()
+                .is_close(&vector![0.6, 0.8, 0.])
+        );
         let sqrt14 = 14.0f64.sqrt();
-        assert!(v![1., -2., -3.].normalize().is_close(&v!(
+        assert!(vector![1., -2., -3.].normalize().is_close(&vector!(
             1. / sqrt14,
             -2. / sqrt14,
             -3. / sqrt14
@@ -299,24 +317,24 @@ mod tests {
 
     #[test]
     fn test_dot() {
-        assert_eq!(&v![1., 2., 3.] * v![2., 3., 4.], 20.,);
-        assert_eq!(v![1., 0., 0.] * &Tuple::up(), 0.);
+        assert_eq!(&vector![1., 2., 3.] * vector![2., 3., 4.], 20.,);
+        assert_eq!(vector![1., 0., 0.] * &Tuple::up(), 0.);
     }
 
     #[test]
     fn test_cross() {
-        let x = v![1., 0., 0.];
+        let x = vector![1., 0., 0.];
         let y = Tuple::up();
-        let z = v![0., 0., 1.];
+        let z = vector![0., 0., 1.];
         assert_eq!(x.cross(&y), z);
         assert_eq!(y.cross(&z), x);
         assert_eq!(z.cross(&x), y);
         assert_eq!(y.cross(&x), -z);
         assert_eq!(z.cross(&y), -x);
         assert_eq!(x.cross(&z), -y);
-        let a = v![1., 2., 3.];
-        let b = v![2., 3., 4.];
-        let a_cross_b = v![-1., 2., -1.];
+        let a = vector![1., 2., 3.];
+        let b = vector![2., 3., 4.];
+        let a_cross_b = vector![-1., 2., -1.];
         assert_eq!(a.cross(&b), a_cross_b);
         assert_eq!(b.cross(&a), -a_cross_b);
     }
@@ -324,15 +342,15 @@ mod tests {
     #[test]
     fn test_reflect() {
         assert!(
-            v![1., -1., 0.]
+            vector![1., -1., 0.]
                 .reflect(&Tuple::up())
-                .is_close(&v![1., 1., 0.])
+                .is_close(&vector![1., 1., 0.])
         );
         let sqrt_half = core::f64::consts::FRAC_1_SQRT_2;
         assert!(
-            v![0., -1., 0.]
-                .reflect(&v![sqrt_half, sqrt_half, 0.])
-                .is_close(&v![1., 0., 0.])
+            vector![0., -1., 0.]
+                .reflect(&vector![sqrt_half, sqrt_half, 0.])
+                .is_close(&vector![1., 0., 0.])
         );
     }
 }

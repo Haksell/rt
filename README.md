@@ -4,7 +4,6 @@ I just restarted the project from scratch. `old` branch is more intereseting.
 
 ## TODO
 
-- [ ] `m!`, `c!` + use
 - [ ] Read `The Ray Tracer Challenge`
 - [ ] Remove `old` branch
 - [ ] Complete all `// TODO`
