@@ -52,10 +52,12 @@ impl Tuple {
     }
 
     pub fn magnitude_squared(&self) -> f64 {
+        debug_assert!(self.is_vector());
         self * self
     }
 
     pub fn magnitude(&self) -> f64 {
+        debug_assert!(self.is_vector());
         self.magnitude_squared().sqrt()
     }
 
