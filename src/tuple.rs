@@ -155,12 +155,7 @@ macro_rules! impl_tuple_float {
             #[inline]
             fn mul(self, tuple: $lhs) -> Self::Output {
                 debug_assert!(tuple.is_vector());
-                Self::Output {
-                    x: self * tuple.x,
-                    y: self * tuple.y,
-                    z: self * tuple.z,
-                    w: 0.,
-                }
+                tuple * self
             }
         }
 
