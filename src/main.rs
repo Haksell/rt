@@ -3,6 +3,7 @@
 mod canvas;
 mod color;
 mod floats;
+mod matrix;
 mod tuple;
 
 use {
