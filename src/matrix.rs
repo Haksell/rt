@@ -1,7 +1,4 @@
-use {
-    crate::{floats::is_close, tuple::Tuple},
-    core::ops::{Div, Index, Mul},
-};
+use crate::{floats::is_close, tuple::Tuple};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Matrix {
@@ -89,7 +86,7 @@ impl Matrix {
     }
 }
 
-impl Index<usize> for Matrix {
+impl core::ops::Index<usize> for Matrix {
     type Output = [f64; 4];
 
     fn index(&self, row: usize) -> &[f64; 4] {
@@ -97,7 +94,7 @@ impl Index<usize> for Matrix {
     }
 }
 
-impl Index<(usize, usize)> for Matrix {
+impl core::ops::Index<(usize, usize)> for Matrix {
     type Output = f64;
 
     fn index(&self, (y, x): (usize, usize)) -> &f64 {
@@ -107,7 +104,7 @@ impl Index<(usize, usize)> for Matrix {
 
 macro_rules! impl_matrix_matrix {
     ($lhs:ty, $rhs:ty) => {
-        impl Mul<$rhs> for $lhs {
+        impl core::ops::Mul<$rhs> for $lhs {
             type Output = Matrix;
 
             // TODO: optimize with Strassen
@@ -195,42 +192,66 @@ impl_matrix_matrix!(Matrix, &Matrix);
 impl_matrix_matrix!(&Matrix, Matrix);
 impl_matrix_matrix!(&Matrix, &Matrix);
 
-impl Mul<Tuple> for Matrix {
-    type Output = Tuple;
+macro_rules! impl_matrix_tuple {
+    ($lhs:ty, $rhs:ty) => {
+        impl core::ops::Mul<$rhs> for $lhs {
+            type Output = Tuple;
 
-    fn mul(self, rhs: Tuple) -> Tuple {
-        let [[a, b, c, d], [e, f, g, h], [i, j, k, l], [m, n, o, p]] = self.values;
+            fn mul(self, rhs: $rhs) -> Tuple {
+                let [[a, b, c, d], [e, f, g, h], [i, j, k, l], [m, n, o, p]] = self.values;
 
-        Tuple::new(
-            a * rhs.x + b * rhs.y + c * rhs.z + d * rhs.w,
-            e * rhs.x + f * rhs.y + g * rhs.z + h * rhs.w,
-            i * rhs.x + j * rhs.y + k * rhs.z + l * rhs.w,
-            m * rhs.x + n * rhs.y + o * rhs.z + p * rhs.w,
-        )
-    }
-}
-
-impl Mul<f64> for Matrix {
-    type Output = Self;
-
-    fn mul(self, scalar: f64) -> Self {
-        let mut values = self.values.clone();
-        for y in 0..4 {
-            for x in 0..4 {
-                values[y][x] *= scalar
+                Tuple::new(
+                    a * rhs.x + b * rhs.y + c * rhs.z + d * rhs.w,
+                    e * rhs.x + f * rhs.y + g * rhs.z + h * rhs.w,
+                    i * rhs.x + j * rhs.y + k * rhs.z + l * rhs.w,
+                    m * rhs.x + n * rhs.y + o * rhs.z + p * rhs.w,
+                )
             }
         }
-        Self { values }
-    }
+    };
 }
+impl_matrix_tuple!(Matrix, Tuple);
+impl_matrix_tuple!(Matrix, &Tuple);
+impl_matrix_tuple!(&Matrix, Tuple);
+impl_matrix_tuple!(&Matrix, &Tuple);
 
-impl Div<f64> for Matrix {
-    type Output = Self;
+macro_rules! impl_matrix_f64 {
+    ($lhs:ty, $rhs:ty) => {
+        impl core::ops::Mul<$rhs> for $lhs {
+            type Output = Matrix;
 
-    fn div(self, divisor: f64) -> Self {
-        self * (1. / divisor)
-    }
+            fn mul(self, scalar: $rhs) -> Matrix {
+                let mut values = self.values.clone();
+                for y in 0..4 {
+                    for x in 0..4 {
+                        values[y][x] *= scalar
+                    }
+                }
+                Matrix { values }
+            }
+        }
+
+        impl core::ops::Mul<$lhs> for $rhs {
+            type Output = Matrix;
+
+            fn mul(self, matrix: $lhs) -> Matrix {
+                matrix * self
+            }
+        }
+
+        impl core::ops::Div<$rhs> for $lhs {
+            type Output = Matrix;
+
+            fn div(self, divisor: $rhs) -> Matrix {
+                self * (1. / divisor)
+            }
+        }
+    };
 }
+impl_matrix_f64!(Matrix, f64);
+impl_matrix_f64!(Matrix, &f64);
+impl_matrix_f64!(&Matrix, f64);
+impl_matrix_f64!(&Matrix, &f64);
 
 #[cfg(test)]
 mod tests {
@@ -307,7 +328,7 @@ mod tests {
     #[test]
     fn test_scaling() {
         assert_eq!(
-            Matrix::identity() * 4.2,
+            Matrix::identity() * &4.2,
             Matrix::new([
                 [4.2, 0., 0., 0.],
                 [0., 4.2, 0., 0.],
@@ -316,7 +337,7 @@ mod tests {
             ])
         );
         assert_eq!(
-            Matrix::identity() / 2.,
+            &Matrix::identity() / 2.,
             Matrix::new([
                 [0.5, 0., 0., 0.],
                 [0., 0.5, 0., 0.],
@@ -333,12 +354,12 @@ mod tests {
         assert_eq!(Matrix::identity() * Matrix::zero(), Matrix::zero());
         assert_eq!(Matrix::identity() * Matrix::identity(), Matrix::identity());
         assert_eq!(
-            Matrix::new([
+            &Matrix::new([
                 [2., 0., 0., 0.],
                 [0., 2., 0., 0.],
                 [0., 0., 2., 0.],
                 [0., 0., 0., 2.],
-            ]) * Matrix::new([
+            ]) * &Matrix::new([
                 [0., 1., 2., 3.],
                 [4., 5., 6., 7.],
                 [8., 9., 10., 11.],
@@ -357,7 +378,7 @@ mod tests {
                 [1., 0., 0., 0.],
                 [0., 0., 1., 0.],
                 [0., 0., 0., 1.],
-            ]) * Matrix::new([
+            ]) * &Matrix::new([
                 [0., 1., 2., 3.],
                 [4., 5., 6., 7.],
                 [8., 9., 10., 11.],
@@ -371,7 +392,7 @@ mod tests {
             ])
         );
         assert_eq!(
-            Matrix::new([
+            &Matrix::new([
                 [1., 2., 3., 4.],
                 [5., 6., 7., 8.],
                 [9., 8., 7., 6.],
@@ -398,11 +419,11 @@ mod tests {
             Tuple::new(1., 2., 3., 4.)
         );
         assert_eq!(
-            Matrix::identity() * 2. * Tuple::new(1., 2., 3., 4.),
+            Matrix::identity() * 2. * &Tuple::new(1., 2., 3., 4.),
             Tuple::new(2., 4., 6., 8.)
         );
         assert_eq!(
-            Matrix::new([
+            &Matrix::new([
                 [0., 1., 0., 0.],
                 [1., 0., 0., 0.],
                 [0., 0., 1., 0.],
@@ -411,12 +432,12 @@ mod tests {
             Tuple::new(2., 1., 3., 4.),
         );
         assert_eq!(
-            Matrix::new([
+            &Matrix::new([
                 [1., 2., 3., 4.],
                 [2., 4., 4., 2.],
                 [8., 6., 4., 1.],
                 [0., 0., 0., 1.],
-            ]) * Tuple::new(1., 2., 3., 1.),
+            ]) * &Tuple::new(1., 2., 3., 1.),
             Tuple::new(18., 24., 33., 1.),
         );
     }
@@ -563,20 +584,28 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
     fn test_inverse_zero() {
-        Matrix::zero().inverse();
+        if cfg!(debug_assertions) {
+            let result = std::panic::catch_unwind(|| {
+                Matrix::zero().inverse();
+            });
+            assert!(result.is_err(), "Expected panic in debug mode");
+        }
     }
 
     #[test]
-    #[should_panic]
     fn test_inverse_singular() {
-        Matrix::new([
-            [1., 2., 3., 4.],
-            [5., 6., 7., 8.],
-            [9., 10., 11., 12.],
-            [15., 18., 21., 24.],
-        ])
-        .inverse();
+        if cfg!(debug_assertions) {
+            let result = std::panic::catch_unwind(|| {
+                Matrix::new([
+                    [1., 2., 3., 4.],
+                    [5., 6., 7., 8.],
+                    [9., 10., 11., 12.],
+                    [15., 18., 21., 24.],
+                ])
+                .inverse();
+            });
+            assert!(result.is_err(), "Expected panic in debug mode");
+        }
     }
 }

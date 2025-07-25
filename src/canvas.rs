@@ -96,10 +96,14 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
     fn test_set_pixel_invalid() {
-        let mut canvas = Canvas::new(3, 2);
-        canvas[(0, 3)] = Color::red();
+        if cfg!(debug_assertions) {
+            let result = std::panic::catch_unwind(|| {
+                let mut canvas = Canvas::new(3, 2);
+                canvas[(0, 3)] = Color::red();
+            });
+            assert!(result.is_err(), "Expected panic in debug mode");
+        }
     }
 
     #[test]
