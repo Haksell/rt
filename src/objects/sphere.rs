@@ -1,4 +1,7 @@
-use crate::{matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector};
+use {
+    crate::{matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector},
+    std::cmp::Ordering,
+};
 
 #[derive(Debug)]
 pub struct Sphere {
@@ -34,9 +37,9 @@ impl Object for Sphere {
         let c = object_ray.origin.magnitude_squared() - 1.;
         let discriminant = b * b - 4. * a * c;
         match discriminant.total_cmp(&0.) {
-            std::cmp::Ordering::Less => vec![],
-            std::cmp::Ordering::Equal => vec![-b / (2. * a)],
-            std::cmp::Ordering::Greater => {
+            Ordering::Less => vec![],
+            Ordering::Equal => vec![-b / (2. * a)],
+            Ordering::Greater => {
                 let sqrt_discriminant = discriminant.sqrt();
                 let factor = 0.5 / a;
                 vec![

@@ -6,6 +6,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 
 - [ ] (`Intersection` + `hit`)? (page 83-85)
 - [ ] Read `The Ray Tracer Challenge`
+- [ ] Clean `mod computations`
 - [ ] Remove as many `.clone` as possible
 - [ ] Remove `old` branch
 - [ ] Complete all `// TODO`

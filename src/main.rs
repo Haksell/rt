@@ -1,5 +1,6 @@
 #![allow(unused)] // TODO: remove before push
 
+mod camera;
 mod canvas;
 #[macro_use]
 mod color;
@@ -11,14 +12,33 @@ mod ray;
 mod transform;
 #[macro_use]
 mod tuple;
+mod world;
 
 use {
-    crate::canvas::Canvas,
+    crate::{
+        camera::Camera,
+        canvas::Canvas,
+        objects::Sphere,
+        transform::{rotate_z, scale, scale_constant, translate},
+        world::World,
+    },
     minifb::{Key, Window, WindowOptions},
+    std::f64::consts::TAU,
 };
 
 fn main() {
-    let canvas = Canvas::new(600, 400);
+    let camera = Camera::new(
+        640,
+        480,
+        std::f64::consts::FRAC_PI_3,
+        translate(0., 0., -5.),
+    );
+    let world = World {
+        objects: vec![Box::new(Sphere::new(
+            rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
+        ))],
+    };
+    let canvas = camera.render(&world);
     let buffer = canvas.to_buffer();
 
     let mut window =

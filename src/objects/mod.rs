@@ -7,7 +7,8 @@ use {
     std::fmt::Debug,
 };
 
-pub trait Object: Debug + Default {
+// + Default causes dyn-compatibility problems for Object
+pub trait Object: Debug {
     fn get_inverse_transform(&self) -> &Matrix;
     // fn get_material(&self) -> &Material;
 
@@ -39,4 +40,6 @@ pub trait Object: Debug + Default {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // TODO: tests (at least the same ones as old branch)
 }
