@@ -351,8 +351,9 @@ mod tests {
         assert_eq!(x.cross(&z), -y);
         let a = Tuple::new_vector(1., 2., 3.);
         let b = Tuple::new_vector(2., 3., 4.);
-        assert_eq!(a.cross(&b), Tuple::new_vector(-1., 2., -1.));
-        assert_eq!(b.cross(&a), Tuple::new_vector(1., -2., 1.));
+        let a_cross_b = Tuple::new_vector(-1., 2., -1.);
+        assert_eq!(a.cross(&b), a_cross_b);
+        assert_eq!(b.cross(&a), -a_cross_b);
     }
 
     #[test]
