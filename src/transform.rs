@@ -150,6 +150,7 @@ mod tests {
 
     #[test]
     fn test_rotate_x() {
+        assert!((rotate_x(std::f64::consts::TAU)).is_close(&Matrix::identity()));
         let p = point![3., 1., 0.];
         assert!((rotate_x(std::f64::consts::TAU) * p).is_close(&p));
         assert!((rotate_x(std::f64::consts::PI) * p).is_close(&point![3., -1., 0.]));
@@ -169,6 +170,7 @@ mod tests {
 
     #[test]
     fn test_rotate_y() {
+        assert!((rotate_y(std::f64::consts::TAU)).is_close(&Matrix::identity()));
         let p = point![0., 4.2, 1.];
         assert!((rotate_y(std::f64::consts::TAU) * p).is_close(&p));
         assert!((rotate_y(std::f64::consts::TAU / 2.) * p).is_close(&point![0., 4.2, -1.]));
@@ -182,6 +184,7 @@ mod tests {
 
     #[test]
     fn test_rotate_z() {
+        assert!((rotate_z(std::f64::consts::TAU)).is_close(&Matrix::identity()));
         let p = point![0., 2., -1.];
         assert!((rotate_z(std::f64::consts::TAU) * p).is_close(&p));
         assert!((rotate_z(std::f64::consts::TAU / 2.) * p).is_close(&point![0., -2., -1.]));
