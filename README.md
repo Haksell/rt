@@ -5,6 +5,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 ## TODO
 
 - [ ] Read `The Ray Tracer Challenge`
+- [ ] Remove as many `.clone` as possible
 - [ ] Remove `old` branch
 - [ ] Complete all `// TODO`
 - [ ] Finish subject
