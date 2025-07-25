@@ -47,7 +47,7 @@ impl Tuple {
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
-        debug_assert!(is_close(self.w, rhs.w));
+        debug_assert_eq!(self.w, rhs.w);
         is_close(self.x, rhs.x) && is_close(self.y, rhs.y) && is_close(self.z, rhs.z)
     }
 
@@ -89,8 +89,8 @@ macro_rules! impl_tuple_tuple {
             type Output = Tuple;
 
             #[inline]
-            fn add(self, rhs: $rhs) -> Tuple {
-                Tuple {
+            fn add(self, rhs: $rhs) -> Self::Output {
+                Self::Output {
                     x: self.x + rhs.x,
                     y: self.y + rhs.y,
                     z: self.z + rhs.z,
@@ -103,8 +103,8 @@ macro_rules! impl_tuple_tuple {
             type Output = Tuple;
 
             #[inline]
-            fn sub(self, rhs: $rhs) -> Tuple {
-                Tuple {
+            fn sub(self, rhs: $rhs) -> Self::Output {
+                Self::Output {
                     x: self.x - rhs.x,
                     y: self.y - rhs.y,
                     z: self.z - rhs.z,
@@ -138,11 +138,12 @@ macro_rules! impl_tuple_float {
 
             #[inline]
             fn mul(self, scalar: $rhs) -> Self::Output {
-                Tuple {
+                debug_assert!(self.is_vector());
+                Self::Output {
                     x: self.x * scalar,
                     y: self.y * scalar,
                     z: self.z * scalar,
-                    w: self.w * scalar,
+                    w: 0.,
                 }
             }
         }
@@ -151,12 +152,13 @@ macro_rules! impl_tuple_float {
             type Output = Tuple;
 
             #[inline]
-            fn mul(self, tuple: $lhs) -> Tuple {
-                Tuple {
+            fn mul(self, tuple: $lhs) -> Self::Output {
+                debug_assert!(tuple.is_vector());
+                Self::Output {
                     x: self * tuple.x,
                     y: self * tuple.y,
                     z: self * tuple.z,
-                    w: self * tuple.w,
+                    w: 0.,
                 }
             }
         }
@@ -166,6 +168,7 @@ macro_rules! impl_tuple_float {
 
             #[inline]
             fn div(self, divisor: $rhs) -> Self::Output {
+                debug_assert!(self.is_vector());
                 self * (1. / divisor)
             }
         }
@@ -184,11 +187,12 @@ macro_rules! impl_tuple {
 
             #[inline]
             fn neg(self) -> Self::Output {
-                Tuple {
+                debug_assert!(self.is_vector());
+                Self::Output {
                     x: -self.x,
                     y: -self.y,
                     z: -self.z,
-                    w: -self.w,
+                    w: 0.,
                 }
             }
         }
@@ -266,24 +270,20 @@ mod tests {
     #[test]
     fn test_scaling() {
         assert_eq!(
-            &Tuple::new(1., -2., 3., -4.) * 3.5,
-            Tuple::new(3.5, -7., 10.5, -14.),
+            &Tuple::new_vector(1., -2., 3.) * 3.5,
+            Tuple::new_vector(3.5, -7., 10.5),
         );
         assert_eq!(
-            &0.5 * Tuple::new(1., -2., 3., -4.),
-            Tuple::new(0.5, -1., 1.5, -2.),
+            &0.5 * Tuple::new_vector(1., -2., 3.),
+            Tuple::new_vector(0.5, -1., 1.5),
         );
     }
 
     #[test]
     fn test_division() {
         assert_eq!(
-            &Tuple::new_vector(1., -2.5, 3.25) / 2.,
+            &Tuple::new_vector(1., -2.5, 3.25) / &2.,
             Tuple::new_vector(0.5, -1.25, 1.625),
-        );
-        assert_eq!(
-            Tuple::new_point(1., -2.5, 3.25) / &2.,
-            Tuple::new(0.5, -1.25, 1.625, 0.5),
         );
     }
 
