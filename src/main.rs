@@ -15,12 +15,12 @@ struct Color {
 }
 
 impl Color {
-    fn red() -> Self {
-        Self {
-            r: 1.,
-            g: 0.,
-            b: 0.,
-        }
+    fn new(r: f64, g: f64, b: f64) -> Self {
+        Self { r, g, b }
+    }
+
+    fn black() -> Self {
+        Self::new(0., 0., 0.)
     }
 
     fn to_u32(&self) -> u32 {
@@ -36,11 +36,11 @@ impl Canvas {
         Self {
             width,
             height,
-            pixels: vec![vec![Color::red(); width]; height],
+            pixels: vec![vec![Color::black(); width]; height],
         }
     }
 
-    fn to_u32_buffer(&self) -> Vec<u32> {
+    fn to_buffer(&self) -> Vec<u32> {
         let mut buffer = Vec::with_capacity(self.width * self.height);
         for row in &self.pixels {
             for &color in row {
@@ -53,7 +53,7 @@ impl Canvas {
 
 fn main() {
     let canvas = Canvas::new(600, 400);
-    let buffer = canvas.to_u32_buffer();
+    let buffer = canvas.to_buffer();
 
     let mut window =
         Window::new("rt", canvas.width, canvas.height, WindowOptions::default()).unwrap();
