@@ -1,6 +1,3 @@
-// TODO: impl_matrix_xxx!
-// TODO: no clone
-
 use {
     crate::{floats::is_close, tuple::Tuple},
     core::ops::{Div, Index, Mul},
@@ -108,89 +105,95 @@ impl Index<(usize, usize)> for Matrix {
     }
 }
 
-impl Mul<Matrix> for Matrix {
-    type Output = Self;
+macro_rules! impl_matrix_matrix {
+    ($lhs:ty, $rhs:ty) => {
+        impl Mul<$rhs> for $lhs {
+            type Output = Matrix;
 
-    // TODO: optimize with Strassen
-    fn mul(self, rhs: Self) -> Self {
-        Self {
-            values: [
-                [
-                    self[0][0] * rhs[0][0]
-                        + self[0][1] * rhs[1][0]
-                        + self[0][2] * rhs[2][0]
-                        + self[0][3] * rhs[3][0],
-                    self[0][0] * rhs[0][1]
-                        + self[0][1] * rhs[1][1]
-                        + self[0][2] * rhs[2][1]
-                        + self[0][3] * rhs[3][1],
-                    self[0][0] * rhs[0][2]
-                        + self[0][1] * rhs[1][2]
-                        + self[0][2] * rhs[2][2]
-                        + self[0][3] * rhs[3][2],
-                    self[0][0] * rhs[0][3]
-                        + self[0][1] * rhs[1][3]
-                        + self[0][2] * rhs[2][3]
-                        + self[0][3] * rhs[3][3],
-                ],
-                [
-                    self[1][0] * rhs[0][0]
-                        + self[1][1] * rhs[1][0]
-                        + self[1][2] * rhs[2][0]
-                        + self[1][3] * rhs[3][0],
-                    self[1][0] * rhs[0][1]
-                        + self[1][1] * rhs[1][1]
-                        + self[1][2] * rhs[2][1]
-                        + self[1][3] * rhs[3][1],
-                    self[1][0] * rhs[0][2]
-                        + self[1][1] * rhs[1][2]
-                        + self[1][2] * rhs[2][2]
-                        + self[1][3] * rhs[3][2],
-                    self[1][0] * rhs[0][3]
-                        + self[1][1] * rhs[1][3]
-                        + self[1][2] * rhs[2][3]
-                        + self[1][3] * rhs[3][3],
-                ],
-                [
-                    self[2][0] * rhs[0][0]
-                        + self[2][1] * rhs[1][0]
-                        + self[2][2] * rhs[2][0]
-                        + self[2][3] * rhs[3][0],
-                    self[2][0] * rhs[0][1]
-                        + self[2][1] * rhs[1][1]
-                        + self[2][2] * rhs[2][1]
-                        + self[2][3] * rhs[3][1],
-                    self[2][0] * rhs[0][2]
-                        + self[2][1] * rhs[1][2]
-                        + self[2][2] * rhs[2][2]
-                        + self[2][3] * rhs[3][2],
-                    self[2][0] * rhs[0][3]
-                        + self[2][1] * rhs[1][3]
-                        + self[2][2] * rhs[2][3]
-                        + self[2][3] * rhs[3][3],
-                ],
-                [
-                    self[3][0] * rhs[0][0]
-                        + self[3][1] * rhs[1][0]
-                        + self[3][2] * rhs[2][0]
-                        + self[3][3] * rhs[3][0],
-                    self[3][0] * rhs[0][1]
-                        + self[3][1] * rhs[1][1]
-                        + self[3][2] * rhs[2][1]
-                        + self[3][3] * rhs[3][1],
-                    self[3][0] * rhs[0][2]
-                        + self[3][1] * rhs[1][2]
-                        + self[3][2] * rhs[2][2]
-                        + self[3][3] * rhs[3][2],
-                    self[3][0] * rhs[0][3]
-                        + self[3][1] * rhs[1][3]
-                        + self[3][2] * rhs[2][3]
-                        + self[3][3] * rhs[3][3],
-                ],
-            ],
+            // TODO: optimize with Strassen
+            fn mul(self, rhs: $rhs) -> Matrix {
+                Matrix::new([
+                    [
+                        self[0][0] * rhs[0][0]
+                            + self[0][1] * rhs[1][0]
+                            + self[0][2] * rhs[2][0]
+                            + self[0][3] * rhs[3][0],
+                        self[0][0] * rhs[0][1]
+                            + self[0][1] * rhs[1][1]
+                            + self[0][2] * rhs[2][1]
+                            + self[0][3] * rhs[3][1],
+                        self[0][0] * rhs[0][2]
+                            + self[0][1] * rhs[1][2]
+                            + self[0][2] * rhs[2][2]
+                            + self[0][3] * rhs[3][2],
+                        self[0][0] * rhs[0][3]
+                            + self[0][1] * rhs[1][3]
+                            + self[0][2] * rhs[2][3]
+                            + self[0][3] * rhs[3][3],
+                    ],
+                    [
+                        self[1][0] * rhs[0][0]
+                            + self[1][1] * rhs[1][0]
+                            + self[1][2] * rhs[2][0]
+                            + self[1][3] * rhs[3][0],
+                        self[1][0] * rhs[0][1]
+                            + self[1][1] * rhs[1][1]
+                            + self[1][2] * rhs[2][1]
+                            + self[1][3] * rhs[3][1],
+                        self[1][0] * rhs[0][2]
+                            + self[1][1] * rhs[1][2]
+                            + self[1][2] * rhs[2][2]
+                            + self[1][3] * rhs[3][2],
+                        self[1][0] * rhs[0][3]
+                            + self[1][1] * rhs[1][3]
+                            + self[1][2] * rhs[2][3]
+                            + self[1][3] * rhs[3][3],
+                    ],
+                    [
+                        self[2][0] * rhs[0][0]
+                            + self[2][1] * rhs[1][0]
+                            + self[2][2] * rhs[2][0]
+                            + self[2][3] * rhs[3][0],
+                        self[2][0] * rhs[0][1]
+                            + self[2][1] * rhs[1][1]
+                            + self[2][2] * rhs[2][1]
+                            + self[2][3] * rhs[3][1],
+                        self[2][0] * rhs[0][2]
+                            + self[2][1] * rhs[1][2]
+                            + self[2][2] * rhs[2][2]
+                            + self[2][3] * rhs[3][2],
+                        self[2][0] * rhs[0][3]
+                            + self[2][1] * rhs[1][3]
+                            + self[2][2] * rhs[2][3]
+                            + self[2][3] * rhs[3][3],
+                    ],
+                    [
+                        self[3][0] * rhs[0][0]
+                            + self[3][1] * rhs[1][0]
+                            + self[3][2] * rhs[2][0]
+                            + self[3][3] * rhs[3][0],
+                        self[3][0] * rhs[0][1]
+                            + self[3][1] * rhs[1][1]
+                            + self[3][2] * rhs[2][1]
+                            + self[3][3] * rhs[3][1],
+                        self[3][0] * rhs[0][2]
+                            + self[3][1] * rhs[1][2]
+                            + self[3][2] * rhs[2][2]
+                            + self[3][3] * rhs[3][2],
+                        self[3][0] * rhs[0][3]
+                            + self[3][1] * rhs[1][3]
+                            + self[3][2] * rhs[2][3]
+                            + self[3][3] * rhs[3][3],
+                    ],
+                ])
+            }
         }
-    }
+    };
 }
+impl_matrix_matrix!(Matrix, Matrix);
+impl_matrix_matrix!(Matrix, &Matrix);
+impl_matrix_matrix!(&Matrix, Matrix);
+impl_matrix_matrix!(&Matrix, &Matrix);
 
 impl Mul<Tuple> for Matrix {
     type Output = Tuple;
@@ -487,14 +490,14 @@ mod tests {
             [9., -8., 7.25, 6.],
             [0., 42., 3.5, -2.],
         ]);
-        assert!((a.clone() * a.inverse()).is_close(&Matrix::identity()));
+        assert!((&a * a.inverse()).is_close(&Matrix::identity()));
         let b = Matrix::new([
             [-2., 1., 2., 3.],
             [3., 2., 1., -1.],
             [4., 3., 6., 5.],
             [1., 2., 7., 8.],
         ]);
-        assert!((a.clone() * b.clone() * b.inverse()).is_close(&a));
+        assert!((&a * &b * b.inverse()).is_close(&a));
     }
 
     #[test]
@@ -506,8 +509,8 @@ mod tests {
             [4.5, 3.75, 4.5, 3.75],
         ]);
         let inv = mat.inverse();
-        assert!((mat.clone() * inv.clone()).is_close(&Matrix::identity()));
-        assert!((inv.clone() * mat.clone()).is_close(&Matrix::identity()));
+        assert!((&mat * &inv).is_close(&Matrix::identity()));
+        assert!((&inv * &mat).is_close(&Matrix::identity()));
         assert!(inv.transpose().is_close(&mat.transpose().inverse()));
     }
 
@@ -547,10 +550,10 @@ mod tests {
 
             let inv = mat.inverse();
             let identity = Matrix::identity();
-            let mat_mul_inv = mat.clone() * inv.clone();
+            let mat_mul_inv = &mat * &inv;
             assert!(mat_mul_inv.is_close(&identity),);
 
-            let inv_mul_mat = inv.clone() * mat.clone();
+            let inv_mul_mat = &inv * &mat;
             assert!(inv_mul_mat.is_close(&identity),);
 
             let inv_transpose = inv.transpose();
