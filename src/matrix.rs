@@ -1,6 +1,6 @@
 use {
     crate::{floats::is_close, tuple::Tuple},
-    core::ops::Index,
+    std::ops::Index,
 };
 
 #[macro_export]
@@ -120,7 +120,7 @@ impl Index<(usize, usize)> for Matrix {
 
 macro_rules! impl_matrix_matrix {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Matrix;
 
             // TODO: optimize with Strassen
@@ -210,7 +210,7 @@ impl_matrix_matrix!(&Matrix, &Matrix);
 
 macro_rules! impl_matrix_tuple {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Tuple;
 
             fn mul(self, rhs: $rhs) -> Tuple {
@@ -233,7 +233,7 @@ impl_matrix_tuple!(&Matrix, &Tuple);
 
 macro_rules! impl_matrix_f64 {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Matrix;
 
             fn mul(self, scalar: $rhs) -> Matrix {
@@ -266,7 +266,7 @@ macro_rules! impl_matrix_f64 {
             }
         }
 
-        impl core::ops::Mul<$lhs> for $rhs {
+        impl std::ops::Mul<$lhs> for $rhs {
             type Output = Matrix;
 
             fn mul(self, matrix: $lhs) -> Matrix {
@@ -274,7 +274,7 @@ macro_rules! impl_matrix_f64 {
             }
         }
 
-        impl core::ops::Div<$rhs> for $lhs {
+        impl std::ops::Div<$rhs> for $lhs {
             type Output = Matrix;
 
             fn div(self, divisor: $rhs) -> Matrix {

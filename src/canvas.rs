@@ -1,6 +1,6 @@
 use {
     crate::color::Color,
-    core::ops::{Index, IndexMut},
+    std::ops::{Index, IndexMut},
 };
 
 #[derive(Debug, PartialEq)]

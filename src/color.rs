@@ -65,7 +65,7 @@ impl Color {
 
 macro_rules! impl_color_color {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Add<$rhs> for $lhs {
+        impl std::ops::Add<$rhs> for $lhs {
             type Output = Color;
 
             #[inline]
@@ -78,7 +78,7 @@ macro_rules! impl_color_color {
             }
         }
 
-        impl core::ops::Sub<$rhs> for $lhs {
+        impl std::ops::Sub<$rhs> for $lhs {
             type Output = Color;
 
             #[inline]
@@ -91,7 +91,7 @@ macro_rules! impl_color_color {
             }
         }
 
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Color;
 
             #[inline]
@@ -112,7 +112,7 @@ impl_color_color![&Color, &Color];
 
 macro_rules! impl_color_float {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Color;
 
             #[inline]
@@ -125,7 +125,7 @@ macro_rules! impl_color_float {
             }
         }
 
-        impl core::ops::Mul<$lhs> for $rhs {
+        impl std::ops::Mul<$lhs> for $rhs {
             type Output = Color;
 
             #[inline]
@@ -134,7 +134,7 @@ macro_rules! impl_color_float {
             }
         }
 
-        impl core::ops::Div<$rhs> for $lhs {
+        impl std::ops::Div<$rhs> for $lhs {
             type Output = Color;
 
             #[inline]

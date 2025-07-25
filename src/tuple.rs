@@ -133,7 +133,7 @@ impl_tuple_tuple!(&Tuple, &Tuple);
 
 macro_rules! impl_tuple_float {
     ($lhs:ty, $rhs:ty) => {
-        impl core::ops::Mul<$rhs> for $lhs {
+        impl std::ops::Mul<$rhs> for $lhs {
             type Output = Tuple;
 
             #[inline]
@@ -148,7 +148,7 @@ macro_rules! impl_tuple_float {
             }
         }
 
-        impl core::ops::Mul<$lhs> for $rhs {
+        impl std::ops::Mul<$lhs> for $rhs {
             type Output = Tuple;
 
             #[inline]
@@ -158,7 +158,7 @@ macro_rules! impl_tuple_float {
             }
         }
 
-        impl core::ops::Div<$rhs> for $lhs {
+        impl std::ops::Div<$rhs> for $lhs {
             type Output = Tuple;
 
             #[inline]
@@ -176,7 +176,7 @@ impl_tuple_float!(&Tuple, &f64);
 
 macro_rules! impl_tuple {
     ($ty:ty) => {
-        impl core::ops::Neg for $ty {
+        impl std::ops::Neg for $ty {
             type Output = Tuple;
 
             #[inline]
@@ -283,8 +283,8 @@ mod tests {
         assert!(Tuple::up().is_normalized(),);
         assert!(
             vector!(
-                core::f64::consts::FRAC_1_SQRT_2,
-                core::f64::consts::FRAC_1_SQRT_2,
+                std::f64::consts::FRAC_1_SQRT_2,
+                std::f64::consts::FRAC_1_SQRT_2,
                 0.
             )
             .is_normalized(),
@@ -339,7 +339,7 @@ mod tests {
                 .reflect(&Tuple::up())
                 .is_close(&vector![1., 1., 0.])
         );
-        let sqrt_half = core::f64::consts::FRAC_1_SQRT_2;
+        let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         assert!(
             vector![0., -1., 0.]
                 .reflect(&vector![sqrt_half, sqrt_half, 0.])
