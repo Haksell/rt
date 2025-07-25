@@ -125,7 +125,6 @@ macro_rules! impl_tuple_tuple {
         }
     };
 }
-
 impl_tuple_tuple!(Tuple, Tuple);
 impl_tuple_tuple!(Tuple, &Tuple);
 impl_tuple_tuple!(&Tuple, Tuple);
@@ -174,7 +173,6 @@ macro_rules! impl_tuple_float {
         }
     };
 }
-
 impl_tuple_float!(Tuple, f64);
 impl_tuple_float!(&Tuple, f64);
 impl_tuple_float!(Tuple, &f64);
@@ -198,7 +196,6 @@ macro_rules! impl_tuple {
         }
     };
 }
-
 impl_tuple!(Tuple);
 impl_tuple!(&Tuple);
 
