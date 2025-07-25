@@ -6,6 +6,7 @@ mod color;
 mod floats;
 #[macro_use]
 mod matrix;
+mod ray;
 mod transform;
 #[macro_use]
 mod tuple;
