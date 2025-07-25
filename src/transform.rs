@@ -2,58 +2,65 @@ use crate::{matrix::Matrix, tuple::Tuple};
 
 // TODO: implement methods directly on Tuple when not chaining matrices?
 
+#[inline]
 pub fn translate(x: f64, y: f64, z: f64) -> Matrix {
-    Matrix::new([
+    matrix![
         [1., 0., 0., x],
         [0., 1., 0., y],
         [0., 0., 1., z],
         [0., 0., 0., 1.],
-    ])
+    ]
 }
 
+#[inline]
 pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
-    Matrix::new([
+    matrix![
         [x, 0., 0., 0.],
         [0., y, 0., 0.],
         [0., 0., z, 0.],
         [0., 0., 0., 1.],
-    ])
+    ]
 }
 
+#[inline]
 pub fn scale_constant(s: f64) -> Matrix {
     scale(s, s, s)
 }
 
+#[inline]
 pub fn rotate_x(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
-    Matrix::new([
+    matrix![
         [1., 0., 0., 0.],
         [0., c, -s, 0.],
         [0., s, c, 0.],
         [0., 0., 0., 1.],
-    ])
+    ]
 }
 
+#[inline]
 pub fn rotate_y(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
-    Matrix::new([
+    matrix![
         [c, 0., s, 0.],
         [0., 1., 0., 0.],
         [-s, 0., c, 0.],
         [0., 0., 0., 1.],
-    ])
+    ]
 }
 
+#[inline]
 pub fn rotate_z(angle: f64) -> Matrix {
     let (s, c) = angle.sin_cos();
-    Matrix::new([
+    matrix![
         [c, -s, 0., 0.],
         [s, c, 0., 0.],
         [0., 0., 1., 0.],
         [0., 0., 0., 1.],
-    ])
+    ]
 }
 
+#[inline]
 pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
     matrix![
         [1., xy, xz, 0.],
@@ -63,6 +70,7 @@ pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
     ]
 }
 
+#[inline]
 pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
     let forward = (to - from).normalize();
     let left = forward.cross(&up.normalize());

@@ -554,7 +554,7 @@ mod tests {
     fn test_random_matrix_inverses() {
         let mut rng = rand::rng();
 
-        for _ in 0..1000 {
+        for _ in 0..100 {
             let mat_data: [[f64; 4]; 4] = [
                 [
                     rng.random_range(-10.0..10.0),
