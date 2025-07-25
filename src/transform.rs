@@ -100,7 +100,7 @@ mod tests {
             point![-3.125, 4., 5.]
         );
         let v = vector![-3., 4., 5.]; // not affected by translate
-        assert_eq!(translate(5., -3., 2.) * v.clone(), v);
+        assert_eq!(translate(5., -3., 2.) * v, v);
     }
 
     #[test]
@@ -143,11 +143,11 @@ mod tests {
     #[test]
     fn test_rotate_x() {
         let p = point![3., 1., 0.];
-        assert!((rotate_x(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_x(std::f64::consts::PI) * p.clone()).is_close(&point![3., -1., 0.]));
-        assert!((rotate_x(std::f64::consts::FRAC_PI_2) * p.clone()).is_close(&point![3., 0., 1.]));
+        assert!((rotate_x(std::f64::consts::TAU) * p).is_close(&p));
+        assert!((rotate_x(std::f64::consts::PI) * p).is_close(&point![3., -1., 0.]));
+        assert!((rotate_x(std::f64::consts::FRAC_PI_2) * p).is_close(&point![3., 0., 1.]));
         assert!(
-            (rotate_x(std::f64::consts::FRAC_PI_4) * p.clone()).is_close(&point![
+            (rotate_x(std::f64::consts::FRAC_PI_4) * p).is_close(&point![
                 3.,
                 std::f64::consts::FRAC_1_SQRT_2,
                 std::f64::consts::FRAC_1_SQRT_2
@@ -162,31 +162,27 @@ mod tests {
     #[test]
     fn test_rotate_y() {
         let p = point![0., 4.2, 1.];
-        assert!((rotate_y(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_y(std::f64::consts::TAU / 2.) * p.clone()).is_close(&point![0., 4.2, -1.]));
-        assert!((rotate_y(std::f64::consts::TAU / 4.) * p.clone()).is_close(&point![1., 4.2, 0.]));
-        assert!(
-            (rotate_y(std::f64::consts::TAU / 8.) * p.clone()).is_close(&point![
-                std::f64::consts::FRAC_1_SQRT_2,
-                4.2,
-                std::f64::consts::FRAC_1_SQRT_2,
-            ])
-        );
+        assert!((rotate_y(std::f64::consts::TAU) * p).is_close(&p));
+        assert!((rotate_y(std::f64::consts::TAU / 2.) * p).is_close(&point![0., 4.2, -1.]));
+        assert!((rotate_y(std::f64::consts::TAU / 4.) * p).is_close(&point![1., 4.2, 0.]));
+        assert!((rotate_y(std::f64::consts::TAU / 8.) * p).is_close(&point![
+            std::f64::consts::FRAC_1_SQRT_2,
+            4.2,
+            std::f64::consts::FRAC_1_SQRT_2,
+        ]));
     }
 
     #[test]
     fn test_rotate_z() {
         let p = point![0., 2., -1.];
-        assert!((rotate_z(std::f64::consts::TAU) * p.clone()).is_close(&p.clone()));
-        assert!((rotate_z(std::f64::consts::TAU / 2.) * p.clone()).is_close(&point![0., -2., -1.]));
-        assert!((rotate_z(std::f64::consts::TAU / 4.) * p.clone()).is_close(&point![-2., 0., -1.]));
-        assert!(
-            (rotate_z(std::f64::consts::TAU / 8.) * p.clone()).is_close(&point![
-                -(2. as f64).sqrt(),
-                (2. as f64).sqrt(),
-                -1.
-            ])
-        );
+        assert!((rotate_z(std::f64::consts::TAU) * p).is_close(&p));
+        assert!((rotate_z(std::f64::consts::TAU / 2.) * p).is_close(&point![0., -2., -1.]));
+        assert!((rotate_z(std::f64::consts::TAU / 4.) * p).is_close(&point![-2., 0., -1.]));
+        assert!((rotate_z(std::f64::consts::TAU / 8.) * p).is_close(&point![
+            -(2. as f64).sqrt(),
+            (2. as f64).sqrt(),
+            -1.
+        ]));
     }
 
     #[test]
@@ -227,9 +223,9 @@ mod tests {
         let a = rotate_x(std::f64::consts::TAU / 4.);
         let b = scale_constant(5.);
         let c = translate(10., 5., 7.);
-        let p2 = a.clone() * p1.clone();
-        let p3 = b.clone() * p2;
-        let p4 = c.clone() * p3;
+        let p2 = &a * p1;
+        let p3 = &b * p2;
+        let p4 = &c * p3;
         assert_eq!(p4, point![15., 0., 7.]);
         assert_eq!((c * b * a) * p1, point![15., 0., 7.]);
     }
