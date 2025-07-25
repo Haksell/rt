@@ -1,4 +1,7 @@
-use crate::{floats::is_close, tuple::Tuple};
+use {
+    crate::{floats::is_close, tuple::Tuple},
+    core::ops::Index,
+};
 
 #[macro_export]
 macro_rules! matrix {
@@ -99,7 +102,7 @@ impl Matrix {
     }
 }
 
-impl core::ops::Index<usize> for Matrix {
+impl Index<usize> for Matrix {
     type Output = [f64; 4];
 
     fn index(&self, row: usize) -> &[f64; 4] {
@@ -107,7 +110,7 @@ impl core::ops::Index<usize> for Matrix {
     }
 }
 
-impl core::ops::Index<(usize, usize)> for Matrix {
+impl Index<(usize, usize)> for Matrix {
     type Output = f64;
 
     fn index(&self, (y, x): (usize, usize)) -> &f64 {

@@ -77,9 +77,9 @@ pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
     let left = forward.cross(&up.normalize());
     let true_up = left.cross(&forward);
     matrix![
-        [left.x, left.y, left.z, -(from * left)],
-        [true_up.x, true_up.y, true_up.z, -(from * &true_up)],
-        [-forward.x, -forward.y, -forward.z, from * &forward],
+        [left.x, left.y, left.z, -from.dot(&left)],
+        [true_up.x, true_up.y, true_up.z, -from.dot(&true_up)],
+        [-forward.x, -forward.y, -forward.z, from.dot(&forward)],
         [0., 0., 0., 1.],
     ]
 }
