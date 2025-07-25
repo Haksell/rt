@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple};
+use crate::{matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector};
 
 #[derive(Debug)]
 pub struct Sphere {
@@ -47,9 +47,9 @@ impl Object for Sphere {
         }
     }
 
-    //     fn local_normal_at(&self, object_point: &Tuple) -> Tuple {
-    //         Tuple::new_vector(object_point.x, object_point.y, object_point.z)
-    //     }
+    fn local_normal_at(&self, object_point: &Tuple) -> Tuple {
+        vector![object_point.x, object_point.y, object_point.z]
+    }
 }
 
 #[cfg(test)]
@@ -88,5 +88,19 @@ mod tests {
 
         let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
         assert_eq!(sphere.intersect(&ray), vec![-6., -4.]);
+    }
+
+    #[test]
+    fn test_sphere_transformed_intersect() {
+        let sphere = Sphere::new(transform::scale_constant(2.));
+        assert_eq!(
+            sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
+            vec![3., 7.]
+        );
+        let sphere = Sphere::new(transform::translate(5., 0., 0.));
+        assert_eq!(
+            sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
+            vec![]
+        );
     }
 }

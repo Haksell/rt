@@ -4,6 +4,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 
 ## TODO
 
+- [ ] (`Intersection` + `hit`)? (page 83-85)
 - [ ] Read `The Ray Tracer Challenge`
 - [ ] Remove as many `.clone` as possible
 - [ ] Remove `old` branch
