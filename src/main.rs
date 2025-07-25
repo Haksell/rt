@@ -57,7 +57,7 @@ fn main() {
 
     let mut window =
         Window::new("rt", canvas.width, canvas.height, WindowOptions::default()).unwrap();
-    window.set_target_fps(60);
+    window.set_target_fps(30);
 
     while window.is_open() && !window.is_key_down(Key::Escape) {
         window
