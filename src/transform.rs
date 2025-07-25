@@ -1,6 +1,7 @@
 use crate::{matrix::Matrix, tuple::Tuple};
 
-// TODO: implement methods directly on Tuple when not chaining matrices?
+// TODO: implement transformations directly on Tuple
+// TODO: implement transformations directly on Matrix
 
 #[inline]
 pub fn translate(x: f64, y: f64, z: f64) -> Matrix {
@@ -226,19 +227,21 @@ mod tests {
             shear(0., 0., 0., 0., 0., 1.) * point![2., 3., 4.],
             point![2., 3., 7.]
         );
+        assert_eq!(
+            shear(1., 1., 0., 0., 0., 0.) * point![2., 3., 4.],
+            point![9., 3., 4.]
+        );
     }
 
     #[test]
     fn test_mixed_transforms() {
-        let p1 = point![1., 0., 1.];
+        let p = point![1., 0., 1.];
         let a = rotate_x(std::f64::consts::TAU / 4.);
         let b = scale_constant(5.);
         let c = translate(10., 5., 7.);
-        let p2 = &a * p1;
-        let p3 = &b * p2;
-        let p4 = &c * p3;
-        assert_eq!(p4, point![15., 0., 7.]);
-        assert_eq!((c * b * a) * p1, point![15., 0., 7.]);
+        assert_eq!(&c * (&b * (&a * p)), point![15., 0., 7.]);
+        assert_eq!(&c * ((&b * &a) * p), point![15., 0., 7.]);
+        assert_eq!((((&c * &b) * &a) * p), point![15., 0., 7.]);
     }
 
     #[test]
