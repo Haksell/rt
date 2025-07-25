@@ -13,7 +13,7 @@ impl Ray {
         Self { origin, direction }
     }
 
-    pub fn position(&self, t: f64) -> Tuple {
+    pub fn at(&self, t: f64) -> Tuple {
         self.origin + t * self.direction
     }
 
@@ -55,15 +55,15 @@ mod tests {
     }
 
     #[test]
-    fn test_ray_position() {
+    fn test_ray_at() {
         let ray = Ray::new(point![1., 2., 3.], vector![-4., 5.5, 6.]);
-        assert_eq!(ray.position(-1.5), point![7., -6.25, -6.]);
-        assert_eq!(ray.position(-1.), point![5., -3.5, -3.]);
-        assert_eq!(ray.position(-0.5), point![3., -0.75, 0.]);
-        assert_eq!(ray.position(0.), point![1., 2., 3.]);
-        assert_eq!(ray.position(0.5), point![-1., 4.75, 6.]);
-        assert_eq!(ray.position(1.), point![-3., 7.5, 9.]);
-        assert_eq!(ray.position(1.5), point![-5., 10.25, 12.]);
+        assert_eq!(ray.at(-1.5), point![7., -6.25, -6.]);
+        assert_eq!(ray.at(-1.), point![5., -3.5, -3.]);
+        assert_eq!(ray.at(-0.5), point![3., -0.75, 0.]);
+        assert_eq!(ray.at(0.), point![1., 2., 3.]);
+        assert_eq!(ray.at(0.5), point![-1., 4.75, 6.]);
+        assert_eq!(ray.at(1.), point![-3., 7.5, 9.]);
+        assert_eq!(ray.at(1.5), point![-5., 10.25, 12.]);
     }
 
     #[test]
