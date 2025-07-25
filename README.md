@@ -2,7 +2,7 @@
 
 I just restarted the project from scratch. `old` branch is more intereseting.
 
-# TODO
+## TODO
 
 - [ ] Read `The Ray Tracer Challenge`
 - [ ] Finish subject
