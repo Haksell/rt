@@ -52,7 +52,7 @@ impl Tuple {
     }
 
     pub fn magnitude_squared(&self) -> f64 {
-        self.dot(self)
+        self * self
     }
 
     pub fn magnitude(&self) -> f64 {
@@ -64,12 +64,6 @@ impl Tuple {
         let magnitude = self.magnitude();
         debug_assert_ne!(magnitude, 0.0);
         self / magnitude
-    }
-
-    pub fn dot(&self, rhs: &Self) -> f64 {
-        debug_assert!(self.is_vector());
-        debug_assert!(rhs.is_vector());
-        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
     pub fn cross(&self, rhs: &Self) -> Self {
@@ -85,7 +79,7 @@ impl Tuple {
     pub fn reflect(&self, normal: &Self) -> Self {
         debug_assert!(normal.is_vector());
         debug_assert!(normal.is_normalized());
-        self - normal * 2. * self.dot(normal)
+        self - normal * 2. * self * normal
     }
 }
 
@@ -116,6 +110,17 @@ macro_rules! impl_tuple_tuple {
                     z: self.z - rhs.z,
                     w: self.w - rhs.w,
                 }
+            }
+        }
+
+        impl core::ops::Mul<$rhs> for $lhs {
+            type Output = f64;
+
+            #[inline]
+            fn mul(self, rhs: $rhs) -> Self::Output {
+                debug_assert!(self.is_vector());
+                debug_assert!(rhs.is_vector());
+                self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
             }
         }
     };
@@ -328,10 +333,10 @@ mod tests {
     #[test]
     fn test_dot() {
         assert_eq!(
-            Tuple::new_vector(1., 2., 3.).dot(&Tuple::new_vector(2., 3., 4.)),
+            &Tuple::new_vector(1., 2., 3.) * Tuple::new_vector(2., 3., 4.),
             20.,
         );
-        assert_eq!(Tuple::new_vector(1., 0., 0.).dot(&Tuple::up()), 0.,);
+        assert_eq!(Tuple::new_vector(1., 0., 0.) * &Tuple::up(), 0.);
     }
 
     #[test]
