@@ -1,7 +1,4 @@
-use crate::{
-    matrix::{self, Matrix},
-    tuple::Tuple,
-};
+use crate::{matrix::Matrix, tuple::Tuple};
 
 // TODO: implement methods directly on Tuple when not chaining matrices?
 
@@ -67,12 +64,12 @@ pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
 }
 
 pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
-    let forward = (to.clone() - from.clone()).normalize();
+    let forward = (to - from).normalize();
     let left = forward.cross(&up.normalize());
     let true_up = left.cross(&forward);
     matrix![
-        [left.x, left.y, left.z, -from * left],
-        [true_up.x, true_up.y, true_up.z, -from * &true_up],
+        [left.x, left.y, left.z, -(from * left)],
+        [true_up.x, true_up.y, true_up.z, -(from * &true_up)],
         [-forward.x, -forward.y, -forward.z, from * &forward],
         [0., 0., 0., 1.],
     ]

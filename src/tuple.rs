@@ -126,8 +126,6 @@ macro_rules! impl_tuple_tuple {
 
             #[inline]
             fn mul(self, rhs: $rhs) -> Self::Output {
-                debug_assert!(self.is_vector());
-                debug_assert!(rhs.is_vector());
                 self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
             }
         }
@@ -188,7 +186,7 @@ macro_rules! impl_tuple {
 
             #[inline]
             fn neg(self) -> Self::Output {
-                debug_assert!(self.is_vector());
+                debug_assert!(self.is_vector(), "{self:?}");
                 Self::Output {
                     x: -self.x,
                     y: -self.y,
