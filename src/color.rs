@@ -2,13 +2,13 @@ use crate::floats::is_close;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {
-    r: f64,
-    g: f64,
-    b: f64,
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
 }
 
 impl Color {
-    fn new(r: f64, g: f64, b: f64) -> Self {
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
     }
 
