@@ -27,7 +27,11 @@ impl Camera {
         };
         let pixel_size = half_width * 2.0 / hsize as f64;
         let inverse_transform = transform.inverse();
-        let origin = &inverse_transform * Tuple::zero_point();
+        let origin = point![
+            inverse_transform[(0, 3)],
+            inverse_transform[(1, 3)],
+            inverse_transform[(2, 3)],
+        ];
 
         Self {
             hsize,
@@ -134,7 +138,7 @@ mod tests {
             rotate_y(FRAC_PI_4) * translate(0., -2., 5.),
         );
         let ray = camera.ray_for_pixel(100, 50);
-        assert!(ray.origin.is_close(&point![0., 2., -5.]));
+        assert_eq!(ray.origin, point![0., 2., -5.]);
         assert!(
             ray.direction
                 .is_close(&vector![FRAC_1_SQRT_2, 0., -FRAC_1_SQRT_2])
