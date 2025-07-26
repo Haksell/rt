@@ -23,7 +23,8 @@ impl World {
     }
 
     pub fn color_at(&self, ray: &Ray) -> Color {
-        const MIN_HIT_DISTANCE: f64 = 1e-6; // TODO: somewhere else
+        const MIN_HIT_DISTANCE: f64 = 1e-6; // TODO: put somewhere else
+
         let mut hit_object = None;
         let mut hit_distance = std::f64::INFINITY;
         for object in &self.objects {
@@ -34,6 +35,7 @@ impl World {
                 }
             }
         }
+
         match hit_object {
             None => Color::black(), // TODO: ambient color instead
             // TODO: shade_hit(self, &Computations::prepare(intersection, ray)),
