@@ -3,7 +3,7 @@ use {
     std::cmp::Ordering,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Sphere {
     inverse_transform: Matrix, // TODO: &'a Matrix ?
     material: Material,        // TODO: &Material ?

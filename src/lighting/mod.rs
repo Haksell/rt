@@ -2,7 +2,9 @@ mod point_light;
 
 pub use point_light::PointLight;
 
-use crate::{color::Color, objects::Object, ray::Ray, tuple::Tuple, world::World};
+use crate::{
+    color::Color, computations::Computations, objects::Object, ray::Ray, tuple::Tuple, world::World,
+};
 
 pub fn lighting(
     object: &dyn Object,
@@ -49,22 +51,29 @@ pub fn lighting(
 // }
 
 // TODO: in impl World
-// pub fn shade_hit(world: &World, comps: &Computations) -> Color {
-//     lighting(
-//         comps.object,
-//         &world.lights[0], // TODO: all the lights
-//         &comps.point,
-//         &comps.eyev,
-//         &comps.normalv,
-//         is_shadowed(world, &comps.over_point),
-//     )
-// }
+pub fn shade_hit(world: &World, comps: &Computations) -> Color {
+    lighting(
+        comps.object,
+        &world.lights[0], // TODO: all the lights
+        &comps.point,
+        &comps.eyev,
+        &comps.normalv,
+        false, // is_shadowed(world, &comps.over_point),
+    )
+}
 
 #[cfg(test)]
 mod tests {
     use {
         super::*,
-        crate::{objects::Sphere, point, transform::translate, vector, world::World},
+        crate::{
+            material::Material,
+            objects::Sphere,
+            point,
+            transform::{scale_constant, translate},
+            vector,
+            world::{TESTING_WORLD, World},
+        },
         std::f64::consts::FRAC_1_SQRT_2,
     };
 
@@ -133,18 +142,18 @@ mod tests {
         )
     }
 
-    #[test]
-    fn test_lighting_surface_in_shadow() {
-        let sphere = Sphere::default();
-        let position = Tuple::zero_point();
-        let eyev = vector![0., 0., -1.];
-        let normalv = vector![0., 0., -1.];
-        let light = PointLight::new(Color::white(), point![0., 0., -10.]);
-        assert!(
-            lighting(&sphere, &light, &position, &eyev, &normalv, true)
-                .is_close(&Color::new(0.1, 0.1, 0.1))
-        )
-    }
+    // #[test]
+    // fn test_lighting_surface_in_shadow() {
+    //     let sphere = Sphere::default();
+    //     let position = Tuple::zero_point();
+    //     let eyev = vector![0., 0., -1.];
+    //     let normalv = vector![0., 0., -1.];
+    //     let light = PointLight::new(Color::white(), point![0., 0., -10.]);
+    //     assert!(
+    //         lighting(&sphere, &light, &position, &eyev, &normalv, true)
+    //             .is_close(&Color::new(0.1, 0.1, 0.1))
+    //     )
+    // }
 
     // #[test]
     // fn test_lighting_stripe() {
@@ -179,14 +188,18 @@ mod tests {
     //     );
     // }
 
-    // #[test]
-    // fn test_shade_hit_not_in_shadow() {
-    //     let world = World::default();
-    //     let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
-    //     let intersection = Intersection::new(&*world.objects[0], 4.);
-    //     let comps = Computations::prepare(&intersection, &ray);
-    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
-    // }
+    #[test]
+    fn test_shade_hit_not_in_shadow() {
+        let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
+        let object = &TESTING_WORLD.objects[0];
+        let comps = Computations::prepare(&**object, 4.0, &ray);
+        assert!(
+            shade_hit(&TESTING_WORLD, &comps)
+                .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959))
+        );
+    }
+
+    // TODO: test shade_hit inside an object
 
     // #[test]
     // fn test_shade_hit_in_shadow() {

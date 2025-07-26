@@ -1,6 +1,6 @@
 use crate::color::Color;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Material {
     // pub pattern: Box<dyn Pattern>,
     pub color: Color, // TODO: replace with pattern
