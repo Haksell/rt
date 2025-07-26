@@ -34,8 +34,8 @@ use {
 
 fn main() {
     let camera = Camera::new(
-        640,
-        480,
+        800,
+        600,
         FRAC_PI_3,
         view_transform(
             &point![0.0, 1.5, -5.0],
