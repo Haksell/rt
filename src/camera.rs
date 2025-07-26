@@ -47,10 +47,6 @@ impl Camera {
         }
     }
 
-    pub fn identity(width: usize, height: usize, fov: f64) -> Self {
-        Self::new(width, height, fov, Matrix::identity())
-    }
-
     fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
         let xoffset = (px as f64 + 0.5) * self.pixel_size;
         let yoffset = (py as f64 + 0.5) * self.pixel_size;
@@ -93,7 +89,7 @@ mod tests {
 
     #[test]
     fn test_camera_identity() {
-        let camera = Camera::identity(160, 120, FRAC_PI_2);
+        let camera = Camera::new(160, 120, FRAC_PI_2, Matrix::identity());
         assert_eq!(camera.width, 160);
         assert_eq!(camera.height, 120);
         assert_eq!(camera.fov, FRAC_PI_2);
@@ -103,18 +99,18 @@ mod tests {
     #[test]
     fn test_camera_pixel_size() {
         assert!(is_close(
-            Camera::identity(200, 125, FRAC_PI_2).pixel_size,
+            Camera::new(200, 125, FRAC_PI_2, Matrix::identity()).pixel_size,
             0.01
         ));
         assert!(is_close(
-            Camera::identity(125, 200, FRAC_PI_2).pixel_size,
+            Camera::new(125, 200, FRAC_PI_2, Matrix::identity()).pixel_size,
             0.01
         ));
     }
 
     #[test]
     fn test_ray_for_pixel_center() {
-        let camera = Camera::identity(201, 101, FRAC_PI_2);
+        let camera = Camera::new(201, 101, FRAC_PI_2, Matrix::identity());
         let ray = camera.ray_for_pixel(100, 50);
         assert!(ray.origin.is_close(&Tuple::zero_point()));
         assert!(ray.direction.is_close(&vector![0., 0., -1.]));
@@ -122,7 +118,7 @@ mod tests {
 
     #[test]
     fn test_ray_for_pixel_corner() {
-        let camera = Camera::identity(201, 101, FRAC_PI_2);
+        let camera = Camera::new(201, 101, FRAC_PI_2, Matrix::identity());
         let ray = camera.ray_for_pixel(0, 0);
         assert!(ray.origin.is_close(&Tuple::zero_point()));
         assert!(
