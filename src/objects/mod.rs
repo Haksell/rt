@@ -5,7 +5,7 @@ pub use plane::Plane;
 pub use sphere::Sphere;
 
 use {
-    crate::{color::Color, material::Material, math::Matrix, ray::Ray, math::Tuple},
+    crate::{color::Color, material::Material, math::Matrix, math::Tuple, ray::Ray},
     std::fmt::Debug,
 };
 
@@ -30,11 +30,10 @@ pub trait Object: Debug {
     }
 
     fn color_at(&self, world_point: &Tuple) -> Color {
-        // let object_point = self.get_inverse_transform() * world_point;
-        // let pattern = &self.get_material().pattern;
-        // let pattern_point = pattern.get_inverse_transform() * object_point;
-        // pattern.color_at(&pattern_point)
-        self.get_material().color
+        let object_point = self.get_inverse_transform() * world_point;
+        let pattern = &self.get_material().pattern;
+        let pattern_point = pattern.get_inverse_transform() * object_point;
+        pattern.color_at(&pattern_point)
     }
 }
 

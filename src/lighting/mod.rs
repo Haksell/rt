@@ -57,6 +57,7 @@ mod tests {
             material::Material,
             math::transform::{scale_constant, translate},
             objects::Sphere,
+            patterns::Stripe,
             point, vector,
             world::{TESTING_WORLD, World},
         },
@@ -141,38 +142,38 @@ mod tests {
         )
     }
 
-    // #[test]
-    // fn test_lighting_stripe() {
-    //     let material = Material::new(Box::new(Stripe::default()), 1.0, 0.0, 0.0, 0.0);
-    //     let sphere = Sphere::unit(material);
-    //     let eyev = vector![0., 0., -1.];
-    //     let normalv = vector![0., 0., -1.];
-    //     let light = PointLight::new(Color::white(), point![0., 0., -10.]);
+    #[test]
+    fn test_lighting_stripe() {
+        let material = Material::new(Box::new(Stripe::default()), 1.0, 0.0, 0.0, 0.0);
+        let sphere = Sphere::unit(material);
+        let eyev = vector![0., 0., -1.];
+        let normalv = vector![0., 0., -1.];
+        let light = PointLight::new(Color::white(), point![0., 0., -10.]);
 
-    //     assert_eq!(
-    //         lighting(
-    //             &sphere,
-    //             &light,
-    //             &point![0.9, 0.0, 0.0],
-    //             &eyev,
-    //             &normalv,
-    //             true
-    //         ),
-    //         Color::white()
-    //     );
+        assert_eq!(
+            lighting(
+                &sphere,
+                &light,
+                &point![0.9, 0.0, 0.0],
+                &eyev,
+                &normalv,
+                true
+            ),
+            Color::white()
+        );
 
-    //     assert_eq!(
-    //         lighting(
-    //             &sphere,
-    //             &light,
-    //             &point![1.1, 0.0, 0.0],
-    //             &eyev,
-    //             &normalv,
-    //             true
-    //         ),
-    //         Color::black()
-    //     );
-    // }
+        assert_eq!(
+            lighting(
+                &sphere,
+                &light,
+                &point![1.1, 0.0, 0.0],
+                &eyev,
+                &normalv,
+                true
+            ),
+            Color::black()
+        );
+    }
 
     #[test]
     fn test_is_shadowed_diagonal() {

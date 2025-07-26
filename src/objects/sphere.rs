@@ -3,7 +3,7 @@ use {
     std::cmp::Ordering,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Sphere {
     inverse_transform: Matrix, // TODO: &'a Matrix ?
     material: Material,        // TODO: &Material ?
@@ -88,13 +88,7 @@ mod tests {
     #[test]
     fn test_sphere_constructors() {
         let default = Sphere::default();
-        let red = Sphere::unit(Material {
-            color: Color::red(),
-            ambient: 0.1,
-            diffuse: 0.9,
-            specular: 0.9,
-            shininess: 200.,
-        });
+        let red = Sphere::unit(Material::from_color(Color::red()));
         let squashed = Sphere::plastic(transform::scale(1., 0.3, 1.));
         assert_eq!(default.material.ambient, squashed.material.ambient);
         assert_eq!(default.material.diffuse, squashed.material.diffuse);

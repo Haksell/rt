@@ -1,9 +1,11 @@
-use crate::color::Color;
+use crate::{
+    color::Color,
+    patterns::{Pattern, Solid},
+};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Material {
-    // pub pattern: Box<dyn Pattern>,
-    pub color: Color, // TODO: replace with pattern
+    pub pattern: Box<dyn Pattern>,
     pub ambient: f64,
     pub diffuse: f64,
     pub specular: f64,
@@ -12,16 +14,14 @@ pub struct Material {
 
 impl Material {
     pub fn new(
-        // pattern: Box<dyn Pattern>,
-        color: Color,
+        pattern: Box<dyn Pattern>,
         ambient: f64,
         diffuse: f64,
         specular: f64,
         shininess: f64,
     ) -> Self {
         Self {
-            // pattern,
-            color,
+            pattern,
             ambient,
             diffuse,
             specular,
@@ -29,19 +29,18 @@ impl Material {
         }
     }
 
-    // pub fn from_color(color: Color) -> Self {
-    //     Self {
-    //         pattern: Box::new(Solid::new(color)),
-    //         ..Self::default()
-    //     }
-    // }
+    pub fn from_color(color: Color) -> Self {
+        Self {
+            pattern: Box::new(Solid::new(color)),
+            ..Default::default()
+        }
+    }
 }
 
 impl Default for Material {
     fn default() -> Self {
         Self {
-            // pattern: Box::new(Solid::new(Color::white())),
-            color: Color::white(),
+            pattern: Box::new(Solid::new(Color::white())),
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,

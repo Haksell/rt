@@ -23,7 +23,6 @@ impl World {
         Self { objects, lights }
     }
 
-    // TODO: tests from book
     pub fn intersect(&self, ray: &Ray) -> Option<(&Box<dyn Object>, f64)> {
         const MIN_HIT_DISTANCE: f64 = 1e-6;
 
@@ -64,10 +63,13 @@ impl World {
 }
 
 #[cfg(test)]
+use crate::patterns::Solid;
+
+#[cfg(test)]
 pub const TESTING_WORLD: LazyLock<World> = LazyLock::new(|| World {
     objects: vec![
         Box::new(Sphere::unit(Material {
-            color: Color::new(0.8, 1., 0.6),
+            pattern: Box::new(Solid::new(Color::new(0.8, 1., 0.6))),
             diffuse: 0.7,
             specular: 0.2,
             ..Material::default()

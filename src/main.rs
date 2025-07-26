@@ -27,6 +27,7 @@ use {
             },
         },
         objects::{Object, Plane, Sphere},
+        patterns::Solid,
         world::World,
     },
     minifb::{Key, Window, WindowOptions},
@@ -59,32 +60,35 @@ fn main() {
     }
 }
 
-fn build_world() -> World {
-    let wall_scale = scale(10.0, 0.01, 10.0);
-    let wall_material = Material {
-        color: Color::new(1.0, 0.9, 0.9),
+fn wall_material() -> Material {
+    Material {
+        pattern: Box::new(Solid::new(Color::new(1.0, 0.9, 0.9))),
         specular: 0.0,
         ..Default::default()
-    };
+    }
+}
 
-    let floor = Plane::new(Matrix::identity(), wall_material.clone());
+fn build_world() -> World {
+    let wall_scale = scale(10.0, 0.01, 10.0);
+
+    let floor = Plane::new(Matrix::identity(), wall_material());
     let left_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(-std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        wall_material.clone(),
+        wall_material(),
     );
     let right_wall = Plane::new(
         translate(0., 0., 5.)
             * rotate_y(std::f64::consts::FRAC_PI_4)
             * rotate_x(std::f64::consts::FRAC_PI_2),
-        wall_material.clone(),
+        wall_material(),
     );
 
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),
         Material {
-            color: Color::new(0.1, 1.0, 0.5),
+            pattern: Box::new(Solid::new(Color::new(0.1, 1.0, 0.5))),
             diffuse: 0.7,
             specular: 0.3,
             ..Default::default()
@@ -93,14 +97,14 @@ fn build_world() -> World {
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale_constant(0.5),
         Material {
-            color: Color::new(0.5, 1.0, 0.1),
+            pattern: Box::new(Solid::new(Color::new(0.5, 1.0, 0.1))),
             ..*middle.get_material()
         },
     );
     let left = Sphere::new(
         translate(-1.5, 0.33, -0.75) * scale_constant(0.33),
         Material {
-            color: Color::new(1.0, 0.8, 0.1),
+            pattern: Box::new(Solid::new(Color::new(1.0, 0.8, 0.1))),
             ..*middle.get_material()
         },
     );
