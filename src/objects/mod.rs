@@ -23,12 +23,11 @@ pub trait Object: Debug {
     fn normal_at(&self, world_point: &Tuple) -> Tuple {
         let local_point = self.get_inverse_transform() * world_point;
         let local_normal = self.local_normal_at(&local_point);
-        let mut world_normal = self.get_inverse_transform().transpose() * local_normal;
+        let mut world_normal = local_normal * self.get_inverse_transform();
         world_normal.w = 0.;
         world_normal.normalize()
     }
 
-    // // TODO: find a way to avoid cloning the colors most of the time
     // fn color_at(&self, world_point: &Tuple) -> Color {
     //     let object_point = self.get_inverse_transform().clone() * world_point.clone();
     //     let pattern = &self.get_material().pattern;

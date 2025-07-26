@@ -60,6 +60,7 @@ mod tests {
     use {
         super::*,
         crate::{point, transform, vector},
+        std::f64::consts::FRAC_1_SQRT_2,
     };
 
     #[test]
@@ -104,6 +105,39 @@ mod tests {
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![]
+        );
+    }
+
+    #[test]
+    fn test_sphere_unit_normal_at() {
+        let s = Sphere::default();
+        assert_eq!(s.normal_at(&point![1., 0., 0.]), vector![1., 0., 0.]);
+        assert_eq!(s.normal_at(&point![0., 1., 0.]), Tuple::up());
+        assert_eq!(s.normal_at(&point![0., 0., 1.]), vector![0., 0., 1.]);
+        let sqrt3_third = 3.0f64.sqrt() / 3.;
+        assert!(
+            s.normal_at(&point![sqrt3_third, sqrt3_third, sqrt3_third])
+                .is_close(&vector![sqrt3_third, sqrt3_third, sqrt3_third])
+        );
+    }
+
+    #[test]
+    fn test_sphere_translated_normal_at() {
+        assert!(
+            Sphere::new(transform::translate(0., 1., 0.))
+                .normal_at(&point![0., 1. + FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
+                .is_close(&vector![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
+        );
+    }
+
+    #[test]
+    fn test_sphere_transformed_normal_at() {
+        assert!(
+            Sphere::new(
+                transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f64::consts::TAU / 10.),
+            )
+            .normal_at(&point![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2]) // is it even on the sphere?
+            .is_close(&vector![0., 0.97014254, -0.24253564])
         );
     }
 }

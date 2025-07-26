@@ -209,18 +209,33 @@ impl_matrix_matrix!(&Matrix, Matrix);
 impl_matrix_matrix!(&Matrix, &Matrix);
 
 macro_rules! impl_matrix_tuple {
-    ($lhs:ty, $rhs:ty) => {
-        impl std::ops::Mul<$rhs> for $lhs {
+    ($matrix:ty, $tuple:ty) => {
+        impl std::ops::Mul<$tuple> for $matrix {
             type Output = Tuple;
 
-            fn mul(self, rhs: $rhs) -> Tuple {
+            fn mul(self, tuple: $tuple) -> Tuple {
                 let [[a, b, c, d], [e, f, g, h], [i, j, k, l], [m, n, o, p]] = self.values;
 
                 Tuple::new(
-                    a * rhs.x + b * rhs.y + c * rhs.z + d * rhs.w,
-                    e * rhs.x + f * rhs.y + g * rhs.z + h * rhs.w,
-                    i * rhs.x + j * rhs.y + k * rhs.z + l * rhs.w,
-                    m * rhs.x + n * rhs.y + o * rhs.z + p * rhs.w,
+                    a * tuple.x + b * tuple.y + c * tuple.z + d * tuple.w,
+                    e * tuple.x + f * tuple.y + g * tuple.z + h * tuple.w,
+                    i * tuple.x + j * tuple.y + k * tuple.z + l * tuple.w,
+                    m * tuple.x + n * tuple.y + o * tuple.z + p * tuple.w,
+                )
+            }
+        }
+
+        impl std::ops::Mul<$matrix> for $tuple {
+            type Output = Tuple;
+
+            fn mul(self, matrix: $matrix) -> Tuple {
+                let [[a, b, c, d], [e, f, g, h], [i, j, k, l], [m, n, o, p]] = matrix.values;
+
+                Tuple::new(
+                    a * self.x + e * self.y + i * self.z + m * self.w,
+                    b * self.x + f * self.y + j * self.z + n * self.w,
+                    c * self.x + g * self.y + k * self.z + o * self.w,
+                    d * self.x + h * self.y + l * self.z + p * self.w,
                 )
             }
         }
@@ -448,7 +463,7 @@ mod tests {
     }
 
     #[test]
-    fn test_tup_mul() {
+    fn test_mat_tup() {
         assert_eq!(Matrix::identity() * point![1., 2., 3.], point![1., 2., 3.]);
         assert_eq!(
             Matrix::identity() * 2. * &Tuple::new(1., 2., 3., 4.),
@@ -470,6 +485,35 @@ mod tests {
                 [8., 6., 4., 1.],
                 [0., 0., 0., 1.],
             ] * &point![1., 2., 3.],
+            point![18., 24., 33.],
+        );
+    }
+
+    #[test]
+    fn test_tup_mat() {
+        assert_eq!(point![1., 2., 3.] * Matrix::identity(), point![1., 2., 3.]);
+        assert_eq!(
+            &Tuple::new(1., 2., 3., 4.) * (Matrix::identity() * 2.),
+            Tuple::new(2., 4., 6., 8.)
+        );
+        assert_eq!(
+            Tuple::new(1., 2., 3., 4.)
+                * &matrix![
+                    [0., 1., 0., 0.],
+                    [1., 0., 0., 0.],
+                    [0., 0., 1., 0.],
+                    [0., 0., 0., 1.],
+                ],
+            Tuple::new(2., 1., 3., 4.),
+        );
+        assert_eq!(
+            &point![1., 2., 3.]
+                * &matrix![
+                    [1., 2., 8., 0.],
+                    [2., 4., 6., 0.],
+                    [3., 4., 4., 0.],
+                    [4., 2., 1., 1.],
+                ],
             point![18., 24., 33.],
         );
     }
