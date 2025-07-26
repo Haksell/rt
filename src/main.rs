@@ -4,6 +4,7 @@ mod camera;
 mod canvas;
 #[macro_use]
 mod color;
+mod computations;
 mod floats;
 mod lighting;
 mod material;
@@ -37,7 +38,7 @@ fn main() {
         640,
         480,
         std::f64::consts::FRAC_PI_3,
-        translate(0., 0., -3.),
+        translate(0., 0., -3.0),
     );
     let world = World {
         objects: vec![Box::new(Sphere::new(

@@ -40,6 +40,8 @@ impl World {
             None => Color::black(), // TODO: ambient color instead
             // TODO: shade_hit(self, &Computations::prepare(intersection, ray)),
             Some(object) => {
+                // TODO: calculations directly in lighting function?
+                // TODO: handle inside (no ambient)
                 let point = ray.at(hit_distance);
                 let normal = object.normal_at(&point);
                 let eye = -ray.direction;
