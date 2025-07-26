@@ -48,7 +48,7 @@ fn main() {
                 ..Material::default()
             },
         ))],
-        lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+        lights: vec![PointLight::new(Color::white(), point![10., 10., 10.])],
     };
     let canvas = camera.render(&world);
     let buffer = canvas.to_buffer();

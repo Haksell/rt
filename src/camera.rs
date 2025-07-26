@@ -39,7 +39,7 @@ impl Camera {
         Self::new(hsize, vsize, fov, Matrix::identity())
     }
 
-    pub fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
+    fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
         let xoffset = (px as f64 + 0.5) * self.pixel_size;
         let yoffset = (py as f64 + 0.5) * self.pixel_size;
         let world_x = self.half_width - xoffset;
