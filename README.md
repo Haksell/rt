@@ -1,7 +1,5 @@
 # rt
 
-I just restarted the project from scratch. `old` branch is more interesting.
-
 ## TODO
 
 - [ ] Read `The Ray Tracer Challenge`
