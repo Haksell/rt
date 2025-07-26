@@ -1,4 +1,4 @@
-use crate::{math::Matrix, math::Tuple};
+use crate::math::{Matrix, Tuple};
 
 // TODO: implement transformations directly on Tuple
 // TODO: implement transformations directly on Matrix
