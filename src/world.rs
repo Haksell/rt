@@ -91,6 +91,51 @@ mod tests {
     };
 
     #[test]
+    fn test_intersect_all_positive() {
+        let sphere = Sphere::default();
+        let world = World::new(vec![Box::new(sphere)], vec![]);
+        let intersection = world.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.]));
+        assert!(intersection.is_some());
+        let (object, t) = intersection.unwrap();
+        assert_eq!(t, 4.);
+        assert!(std::ptr::addr_eq(object, &world.objects[0]));
+    }
+
+    #[test]
+    fn test_intersect_one_positive() {
+        let sphere = Sphere::default();
+        let world = World::new(vec![Box::new(sphere)], vec![]);
+        let intersection = world.intersect(&Ray::new(point![0., 0., 0.], vector![0., 0., 1.]));
+        assert!(intersection.is_some());
+        let (object, t) = intersection.unwrap();
+        assert_eq!(t, 1.);
+        assert!(std::ptr::addr_eq(object, &world.objects[0]));
+    }
+
+    #[test]
+    fn test_intersect_all_negative() {
+        let sphere = Sphere::default();
+        let world = World::new(vec![Box::new(sphere)], vec![]);
+        let intersection = world.intersect(&Ray::new(point![0., 0., 5.], vector![0., 0., 1.]));
+        assert!(intersection.is_none());
+    }
+
+    #[test]
+    fn test_intersect_more() {
+        let big_sphere_around = Sphere::plastic(scale_constant(5.));
+        let small_sphere_ahead = Sphere::plastic(translate(0., 0., 1.5));
+        let world = World::new(
+            vec![Box::new(big_sphere_around), Box::new(small_sphere_ahead)],
+            vec![],
+        );
+        let intersection = world.intersect(&Ray::new(point![0., 0., 0.], vector![0., 0., 1.]));
+        assert!(intersection.is_some());
+        let (object, t) = intersection.unwrap();
+        assert_eq!(t, 0.5);
+        assert!(std::ptr::addr_eq(object, &world.objects[1]));
+    }
+
+    #[test]
     fn test_shade_hit_not_in_shadow() {
         let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
         let object = &TESTING_WORLD.objects[0];
