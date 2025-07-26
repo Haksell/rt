@@ -28,7 +28,7 @@ pub trait Object: Debug {
     }
 
     fn color_at(&self, world_point: &Tuple) -> Color {
-        let object_point = self.get_inverse_transform() * world_point;
+        // let object_point = self.get_inverse_transform() * world_point;
         // let pattern = &self.get_material().pattern;
         // let pattern_point = pattern.get_inverse_transform() * object_point;
         // pattern.color_at(&pattern_point)
@@ -40,5 +40,53 @@ pub trait Object: Debug {
 mod tests {
     use super::*;
 
-    // TODO: tests (at least the same ones as old branch)
+    // #[test]
+    // fn test_color_at_object_transform() {
+    //     assert_eq!(
+    //         Sphere::new(
+    //             scale_constant(2.0),
+    //             Material {
+    //                 pattern: Box::new(Stripe::default()),
+    //                 ..Material::default()
+    //             },
+    //         )
+    //         .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+    //         Color::white()
+    //     );
+    // }
+
+    // #[test]
+    // fn test_color_at_pattern_transform() {
+    //     assert_eq!(
+    //         Sphere::unit(Material {
+    //             pattern: Box::new(Stripe::new(
+    //                 Color::white(),
+    //                 Color::black(),
+    //                 scale_constant(2.0),
+    //             )),
+    //             ..Material::default()
+    //         })
+    //         .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+    //         Color::white()
+    //     );
+    // }
+
+    // #[test]
+    // fn test_color_at_both_transform() {
+    //     assert_eq!(
+    //         Sphere::new(
+    //             scale_constant(2.0),
+    //             Material {
+    //                 pattern: Box::new(Stripe::new(
+    //                     Color::white(),
+    //                     Color::black(),
+    //                     translate(0.5, 0.0, 0.0),
+    //                 )),
+    //                 ..Material::default()
+    //             }
+    //         )
+    //         .color_at(&Tuple::new_point(2.5, 0.0, 0.0)),
+    //         Color::white()
+    //     );
+    // }
 }
