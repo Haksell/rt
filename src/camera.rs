@@ -74,33 +74,33 @@ mod tests {
             vector,
             world::TESTING_WORLD,
         },
-        std::f64::consts::FRAC_PI_2,
+        std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_2, FRAC_PI_4},
     };
 
     #[test]
-    fn test_camera_new() {
-        let camera = Camera::identity(160, 120, std::f64::consts::FRAC_PI_2);
+    fn test_camera_identity() {
+        let camera = Camera::identity(160, 120, FRAC_PI_2);
         assert_eq!(camera.hsize, 160);
         assert_eq!(camera.vsize, 120);
-        assert_eq!(camera.fov, std::f64::consts::FRAC_PI_2);
+        assert_eq!(camera.fov, FRAC_PI_2);
         assert_eq!(camera.transform, Matrix::identity());
     }
 
     #[test]
     fn test_camera_pixel_size() {
         assert!(is_close(
-            Camera::identity(200, 125, std::f64::consts::FRAC_PI_2).pixel_size,
+            Camera::identity(200, 125, FRAC_PI_2).pixel_size,
             0.01
         ));
         assert!(is_close(
-            Camera::identity(125, 200, std::f64::consts::FRAC_PI_2).pixel_size,
+            Camera::identity(125, 200, FRAC_PI_2).pixel_size,
             0.01
         ));
     }
 
     #[test]
     fn test_ray_for_pixel_center() {
-        let camera = Camera::identity(201, 101, std::f64::consts::FRAC_PI_2);
+        let camera = Camera::identity(201, 101, FRAC_PI_2);
         let ray = camera.ray_for_pixel(100, 50);
         assert!(ray.origin.is_close(&Tuple::zero_point()));
         assert!(ray.direction.is_close(&vector![0., 0., -1.]));
@@ -108,7 +108,7 @@ mod tests {
 
     #[test]
     fn test_ray_for_pixel_corner() {
-        let camera = Camera::identity(201, 101, std::f64::consts::FRAC_PI_2);
+        let camera = Camera::identity(201, 101, FRAC_PI_2);
         let ray = camera.ray_for_pixel(0, 0);
         assert!(ray.origin.is_close(&Tuple::zero_point()));
         assert!(
@@ -122,16 +122,15 @@ mod tests {
         let camera = Camera::new(
             201,
             101,
-            std::f64::consts::FRAC_PI_2,
-            rotate_y(std::f64::consts::FRAC_PI_4) * translate(0., -2., 5.),
+            FRAC_PI_2,
+            rotate_y(FRAC_PI_4) * translate(0., -2., 5.),
         );
         let ray = camera.ray_for_pixel(100, 50);
         assert!(ray.origin.is_close(&point![0., 2., -5.]));
-        assert!(ray.direction.is_close(&vector![
-            std::f64::consts::FRAC_1_SQRT_2,
-            0.,
-            -std::f64::consts::FRAC_1_SQRT_2
-        ]));
+        assert!(
+            ray.direction
+                .is_close(&vector![FRAC_1_SQRT_2, 0., -FRAC_1_SQRT_2])
+        );
     }
 
     #[test]

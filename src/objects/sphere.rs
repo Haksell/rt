@@ -82,7 +82,7 @@ mod tests {
     use {
         super::*,
         crate::{color::Color, point, transform, vector},
-        std::f64::consts::FRAC_1_SQRT_2,
+        std::f64::consts::{FRAC_1_SQRT_2, TAU},
     };
 
     #[test]
@@ -165,11 +165,9 @@ mod tests {
     #[test]
     fn test_sphere_transformed_normal_at() {
         assert!(
-            Sphere::plastic(
-                transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f64::consts::TAU / 10.),
-            )
-            .normal_at(&point![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2]) // is it even on the sphere?
-            .is_close(&vector![0., 0.97014254, -0.24253564])
+            Sphere::plastic(transform::scale(1., 0.5, 1.) * transform::rotate_z(TAU / 10.),)
+                .normal_at(&point![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2]) // is it even on the sphere?
+                .is_close(&vector![0., 0.97014254, -0.24253564])
         );
     }
 }

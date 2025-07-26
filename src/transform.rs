@@ -88,6 +88,7 @@ mod tests {
     use {
         super::*,
         crate::{point, vector},
+        std::f64::consts::{FRAC_1_SQRT_2, FRAC_PI_2, FRAC_PI_4, PI, TAU},
     };
 
     #[test]
@@ -150,46 +151,33 @@ mod tests {
 
     #[test]
     fn test_rotate_x() {
-        assert!((rotate_x(std::f64::consts::TAU)).is_close(&Matrix::identity()));
+        assert!((rotate_x(TAU)).is_close(&Matrix::identity()));
         let p = point![3., 1., 0.];
-        assert!((rotate_x(std::f64::consts::TAU) * p).is_close(&p));
-        assert!((rotate_x(std::f64::consts::PI) * p).is_close(&point![3., -1., 0.]));
-        assert!((rotate_x(std::f64::consts::FRAC_PI_2) * p).is_close(&point![3., 0., 1.]));
-        assert!(
-            (rotate_x(std::f64::consts::FRAC_PI_4) * p).is_close(&point![
-                3.,
-                std::f64::consts::FRAC_1_SQRT_2,
-                std::f64::consts::FRAC_1_SQRT_2
-            ])
-        );
-        assert!(
-            (rotate_x(std::f64::consts::TAU * 0.75) * point![7., -2., 4.5])
-                .is_close(&point![7., 4.5, 2.])
-        );
+        assert!((rotate_x(TAU) * p).is_close(&p));
+        assert!((rotate_x(PI) * p).is_close(&point![3., -1., 0.]));
+        assert!((rotate_x(FRAC_PI_2) * p).is_close(&point![3., 0., 1.]));
+        assert!((rotate_x(FRAC_PI_4) * p).is_close(&point![3., FRAC_1_SQRT_2, FRAC_1_SQRT_2]));
+        assert!((rotate_x(TAU * 0.75) * point![7., -2., 4.5]).is_close(&point![7., 4.5, 2.]));
     }
 
     #[test]
     fn test_rotate_y() {
-        assert!((rotate_y(std::f64::consts::TAU)).is_close(&Matrix::identity()));
+        assert!((rotate_y(TAU)).is_close(&Matrix::identity()));
         let p = point![0., 4.2, 1.];
-        assert!((rotate_y(std::f64::consts::TAU) * p).is_close(&p));
-        assert!((rotate_y(std::f64::consts::TAU / 2.) * p).is_close(&point![0., 4.2, -1.]));
-        assert!((rotate_y(std::f64::consts::TAU / 4.) * p).is_close(&point![1., 4.2, 0.]));
-        assert!((rotate_y(std::f64::consts::TAU / 8.) * p).is_close(&point![
-            std::f64::consts::FRAC_1_SQRT_2,
-            4.2,
-            std::f64::consts::FRAC_1_SQRT_2,
-        ]));
+        assert!((rotate_y(TAU) * p).is_close(&p));
+        assert!((rotate_y(TAU / 2.) * p).is_close(&point![0., 4.2, -1.]));
+        assert!((rotate_y(TAU / 4.) * p).is_close(&point![1., 4.2, 0.]));
+        assert!((rotate_y(TAU / 8.) * p).is_close(&point![FRAC_1_SQRT_2, 4.2, FRAC_1_SQRT_2,]));
     }
 
     #[test]
     fn test_rotate_z() {
-        assert!((rotate_z(std::f64::consts::TAU)).is_close(&Matrix::identity()));
+        assert!((rotate_z(TAU)).is_close(&Matrix::identity()));
         let p = point![0., 2., -1.];
-        assert!((rotate_z(std::f64::consts::TAU) * p).is_close(&p));
-        assert!((rotate_z(std::f64::consts::TAU / 2.) * p).is_close(&point![0., -2., -1.]));
-        assert!((rotate_z(std::f64::consts::TAU / 4.) * p).is_close(&point![-2., 0., -1.]));
-        assert!((rotate_z(std::f64::consts::TAU / 8.) * p).is_close(&point![
+        assert!((rotate_z(TAU) * p).is_close(&p));
+        assert!((rotate_z(TAU / 2.) * p).is_close(&point![0., -2., -1.]));
+        assert!((rotate_z(TAU / 4.) * p).is_close(&point![-2., 0., -1.]));
+        assert!((rotate_z(TAU / 8.) * p).is_close(&point![
             -(2. as f64).sqrt(),
             (2. as f64).sqrt(),
             -1.
@@ -235,7 +223,7 @@ mod tests {
     #[test]
     fn test_mixed_transforms() {
         let p = point![1., 0., 1.];
-        let a = rotate_x(std::f64::consts::TAU / 4.);
+        let a = rotate_x(TAU / 4.);
         let b = scale_constant(5.);
         let c = translate(10., 5., 7.);
         assert_eq!(&c * (&b * (&a * p)), point![15., 0., 7.]);

@@ -279,14 +279,7 @@ mod tests {
     #[test]
     fn test_is_normalized() {
         assert!(Tuple::up().is_normalized(),);
-        assert!(
-            vector!(
-                std::f64::consts::FRAC_1_SQRT_2,
-                std::f64::consts::FRAC_1_SQRT_2,
-                0.
-            )
-            .is_normalized(),
-        );
+        assert!(vector!(FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.).is_normalized(),);
         assert!(!vector![0.5, 0.5, 0.].is_normalized(),);
     }
 

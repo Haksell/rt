@@ -30,16 +30,11 @@ use {
         world::World,
     },
     minifb::{Key, Window, WindowOptions},
-    std::f64::consts::TAU,
+    std::f64::consts::{FRAC_PI_3, TAU},
 };
 
 fn main() {
-    let camera = Camera::new(
-        640,
-        480,
-        std::f64::consts::FRAC_PI_3,
-        translate(0., 0., -3.0),
-    );
+    let camera = Camera::new(640, 480, FRAC_PI_3, translate(0., 0., -3.0));
     let world = World {
         objects: vec![Box::new(Sphere::new(
             // rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
