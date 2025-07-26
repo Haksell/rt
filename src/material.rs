@@ -31,7 +31,7 @@ impl Material {
 
     // pub fn from_color(color: Color) -> Self {
     //     Self {
-    //         pattern: Box::new(Solid::new(Color::white())),
+    //         pattern: Box::new(Solid::new(color)),
     //         ..Self::default()
     //     }
     // }

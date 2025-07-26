@@ -52,7 +52,7 @@ mod tests {
     //                 ..Material::default()
     //             },
     //         )
-    //         .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+    //         .color_at(&point![1.5, 0.0, 0.0]),
     //         Color::white()
     //     );
     // }
@@ -68,7 +68,7 @@ mod tests {
     //             )),
     //             ..Material::default()
     //         })
-    //         .color_at(&Tuple::new_point(1.5, 0.0, 0.0)),
+    //         .color_at(&point![1.5, 0.0, 0.0]),
     //         Color::white()
     //     );
     // }
@@ -87,7 +87,7 @@ mod tests {
     //                 ..Material::default()
     //             }
     //         )
-    //         .color_at(&Tuple::new_point(2.5, 0.0, 0.0)),
+    //         .color_at(&point![2.5, 0.0, 0.0]),
     //         Color::white()
     //     );
     // }

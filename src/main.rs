@@ -9,6 +9,7 @@ mod material;
 #[macro_use]
 mod math;
 mod objects;
+mod patterns;
 mod ray;
 mod world;
 
