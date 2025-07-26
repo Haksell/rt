@@ -12,6 +12,8 @@ pub struct Canvas {
 
 impl Canvas {
     pub fn new(width: usize, height: usize) -> Self {
+        debug_assert!(width > 0);
+        debug_assert!(height > 0);
         Self {
             width,
             height,
