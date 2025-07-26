@@ -25,7 +25,7 @@ use {
         lighting::PointLight,
         material::Material,
         matrix::Matrix,
-        objects::{Object, Sphere},
+        objects::{Object, Plane, Sphere},
         transform::{
             rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform,
         },
@@ -69,13 +69,17 @@ fn build_world() -> World {
         ..Default::default()
     };
 
-    let floor = Sphere::new(wall_scale.clone(), wall_material.clone());
-    let left_wall = Sphere::new(
-        translate(0., 0., 5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2) * &wall_scale,
+    let floor = Plane::new(Matrix::identity(), wall_material.clone());
+    let left_wall = Plane::new(
+        translate(0., 0., 5.)
+            * rotate_y(-std::f64::consts::FRAC_PI_4)
+            * rotate_x(std::f64::consts::FRAC_PI_2),
         wall_material.clone(),
     );
-    let right_wall = Sphere::new(
-        translate(0., 0., 5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2) * &wall_scale,
+    let right_wall = Plane::new(
+        translate(0., 0., 5.)
+            * rotate_y(std::f64::consts::FRAC_PI_4)
+            * rotate_x(std::f64::consts::FRAC_PI_2),
         wall_material.clone(),
     );
 
