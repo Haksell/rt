@@ -1,8 +1,8 @@
 use crate::{canvas::Canvas, matrix::Matrix, point, ray::Ray, tuple::Tuple, world::World};
 
 pub struct Camera {
-    pub hsize: usize,
-    pub vsize: usize,
+    pub width: usize,
+    pub height: usize,
     pub transform: Matrix,
     pub inverse_transform: Matrix,
     pub origin: Tuple,
@@ -14,18 +14,18 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(hsize: usize, vsize: usize, fov: f64, transform: Matrix) -> Self {
-        debug_assert!(hsize > 0);
-        debug_assert!(vsize > 0);
+    pub fn new(width: usize, height: usize, fov: f64, transform: Matrix) -> Self {
+        debug_assert!(width > 0);
+        debug_assert!(height > 0);
 
-        let aspect_ratio = hsize as f64 / vsize as f64;
+        let aspect_ratio = width as f64 / height as f64;
         let half_view = (fov * 0.5).tan();
-        let (half_width, half_height) = if hsize > vsize {
+        let (half_width, half_height) = if width > height {
             (half_view, half_view / aspect_ratio)
         } else {
             (half_view * aspect_ratio, half_view)
         };
-        let pixel_size = half_width * 2.0 / hsize as f64;
+        let pixel_size = half_width * 2.0 / width as f64;
         let inverse_transform = transform.inverse();
         let origin = point![
             inverse_transform[(0, 3)],
@@ -34,8 +34,8 @@ impl Camera {
         ];
 
         Self {
-            hsize,
-            vsize,
+            width,
+            height,
             transform,
             inverse_transform,
             origin,
@@ -47,8 +47,8 @@ impl Camera {
         }
     }
 
-    pub fn identity(hsize: usize, vsize: usize, fov: f64) -> Self {
-        Self::new(hsize, vsize, fov, Matrix::identity())
+    pub fn identity(width: usize, height: usize, fov: f64) -> Self {
+        Self::new(width, height, fov, Matrix::identity())
     }
 
     fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
@@ -65,9 +65,9 @@ impl Camera {
     }
 
     pub fn render(&self, world: &World) -> Canvas {
-        let mut canvas = Canvas::new(self.hsize, self.vsize);
-        for py in 0..self.vsize {
-            for px in 0..self.hsize {
+        let mut canvas = Canvas::new(self.width, self.height);
+        for py in 0..self.height {
+            for px in 0..self.width {
                 canvas[(py, px)] = world.color_at(&self.ray_for_pixel(px, py));
             }
         }
@@ -92,8 +92,8 @@ mod tests {
     #[test]
     fn test_camera_identity() {
         let camera = Camera::identity(160, 120, FRAC_PI_2);
-        assert_eq!(camera.hsize, 160);
-        assert_eq!(camera.vsize, 120);
+        assert_eq!(camera.width, 160);
+        assert_eq!(camera.height, 120);
         assert_eq!(camera.fov, FRAC_PI_2);
         assert_eq!(camera.transform, Matrix::identity());
     }
@@ -157,11 +157,6 @@ mod tests {
         assert_eq!(canvas.height, 11);
         assert_eq!(canvas.width, 11);
         let target = Color::new(0.3806612, 0.47582647, 0.2854959);
-        assert!(
-            canvas[(5, 5)].is_close(&target),
-            "actual={:?}\nexpected={:?}",
-            canvas[(5, 5)],
-            target
-        );
+        assert!(canvas[(5, 5)].is_close(&target));
     }
 }
