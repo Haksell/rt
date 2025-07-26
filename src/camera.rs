@@ -14,6 +14,7 @@ pub struct Camera {
 }
 
 impl Camera {
+    // TODO: accept (from, to, up) instead of the transform
     pub fn new(width: usize, height: usize, fov: f64, transform: Matrix) -> Self {
         debug_assert!(width > 0);
         debug_assert!(height > 0);

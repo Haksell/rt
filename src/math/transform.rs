@@ -25,7 +25,12 @@ pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
 
 #[inline]
 pub fn scale_constant(s: f64) -> Matrix {
-    scale(s, s, s)
+    matrix![
+        [s, 0., 0., 0.],
+        [0., s, 0., 0.],
+        [0., 0., s, 0.],
+        [0., 0., 0., 1.],
+    ]
 }
 
 #[inline]
@@ -71,6 +76,7 @@ pub fn shear(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
     ]
 }
 
+// TODO: put in mod camera?
 pub fn view_transform(from: &Tuple, to: &Tuple, up: &Tuple) -> Matrix {
     let forward = (to - from).normalize();
     let left = forward.cross(&up.normalize());
