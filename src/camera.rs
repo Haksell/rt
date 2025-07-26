@@ -3,8 +3,10 @@ use crate::{canvas::Canvas, matrix::Matrix, point, ray::Ray, tuple::Tuple, world
 pub struct Camera {
     pub hsize: usize,
     pub vsize: usize,
-    pub fov: f64,
     pub transform: Matrix,
+    pub inverse_transform: Matrix,
+    pub origin: Tuple,
+    pub fov: f64,
     pub aspect_ratio: f64,
     pub half_width: f64,
     pub half_height: f64,
@@ -15,6 +17,7 @@ impl Camera {
     pub fn new(hsize: usize, vsize: usize, fov: f64, transform: Matrix) -> Self {
         debug_assert!(hsize > 0);
         debug_assert!(vsize > 0);
+
         let aspect_ratio = hsize as f64 / vsize as f64;
         let half_view = (fov * 0.5).tan();
         let (half_width, half_height) = if hsize > vsize {
@@ -23,11 +26,16 @@ impl Camera {
             (half_view * aspect_ratio, half_view)
         };
         let pixel_size = half_width * 2.0 / hsize as f64;
+        let inverse_transform = transform.inverse();
+        let origin = &inverse_transform * Tuple::zero_point();
+
         Self {
             hsize,
             vsize,
-            fov,
             transform,
+            inverse_transform,
+            origin,
+            fov,
             aspect_ratio,
             half_width,
             half_height,
@@ -44,12 +52,12 @@ impl Camera {
         let yoffset = (py as f64 + 0.5) * self.pixel_size;
         let world_x = self.half_width - xoffset;
         let world_y = self.half_height - yoffset;
-        let inverse_transform = self.transform.inverse(); // TODO: in Camera directly?
-        let pixel = &inverse_transform * point![world_x, world_y, -1.];
-        // TODO: in Camera directly (or just hardcode the tuple since most values are 0)
-        let origin = inverse_transform * Tuple::zero_point();
-        let direction = (pixel - origin).normalize();
-        Ray { origin, direction }
+        let pixel = &self.inverse_transform * point![world_x, world_y, -1.];
+
+        Ray {
+            origin: self.origin,
+            direction: (pixel - self.origin).normalize(),
+        }
     }
 
     pub fn render(&self, world: &World) -> Canvas {
