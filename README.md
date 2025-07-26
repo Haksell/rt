@@ -10,6 +10,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 - [ ] Clean shadow computation and usage
 - [ ] Clean `mod computations`
 - [ ] Remove as many `.clone` as possible
+- [ ] Copy TODOs from `old` branch
 - [ ] Remove `old` branch
 - [ ] Complete all `// TODO`
 - [ ] Finish subject
