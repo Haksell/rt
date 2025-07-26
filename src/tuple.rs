@@ -195,6 +195,8 @@ impl_tuple!(&Tuple);
 
 #[cfg(test)]
 mod tests {
+    use std::f64::consts::FRAC_1_SQRT_2;
+
     use super::*;
 
     #[test]
@@ -315,7 +317,7 @@ mod tests {
     #[test]
     fn test_cross() {
         let x = vector![1., 0., 0.];
-        let y = Tuple::up();
+        let y = vector![0., 1., 0.];
         let z = vector![0., 0., 1.];
         assert_eq!(x.cross(&y), z);
         assert_eq!(y.cross(&z), x);
@@ -337,10 +339,9 @@ mod tests {
                 .reflect(&Tuple::up())
                 .is_close(&vector![1., 1., 0.])
         );
-        let sqrt_half = std::f64::consts::FRAC_1_SQRT_2;
         assert!(
             vector![0., -1., 0.]
-                .reflect(&vector![sqrt_half, sqrt_half, 0.])
+                .reflect(&vector![FRAC_1_SQRT_2, FRAC_1_SQRT_2, 0.])
                 .is_close(&vector![1., 0., 0.])
         );
     }
