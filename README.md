@@ -5,9 +5,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 ## TODO
 
 - [ ] Read `The Ray Tracer Challenge`
-- [ ] Fix horizontal symmetry lighting bug
-- [ ] (`Intersection` + `hit`)? (page 83-85)
-- [ ] Clean shadow computation and usage
+- [ ] Add ideas from chapter 17
 - [ ] Clean `color_at`/`shade_it`/`Computations`/`shadow`
 - [ ] Remove as many `.clone` as possible
 - [ ] Copy TODOs from `old` branch
