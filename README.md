@@ -8,7 +8,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 - [ ] Fix horizontal symmetry lighting bug
 - [ ] (`Intersection` + `hit`)? (page 83-85)
 - [ ] Clean shadow computation and usage
-- [ ] Clean `mod computations`
+- [ ] Clean `color_at`/`shade_it`/`Computations`/`shadow`
 - [ ] Remove as many `.clone` as possible
 - [ ] Copy TODOs from `old` branch
 - [ ] Remove `old` branch

@@ -50,15 +50,7 @@ impl World {
 
         match hit_object {
             None => Color::black(), // TODO: ambient color instead
-            // TODO: shade_hit(self, &Computations::prepare(intersection, ray)),
-            Some(object) => {
-                // TODO: calculations directly in lighting function?
-                // TODO: handle inside (no ambient)
-                let point = ray.at(hit_distance);
-                let normal = object.normal_at(&point);
-                let eye = -ray.direction;
-                lighting(&**object, &self.lights[0], &point, &eye, &normal, false)
-            } // WIP
+            Some(object) => self.shade_hit(&Computations::prepare(&**object, hit_distance, ray)),
         }
     }
 }
@@ -133,10 +125,7 @@ mod tests {
     #[test]
     fn test_color_at_between() {
         let ray = Ray::new(point![0., 0., 0.75], vector![0., 0., -1.]);
-        assert!(
-            TESTING_WORLD
-                .color_at(&ray)
-                .is_close(&(Color::white() * TESTING_WORLD.objects[1].get_material().ambient))
-        );
+        let expected = Color::white() * TESTING_WORLD.objects[1].get_material().ambient;
+        assert!(TESTING_WORLD.color_at(&ray).is_close(&expected));
     }
 }
