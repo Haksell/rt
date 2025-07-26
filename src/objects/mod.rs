@@ -39,55 +39,61 @@ pub trait Object: Debug {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use {
+        super::*,
+        crate::{
+            math::transform::{scale_constant, translate},
+            patterns::Stripe,
+        },
+    };
 
-    // #[test]
-    // fn test_color_at_object_transform() {
-    //     assert_eq!(
-    //         Sphere::new(
-    //             scale_constant(2.0),
-    //             Material {
-    //                 pattern: Box::new(Stripe::default()),
-    //                 ..Material::default()
-    //             },
-    //         )
-    //         .color_at(&point![1.5, 0.0, 0.0]),
-    //         Color::white()
-    //     );
-    // }
+    #[test]
+    fn test_color_at_object_transform() {
+        assert_eq!(
+            Sphere::new(
+                scale_constant(2.0),
+                Material {
+                    pattern: Box::new(Stripe::default()),
+                    ..Material::default()
+                },
+            )
+            .color_at(&point![1.5, 0.0, 0.0]),
+            Color::white()
+        );
+    }
 
-    // #[test]
-    // fn test_color_at_pattern_transform() {
-    //     assert_eq!(
-    //         Sphere::unit(Material {
-    //             pattern: Box::new(Stripe::new(
-    //                 Color::white(),
-    //                 Color::black(),
-    //                 scale_constant(2.0),
-    //             )),
-    //             ..Material::default()
-    //         })
-    //         .color_at(&point![1.5, 0.0, 0.0]),
-    //         Color::white()
-    //     );
-    // }
+    #[test]
+    fn test_color_at_pattern_transform() {
+        assert_eq!(
+            Sphere::unit(Material {
+                pattern: Box::new(Stripe::new(
+                    Color::white(),
+                    Color::black(),
+                    scale_constant(2.0),
+                )),
+                ..Material::default()
+            })
+            .color_at(&point![1.5, 0.0, 0.0]),
+            Color::white()
+        );
+    }
 
-    // #[test]
-    // fn test_color_at_both_transform() {
-    //     assert_eq!(
-    //         Sphere::new(
-    //             scale_constant(2.0),
-    //             Material {
-    //                 pattern: Box::new(Stripe::new(
-    //                     Color::white(),
-    //                     Color::black(),
-    //                     translate(0.5, 0.0, 0.0),
-    //                 )),
-    //                 ..Material::default()
-    //             }
-    //         )
-    //         .color_at(&point![2.5, 0.0, 0.0]),
-    //         Color::white()
-    //     );
-    // }
+    #[test]
+    fn test_color_at_both_transform() {
+        assert_eq!(
+            Sphere::new(
+                scale_constant(2.0),
+                Material {
+                    pattern: Box::new(Stripe::new(
+                        Color::white(),
+                        Color::black(),
+                        translate(0.5, 0.0, 0.0),
+                    )),
+                    ..Material::default()
+                }
+            )
+            .color_at(&point![2.5, 0.0, 0.0]),
+            Color::white()
+        );
+    }
 }
