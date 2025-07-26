@@ -29,6 +29,7 @@ pub trait Object: Debug {
         world_normal.normalize()
     }
 
+    // TODO: no matrix multiplication for solide pattern
     fn color_at(&self, world_point: &Tuple) -> Color {
         let object_point = self.get_inverse_transform() * world_point;
         let pattern = &self.get_material().pattern;
