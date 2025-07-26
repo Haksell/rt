@@ -77,7 +77,7 @@ mod tests {
         let light = PointLight::new(Color::white(), point![0., 0., -10.]);
         assert!(
             lighting(&sphere, &light, &position, &eyev, &normalv, false)
-                .is_close(&color![1.9, 1.9, 1.9])
+                .is_close(&Color::new(1.9, 1.9, 1.9))
         )
     }
 
@@ -103,7 +103,7 @@ mod tests {
         let light = PointLight::new(Color::white(), point![0., 10., -10.]);
         assert!(
             lighting(&sphere, &light, &position, &eyev, &normalv, false)
-                .is_close(&color![0.73639613, 0.73639613, 0.73639613])
+                .is_close(&Color::new(0.73639613, 0.73639613, 0.73639613))
         )
     }
 
@@ -116,7 +116,7 @@ mod tests {
         let light = PointLight::new(Color::white(), point![0., 10., -10.]);
         assert!(
             lighting(&sphere, &light, &position, &eyev, &normalv, false)
-                .is_close(&color![1.6363962, 1.6363962, 1.6363962])
+                .is_close(&Color::new(1.6363962, 1.6363962, 1.6363962))
         )
     }
 
@@ -129,7 +129,7 @@ mod tests {
         let light = PointLight::new(Color::white(), point![0., 0., 10.]);
         assert!(
             lighting(&sphere, &light, &position, &eyev, &normalv, false)
-                .is_close(&color![0.1, 0.1, 0.1])
+                .is_close(&Color::new(0.1, 0.1, 0.1))
         )
     }
 
@@ -142,7 +142,7 @@ mod tests {
         let light = PointLight::new(Color::white(), point![0., 0., -10.]);
         assert!(
             lighting(&sphere, &light, &position, &eyev, &normalv, true)
-                .is_close(&color![0.1, 0.1, 0.1])
+                .is_close(&Color::new(0.1, 0.1, 0.1))
         )
     }
 
@@ -185,7 +185,7 @@ mod tests {
     //     let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
     //     let intersection = Intersection::new(&*world.objects[0], 4.);
     //     let comps = Computations::prepare(&intersection, &ray);
-    //     assert!(shade_hit(&world, &comps).is_close(&color![0.3806612, 0.47582647, 0.2854959]));
+    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.3806612, 0.47582647, 0.2854959)));
     // }
 
     // #[test]
@@ -200,7 +200,7 @@ mod tests {
     //     let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
     //     let intersection = Intersection::new(&*world.objects[1], 4.);
     //     let comps = Computations::prepare(&intersection, &ray);
-    //     assert!(shade_hit(&world, &comps).is_close(&color![0.1, 0.1, 0.1]));
+    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.1, 0.1, 0.1)));
     // }
 
     // #[test]

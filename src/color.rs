@@ -1,16 +1,5 @@
 use crate::floats::is_close;
 
-#[macro_export]
-macro_rules! color {
-    ($r:expr, $g:expr, $b:expr $(,)?) => {
-        crate::color::Color {
-            r: $r,
-            g: $g,
-            b: $b,
-        }
-    };
-}
-
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {
     pub r: f64,
@@ -19,36 +8,40 @@ pub struct Color {
 }
 
 impl Color {
+    pub fn new(r: f64, g: f64, b: f64) -> Self {
+        Self { r, g, b }
+    }
+
     pub fn black() -> Self {
-        color![0., 0., 0.]
+        Color::new(0., 0., 0.)
     }
 
     pub fn red() -> Self {
-        color![1., 0., 0.]
+        Color::new(1., 0., 0.)
     }
 
     pub fn green() -> Self {
-        color![0., 1., 0.]
+        Color::new(0., 1., 0.)
     }
 
     pub fn blue() -> Self {
-        color![0., 0., 1.]
+        Color::new(0., 0., 1.)
     }
 
     pub fn cyan() -> Self {
-        color![0., 1., 1.]
+        Color::new(0., 1., 1.)
     }
 
     pub fn magenta() -> Self {
-        color![1., 0., 1.]
+        Color::new(1., 0., 1.)
     }
 
     pub fn yellow() -> Self {
-        color![1., 1., 0.]
+        Color::new(1., 1., 0.)
     }
 
     pub fn white() -> Self {
-        color![1., 1., 1.]
+        Color::new(1., 1., 1.)
     }
 
     pub fn is_close(&self, rhs: &Self) -> bool {
@@ -105,10 +98,10 @@ macro_rules! impl_color_color {
         }
     };
 }
-impl_color_color![Color, Color];
-impl_color_color![Color, &Color];
-impl_color_color![&Color, Color];
-impl_color_color![&Color, &Color];
+impl_color_color!(Color, Color);
+impl_color_color!(Color, &Color);
+impl_color_color!(&Color, Color);
+impl_color_color!(&Color, &Color);
 
 macro_rules! impl_color_float {
     ($lhs:ty, $rhs:ty) => {
@@ -155,7 +148,7 @@ mod tests {
 
     #[test]
     fn test_new() {
-        let c = color![-0.5, 0.4, 1.7];
+        let c = Color::new(-0.5, 0.4, 1.7);
         assert_eq!(c.r, -0.5);
         assert_eq!(c.g, 0.4);
         assert_eq!(c.b, 1.7);
@@ -167,7 +160,10 @@ mod tests {
             Color::red() + &Color::green() + Color::blue(),
             Color::white()
         );
-        assert!((color![0.9, 0.6, 0.75] + color![0.7, 0.1, 0.25]).is_close(&color![1.6, 0.7, 1.]));
+        assert!(
+            (Color::new(0.9, 0.6, 0.75) + Color::new(0.7, 0.1, 0.25))
+                .is_close(&Color::new(1.6, 0.7, 1.))
+        );
     }
 
     #[test]
@@ -177,25 +173,27 @@ mod tests {
             Color::red()
         );
         assert!(
-            (&color![0.9, 0.6, 0.75] - color![0.7, 0.1, 0.25]).is_close(&color![0.2, 0.5, 0.5])
+            (&Color::new(0.9, 0.6, 0.75) - Color::new(0.7, 0.1, 0.25))
+                .is_close(&Color::new(0.2, 0.5, 0.5))
         );
     }
 
     #[test]
     fn test_scaling() {
-        assert!((color![0.9, 0.6, 0.75] * &0.5).is_close(&color![0.45, 0.3, 0.375]));
-        assert!((3. * color![0.9, 0.6, 0.75]).is_close(&color![2.7, 1.8, 2.25]));
+        assert!((Color::new(0.9, 0.6, 0.75) * &0.5).is_close(&Color::new(0.45, 0.3, 0.375)));
+        assert!((3. * Color::new(0.9, 0.6, 0.75)).is_close(&Color::new(2.7, 1.8, 2.25)));
     }
 
     #[test]
     fn test_division() {
-        assert!((&color![0.9, 0.6, 0.75] / &2.).is_close(&color![0.45, 0.3, 0.375]));
+        assert!((&Color::new(0.9, 0.6, 0.75) / &2.).is_close(&Color::new(0.45, 0.3, 0.375)));
     }
 
     #[test]
     fn test_multiplication() {
         assert!(
-            (color![0.9, 0.6, 0.75] * color![0.7, 0.1, 0.25]).is_close(&color![0.63, 0.06, 0.1875])
+            (Color::new(0.9, 0.6, 0.75) * Color::new(0.7, 0.1, 0.25))
+                .is_close(&Color::new(0.63, 0.06, 0.1875))
         );
     }
 
@@ -209,6 +207,9 @@ mod tests {
         assert_eq!(Color::magenta().to_u32(), 0xff00ff);
         assert_eq!(Color::yellow().to_u32(), 0xffff00);
         assert_eq!(Color::white().to_u32(), 0xffffff);
-        assert_eq!(color![0.333, 0.667, 1.].to_u32(), 85 << 16 | 170 << 8 | 255);
+        assert_eq!(
+            Color::new(0.333, 0.667, 1.).to_u32(),
+            85 << 16 | 170 << 8 | 255
+        );
     }
 }

@@ -44,7 +44,7 @@ fn main() {
             // rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
             Matrix::identity(),
             Material {
-                color: color![1., 0.2, 1.],
+                color: Color::new(1., 0.2, 1.),
                 ..Material::default()
             },
         ))],

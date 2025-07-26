@@ -1,8 +1,13 @@
-use crate::{
-    color::Color,
-    lighting::{PointLight, lighting},
-    objects::Object,
-    ray::Ray,
+use {
+    crate::{
+        color::Color,
+        lighting::{PointLight, lighting},
+        material::Material,
+        objects::{Object, Sphere},
+        ray::Ray,
+        transform::scale_constant,
+    },
+    std::sync::LazyLock,
 };
 
 #[derive(Debug)]
@@ -43,57 +48,50 @@ impl World {
 }
 
 #[cfg(test)]
+pub const TESTING_WORLD: LazyLock<World> = LazyLock::new(|| World {
+    objects: vec![
+        Box::new(Sphere::unit(Material {
+            color: Color::new(0.8, 1., 0.6),
+            diffuse: 0.7,
+            specular: 0.2,
+            ..Material::default()
+        })),
+        Box::new(Sphere::plastic(scale_constant(0.5))),
+    ],
+    lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+});
+
+#[cfg(test)]
 mod tests {
     use {
         super::*,
         crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple},
+        std::sync::LazyLock,
     };
-
-    impl World {
-        pub fn default() -> Self {
-            Self {
-                objects: vec![
-                    Box::new(Sphere::unit(Material {
-                        color: color![0.8, 1., 0.6],
-                        diffuse: 0.7,
-                        specular: 0.2,
-                        ..Material::default()
-                    })),
-                    Box::new(Sphere::plastic(scale_constant(0.5))),
-                ],
-                lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
-            }
-        }
-    }
 
     #[test]
     fn test_color_at_void() {
-        let world = World::default();
         let ray = Ray::new(point![0., 0., -5.], Tuple::up());
-        assert_eq!(world.color_at(&ray), Color::black());
+        assert_eq!(TESTING_WORLD.color_at(&ray), Color::black());
     }
 
     #[test]
     fn test_color_at_sphere() {
-        let world = World::default();
         let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
-        let target = color![0.3806612, 0.47582647, 0.2854959];
         assert!(
-            world.color_at(&ray).is_close(&target),
-            "actual={:?}\nexpected={:?}",
-            world.color_at(&ray),
-            target
+            TESTING_WORLD
+                .color_at(&ray)
+                .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959))
         );
     }
 
-    // #[test]
-    // fn test_color_at_between() {
-    //     let world = World::default();
-    //     let ray = Ray::new(point![0., 0., 0.75], vector![0., 0., -1.]);
-    //     assert!(
-    //         world
-    //             .color_at(&ray)
-    //             .is_close(&(Color::white() * world.objects[1].get_material().ambient))
-    //     );
-    // }
+    #[test]
+    fn test_color_at_between() {
+        let ray = Ray::new(point![0., 0., 0.75], vector![0., 0., -1.]);
+        assert!(
+            TESTING_WORLD
+                .color_at(&ray)
+                .is_close(&(Color::white() * TESTING_WORLD.objects[1].get_material().ambient))
+        );
+    }
 }

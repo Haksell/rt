@@ -68,11 +68,11 @@ mod tests {
     use {
         super::*,
         crate::{
-            color,
             color::Color,
             floats::is_close,
             transform::{rotate_y, translate, view_transform},
             vector,
+            world::TESTING_WORLD,
         },
         std::f64::consts::FRAC_PI_2,
     };
@@ -142,11 +142,10 @@ mod tests {
             FRAC_PI_2,
             view_transform(&point![0., 0., -5.], &Tuple::zero_point(), &Tuple::up()),
         );
-        let world = World::default();
-        let canvas = camera.render(&world);
+        let canvas = camera.render(&TESTING_WORLD);
         assert_eq!(canvas.height, 11);
         assert_eq!(canvas.width, 11);
-        let target = color![0.3806612, 0.47582647, 0.2854959];
+        let target = Color::new(0.3806612, 0.47582647, 0.2854959);
         assert!(
             canvas[(5, 5)].is_close(&target),
             "actual={:?}\nexpected={:?}",
