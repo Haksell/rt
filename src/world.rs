@@ -1,6 +1,7 @@
 use {
     crate::{
         color::Color,
+        computations::Computations,
         lighting::{PointLight, lighting},
         material::Material,
         objects::{Object, Sphere},
@@ -20,6 +21,17 @@ pub struct World {
 impl World {
     pub fn new(objects: Vec<Box<dyn Object>>, lights: Vec<PointLight>) -> Self {
         Self { objects, lights }
+    }
+
+    fn shade_hit(&self, comps: &Computations) -> Color {
+        lighting(
+            comps.object,
+            &self.lights[0], // TODO: all the lights
+            &comps.point,
+            &comps.eyev,
+            &comps.normalv,
+            false, // is_shadowed(world, &comps.over_point),
+        )
     }
 
     pub fn color_at(&self, ray: &Ray) -> Color {
@@ -72,6 +84,35 @@ mod tests {
         crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple},
         std::sync::LazyLock,
     };
+
+    #[test]
+    fn test_shade_hit_not_in_shadow() {
+        let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
+        let object = &TESTING_WORLD.objects[0];
+        let comps = Computations::prepare(&**object, 4.0, &ray);
+        assert!(
+            TESTING_WORLD
+                .shade_hit(&comps)
+                .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959))
+        );
+    }
+
+    // TODO: test shade_hit inside an object
+
+    // #[test]
+    // fn test_shade_hit_in_shadow() {
+    //     let world = World::new(
+    //         vec![
+    //             Box::new(Sphere::default()),
+    //             Box::new(Sphere::plastic(translate(0., 0., 10.))),
+    //         ],
+    //         vec![PointLight::new(Color::white(), point![0., 0., -10.])],
+    //     );
+    //     let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
+    //     let intersection = Intersection::new(&*world.objects[1], 4.);
+    //     let comps = Computations::prepare(&intersection, &ray);
+    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.1, 0.1, 0.1)));
+    // }
 
     #[test]
     fn test_color_at_void() {

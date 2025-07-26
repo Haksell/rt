@@ -50,18 +50,6 @@ pub fn lighting(
 //     intersections.iter().any(|i| i.t > 0. && i.t < distance)
 // }
 
-// TODO: in impl World
-pub fn shade_hit(world: &World, comps: &Computations) -> Color {
-    lighting(
-        comps.object,
-        &world.lights[0], // TODO: all the lights
-        &comps.point,
-        &comps.eyev,
-        &comps.normalv,
-        false, // is_shadowed(world, &comps.over_point),
-    )
-}
-
 #[cfg(test)]
 mod tests {
     use {
@@ -186,34 +174,6 @@ mod tests {
     //         ),
     //         Color::black()
     //     );
-    // }
-
-    #[test]
-    fn test_shade_hit_not_in_shadow() {
-        let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
-        let object = &TESTING_WORLD.objects[0];
-        let comps = Computations::prepare(&**object, 4.0, &ray);
-        assert!(
-            shade_hit(&TESTING_WORLD, &comps)
-                .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959))
-        );
-    }
-
-    // TODO: test shade_hit inside an object
-
-    // #[test]
-    // fn test_shade_hit_in_shadow() {
-    //     let world = World::new(
-    //         vec![
-    //             Box::new(Sphere::default()),
-    //             Box::new(Sphere::plastic(translate(0., 0., 10.))),
-    //         ],
-    //         vec![PointLight::new(Color::white(), point![0., 0., -10.])],
-    //     );
-    //     let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
-    //     let intersection = Intersection::new(&*world.objects[1], 4.);
-    //     let comps = Computations::prepare(&intersection, &ray);
-    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.1, 0.1, 0.1)));
     // }
 
     // #[test]
