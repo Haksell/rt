@@ -2,7 +2,7 @@ use {
     crate::{
         color::Color,
         computations::Computations,
-        lighting::{PointLight, lighting},
+        lighting::{PointLight, is_shadowed, lighting},
         material::Material,
         objects::{Object, Sphere},
         ray::Ray,
@@ -23,22 +23,13 @@ impl World {
         Self { objects, lights }
     }
 
-    fn shade_hit(&self, comps: &Computations) -> Color {
-        lighting(
-            comps.object,
-            &self.lights[0], // TODO: all the lights
-            &comps.point,
-            &comps.eyev,
-            &comps.normalv,
-            false, // is_shadowed(world, &comps.over_point),
-        )
-    }
-
-    pub fn color_at(&self, ray: &Ray) -> Color {
-        const MIN_HIT_DISTANCE: f64 = 1e-6; // TODO: put somewhere else
+    // TODO: tests from book
+    pub fn intersect(&self, ray: &Ray) -> Option<(&Box<dyn Object>, f64)> {
+        const MIN_HIT_DISTANCE: f64 = 1e-6;
 
         let mut hit_object = None;
         let mut hit_distance = std::f64::INFINITY;
+
         for object in &self.objects {
             for t in object.intersect(ray) {
                 if t >= MIN_HIT_DISTANCE && t < hit_distance {
@@ -48,10 +39,27 @@ impl World {
             }
         }
 
-        match hit_object {
+        hit_object.map(|object| (object, hit_distance))
+    }
+
+    pub fn color_at(&self, ray: &Ray) -> Color {
+        match self.intersect(ray) {
             None => Color::black(), // TODO: ambient color instead
-            Some(object) => self.shade_hit(&Computations::prepare(&**object, hit_distance, ray)),
+            Some((object, hit_distance)) => {
+                self.shade_hit(&Computations::prepare(&**object, hit_distance, ray))
+            }
         }
+    }
+
+    fn shade_hit(&self, comps: &Computations) -> Color {
+        lighting(
+            comps.object,
+            &self.lights[0], // TODO: all the lights
+            &comps.point,
+            &comps.eyev,
+            &comps.normalv,
+            is_shadowed(self, &comps.over_point),
+        )
     }
 }
 
@@ -73,7 +81,12 @@ pub const TESTING_WORLD: LazyLock<World> = LazyLock::new(|| World {
 mod tests {
     use {
         super::*,
-        crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple},
+        crate::{
+            material::Material,
+            objects::Sphere,
+            transform::{scale_constant, translate},
+            tuple::Tuple,
+        },
         std::sync::LazyLock,
     };
 
@@ -91,20 +104,19 @@ mod tests {
 
     // TODO: test shade_hit inside an object
 
-    // #[test]
-    // fn test_shade_hit_in_shadow() {
-    //     let world = World::new(
-    //         vec![
-    //             Box::new(Sphere::default()),
-    //             Box::new(Sphere::plastic(translate(0., 0., 10.))),
-    //         ],
-    //         vec![PointLight::new(Color::white(), point![0., 0., -10.])],
-    //     );
-    //     let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
-    //     let intersection = Intersection::new(&*world.objects[1], 4.);
-    //     let comps = Computations::prepare(&intersection, &ray);
-    //     assert!(shade_hit(&world, &comps).is_close(&Color::new(0.1, 0.1, 0.1)));
-    // }
+    #[test]
+    fn test_shade_hit_in_shadow() {
+        let world = World::new(
+            vec![
+                Box::new(Sphere::default()),
+                Box::new(Sphere::plastic(translate(0., 0., 10.))),
+            ],
+            vec![PointLight::new(Color::white(), point![0., 0., -10.])],
+        );
+        let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
+        let comps = Computations::prepare(&*world.objects[1], 4., &ray);
+        assert!(world.shade_hit(&comps).is_close(&Color::new(0.1, 0.1, 0.1)));
+    }
 
     #[test]
     fn test_color_at_void() {

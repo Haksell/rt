@@ -40,15 +40,14 @@ pub fn lighting(
     ambient + diffuse + specular
 }
 
-// fn is_shadowed(world: &World, point: &Tuple) -> bool {
-//     // TODO: for all lights in world
-//     let v = world.lights[0].position.clone() - point.clone();
-//     let distance = v.magnitude();
-//     let direction = v.normalize();
-//     let ray = Ray::new(point.clone(), direction);
-//     let intersections = world.intersect(&ray);
-//     intersections.iter().any(|i| i.t > 0. && i.t < distance)
-// }
+pub fn is_shadowed(world: &World, point: &Tuple) -> bool {
+    // TODO: for all lights in world
+    let v = world.lights[0].position - point;
+    let distance = v.magnitude();
+    let direction = v.normalize();
+    let ray = Ray::new(*point, direction);
+    world.intersect(&ray).is_some_and(|(_, t)| t < distance)
+}
 
 #[cfg(test)]
 mod tests {
@@ -130,18 +129,18 @@ mod tests {
         )
     }
 
-    // #[test]
-    // fn test_lighting_surface_in_shadow() {
-    //     let sphere = Sphere::default();
-    //     let position = Tuple::zero_point();
-    //     let eyev = vector![0., 0., -1.];
-    //     let normalv = vector![0., 0., -1.];
-    //     let light = PointLight::new(Color::white(), point![0., 0., -10.]);
-    //     assert!(
-    //         lighting(&sphere, &light, &position, &eyev, &normalv, true)
-    //             .is_close(&Color::new(0.1, 0.1, 0.1))
-    //     )
-    // }
+    #[test]
+    fn test_lighting_surface_in_shadow() {
+        let sphere = Sphere::default();
+        let position = Tuple::zero_point();
+        let eyev = vector![0., 0., -1.];
+        let normalv = vector![0., 0., -1.];
+        let light = PointLight::new(Color::white(), point![0., 0., -10.]);
+        assert!(
+            lighting(&sphere, &light, &position, &eyev, &normalv, true)
+                .is_close(&Color::new(0.1, 0.1, 0.1))
+        )
+    }
 
     // #[test]
     // fn test_lighting_stripe() {
@@ -176,23 +175,28 @@ mod tests {
     //     );
     // }
 
-    // #[test]
-    // fn test_is_shadowed_diagonal() {
-    //     assert!(!is_shadowed(&World::default(), &point![0., 10., 0.]));
-    // }
+    #[test]
+    fn test_is_shadowed_diagonal() {
+        assert!(!is_shadowed(&TESTING_WORLD, &point![0., 10., 0.]));
+    }
 
-    // #[test]
-    // fn test_is_shadowed_sphere_middle() {
-    //     assert!(is_shadowed(&World::default(), &point![10., -10., 10.]));
-    // }
+    #[test]
+    fn test_is_shadowed_sphere_middle() {
+        assert!(is_shadowed(&TESTING_WORLD, &point![10., -10., 10.]));
+    }
 
-    // #[test]
-    // fn test_is_shadowed_light_middle() {
-    //     assert!(!is_shadowed(&World::default(), &point![-20., 20., -20.]));
-    // }
+    #[test]
+    fn test_is_shadowed_sphere_inside() {
+        assert!(is_shadowed(&TESTING_WORLD, &point![0., 0., 0.]));
+    }
 
-    // #[test]
-    // fn test_is_shadowed_point_middle() {
-    //     assert!(!is_shadowed(&World::default(), &point![-2., 2., -2.]));
-    // }
+    #[test]
+    fn test_is_shadowed_light_middle() {
+        assert!(!is_shadowed(&TESTING_WORLD, &point![-20., 20., -20.]));
+    }
+
+    #[test]
+    fn test_is_shadowed_point_middle() {
+        assert!(!is_shadowed(&TESTING_WORLD, &point![-2., 2., -2.]));
+    }
 }

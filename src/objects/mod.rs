@@ -28,9 +28,9 @@ pub trait Object: Debug {
     }
 
     fn color_at(&self, world_point: &Tuple) -> Color {
-        let object_point = self.get_inverse_transform().clone() * world_point.clone();
+        let object_point = self.get_inverse_transform() * world_point;
         // let pattern = &self.get_material().pattern;
-        // let pattern_point = pattern.get_inverse_transform().clone() * object_point;
+        // let pattern_point = pattern.get_inverse_transform() * object_point;
         // pattern.color_at(&pattern_point)
         self.get_material().color
     }
