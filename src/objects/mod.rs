@@ -27,12 +27,13 @@ pub trait Object: Debug {
         world_normal.normalize()
     }
 
-    // fn color_at(&self, world_point: &Tuple) -> Color {
-    //     let object_point = self.get_inverse_transform().clone() * world_point.clone();
-    //     let pattern = &self.get_material().pattern;
-    //     let pattern_point = pattern.get_inverse_transform().clone() * object_point;
-    //     pattern.color_at(&pattern_point)
-    // }
+    fn color_at(&self, world_point: &Tuple) -> Color {
+        let object_point = self.get_inverse_transform().clone() * world_point.clone();
+        // let pattern = &self.get_material().pattern;
+        // let pattern_point = pattern.get_inverse_transform().clone() * object_point;
+        // pattern.color_at(&pattern_point)
+        self.get_material().color
+    }
 }
 
 #[cfg(test)]
