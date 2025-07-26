@@ -46,7 +46,8 @@ impl Camera {
         let world_y = self.half_height - yoffset;
         let inverse_transform = self.transform.inverse(); // TODO: in Camera directly?
         let pixel = &inverse_transform * point![world_x, world_y, -1.];
-        let origin = inverse_transform * Tuple::zero_point(); // TODO: in Camera directly
+        // TODO: in Camera directly (or just hardcode the tuple since most values are 0)
+        let origin = inverse_transform * Tuple::zero_point();
         let direction = (pixel - origin).normalize();
         Ray { origin, direction }
     }

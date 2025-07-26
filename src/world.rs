@@ -1,19 +1,20 @@
-use crate::{color::Color, objects::Object, ray::Ray};
+use crate::{
+    color::Color,
+    lighting::{PointLight, lighting},
+    objects::Object,
+    ray::Ray,
+};
 
 #[derive(Debug)]
 pub struct World {
-    pub objects: Vec<Box<dyn Object>>,
-    // pub lights: Vec<PointLight>,
     // TODO: ambient_color: Color
+    pub objects: Vec<Box<dyn Object>>,
+    pub lights: Vec<PointLight>,
 }
 
 impl World {
-    // pub fn new(objects: Vec<Box<dyn Object>>, lights: Vec<PointLight>) -> Self {
-    //     Self { objects, lights }
-    // }
-
-    pub fn new(objects: Vec<Box<dyn Object>>) -> Self {
-        Self { objects }
+    pub fn new(objects: Vec<Box<dyn Object>>, lights: Vec<PointLight>) -> Self {
+        Self { objects, lights }
     }
 
     pub fn color_at(&self, ray: &Ray) -> Color {
@@ -31,7 +32,12 @@ impl World {
         match hit_object {
             None => Color::black(), // TODO: ambient color instead
             // TODO: shade_hit(self, &Computations::prepare(intersection, ray)),
-            Some(object) => object.get_material().color, // WIP
+            Some(object) => {
+                let point = ray.at(hit_distance);
+                let normal = object.normal_at(&point);
+                let eye = -ray.direction;
+                lighting(&**object, &self.lights[0], &point, &eye, &normal, false)
+            } // WIP
         }
     }
 }
@@ -50,7 +56,7 @@ mod tests {
                     Box::new(Sphere::default()),
                     Box::new(Sphere::plastic(scale_constant(0.5))),
                 ],
-                // lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+                lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
             }
         }
     }

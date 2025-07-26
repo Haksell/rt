@@ -20,7 +20,10 @@ use {
     crate::{
         camera::Camera,
         canvas::Canvas,
+        color::Color,
+        lighting::PointLight,
         material::Material,
+        matrix::Matrix,
         objects::Sphere,
         transform::{rotate_z, scale, scale_constant, translate},
         world::World,
@@ -34,16 +37,17 @@ fn main() {
         640,
         480,
         std::f64::consts::FRAC_PI_3,
-        translate(0., 0., -5.),
+        translate(0., 0., -3.),
     );
     let world = World {
         objects: vec![Box::new(Sphere::new(
             rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
             Material {
-                color: color![1., 0.5, 0.],
+                color: color![1., 0.2, 1.],
                 ..Material::default()
             },
         ))],
+        lights: vec![PointLight::new(Color::white(), point![-10., 10., 10.])],
     };
     let canvas = camera.render(&world);
     let buffer = canvas.to_buffer();

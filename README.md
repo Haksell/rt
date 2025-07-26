@@ -5,6 +5,7 @@ I just restarted the project from scratch. `old` branch is more interesting.
 ## TODO
 
 - [ ] Read `The Ray Tracer Challenge`
+- [ ] Fix horizontal symmetry lighting bug
 - [ ] (`Intersection` + `hit`)? (page 83-85)
 - [ ] Clean shadow computation and usage
 - [ ] Clean `mod computations`

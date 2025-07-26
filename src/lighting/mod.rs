@@ -4,7 +4,7 @@ pub use point_light::PointLight;
 
 use crate::{color::Color, objects::Object, ray::Ray, tuple::Tuple, world::World};
 
-fn lighting(
+pub fn lighting(
     object: &dyn Object,
     light: &PointLight, // TODO: &[PointLight]
     point: &Tuple,
