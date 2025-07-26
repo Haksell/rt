@@ -1,4 +1,4 @@
-use crate::{objects::Object, ray::Ray, tuple::Tuple};
+use crate::{objects::Object, ray::Ray, math::Tuple};
 
 const ACNE_EPSILON: f64 = 1e-6;
 

@@ -1,4 +1,4 @@
-use crate::{canvas::Canvas, matrix::Matrix, point, ray::Ray, tuple::Tuple, world::World};
+use crate::{canvas::Canvas, math::Matrix, math::Tuple, point, ray::Ray, world::World};
 
 pub struct Camera {
     pub width: usize,
@@ -81,7 +81,7 @@ mod tests {
         super::*,
         crate::{
             color::Color,
-            floats::is_close,
+            math::is_close,
             transform::{rotate_y, translate, view_transform},
             vector,
             world::TESTING_WORLD,

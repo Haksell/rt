@@ -1,4 +1,4 @@
-use crate::{color::Color, tuple::Tuple};
+use crate::{color::Color, math::Tuple};
 
 #[derive(Debug, Clone)]
 pub struct PointLight {

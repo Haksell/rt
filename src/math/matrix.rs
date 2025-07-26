@@ -1,5 +1,5 @@
 use {
-    crate::{floats::is_close, tuple::Tuple},
+    crate::{math::Tuple, math::is_close},
     std::ops::Index,
 };
 
@@ -11,7 +11,7 @@ macro_rules! matrix {
         [$a20:expr, $a21:expr, $a22:expr, $a23:expr $(,)?],
         [$a30:expr, $a31:expr, $a32:expr, $a33:expr $(,)?] $(,)?
     ) => {
-        crate::matrix::Matrix::new([
+        crate::math::Matrix::new([
             [$a00, $a01, $a02, $a03],
             [$a10, $a11, $a12, $a13],
             [$a20, $a21, $a22, $a23],

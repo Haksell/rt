@@ -1,16 +1,16 @@
-use crate::floats::is_close;
+use crate::math::is_close;
 
 #[macro_export]
 macro_rules! point {
     ($x:expr, $y:expr, $z:expr $(,)?) => {
-        crate::tuple::Tuple::new($x, $y, $z, 1.)
+        crate::math::Tuple::new($x, $y, $z, 1.)
     };
 }
 
 #[macro_export]
 macro_rules! vector {
     ($x:expr, $y:expr, $z:expr $(,)?) => {
-        crate::tuple::Tuple::new($x, $y, $z, 0.)
+        crate::math::Tuple::new($x, $y, $z, 0.)
     };
 }
 

@@ -83,9 +83,9 @@ mod tests {
         super::*,
         crate::{
             material::Material,
+            math::Tuple,
             objects::Sphere,
             transform::{scale_constant, translate},
-            tuple::Tuple,
         },
         std::sync::LazyLock,
     };

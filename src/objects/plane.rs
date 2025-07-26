@@ -1,6 +1,6 @@
 use {
     super::Object,
-    crate::{material::Material, matrix::Matrix, ray::Ray, tuple::Tuple},
+    crate::{material::Material, math::Matrix, ray::Ray, math::Tuple},
 };
 
 #[derive(Debug)]

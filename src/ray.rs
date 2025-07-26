@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, tuple::Tuple};
+use crate::{math::Matrix, math::Tuple};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ray {

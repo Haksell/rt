@@ -1,4 +1,4 @@
-use crate::floats::is_close;
+use crate::math::is_close;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Color {

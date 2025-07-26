@@ -2,19 +2,15 @@
 
 mod camera;
 mod canvas;
-#[macro_use]
 mod color;
 mod computations;
-mod floats;
 mod lighting;
 mod material;
 #[macro_use]
-mod matrix;
+mod math;
 mod objects;
 mod ray;
 mod transform;
-#[macro_use]
-mod tuple;
 mod world;
 
 use {
@@ -24,7 +20,7 @@ use {
         color::Color,
         lighting::PointLight,
         material::Material,
-        matrix::Matrix,
+        math::Matrix,
         objects::{Object, Plane, Sphere},
         transform::{
             rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform,

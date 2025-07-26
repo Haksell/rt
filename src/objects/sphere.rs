@@ -1,5 +1,5 @@
 use {
-    crate::{material::Material, matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector},
+    crate::{material::Material, math::Matrix, objects::Object, ray::Ray, math::Tuple, vector},
     std::cmp::Ordering,
 };
 

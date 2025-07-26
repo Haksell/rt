@@ -5,7 +5,7 @@ pub use plane::Plane;
 pub use sphere::Sphere;
 
 use {
-    crate::{color::Color, material::Material, matrix::Matrix, ray::Ray, tuple::Tuple},
+    crate::{color::Color, material::Material, math::Matrix, ray::Ray, math::Tuple},
     std::fmt::Debug,
 };
 

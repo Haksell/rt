@@ -3,7 +3,7 @@ mod point_light;
 pub use point_light::PointLight;
 
 use crate::{
-    color::Color, computations::Computations, objects::Object, ray::Ray, tuple::Tuple, world::World,
+    color::Color, computations::Computations, objects::Object, ray::Ray, math::Tuple, world::World,
 };
 
 pub fn lighting(
