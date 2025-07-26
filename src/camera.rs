@@ -81,8 +81,10 @@ mod tests {
         super::*,
         crate::{
             color::Color,
-            math::is_close,
-            transform::{rotate_y, translate, view_transform},
+            math::{
+                is_close,
+                transform::{rotate_y, translate, view_transform},
+            },
             vector,
             world::TESTING_WORLD,
         },

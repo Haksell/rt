@@ -1,5 +1,5 @@
 use {
-    crate::{material::Material, math::Matrix, objects::Object, ray::Ray, math::Tuple, vector},
+    crate::{material::Material, math::Matrix, math::Tuple, objects::Object, ray::Ray, vector},
     std::cmp::Ordering,
 };
 
@@ -81,7 +81,7 @@ impl Object for Sphere {
 mod tests {
     use {
         super::*,
-        crate::{color::Color, point, transform, vector},
+        crate::{color::Color, math::transform, point, vector},
         std::f64::consts::{FRAC_1_SQRT_2, TAU},
     };
 

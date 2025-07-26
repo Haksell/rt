@@ -3,7 +3,7 @@ mod point_light;
 pub use point_light::PointLight;
 
 use crate::{
-    color::Color, computations::Computations, objects::Object, ray::Ray, math::Tuple, world::World,
+    color::Color, computations::Computations, math::Tuple, objects::Object, ray::Ray, world::World,
 };
 
 pub fn lighting(
@@ -55,10 +55,9 @@ mod tests {
         super::*,
         crate::{
             material::Material,
+            math::transform::{scale_constant, translate},
             objects::Sphere,
-            point,
-            transform::{scale_constant, translate},
-            vector,
+            point, vector,
             world::{TESTING_WORLD, World},
         },
         std::f64::consts::FRAC_1_SQRT_2,

@@ -29,7 +29,7 @@ impl Ray {
 mod tests {
     use {
         super::*,
-        crate::{point, transform, vector},
+        crate::{math::transform, point, vector},
     };
 
     #[test]

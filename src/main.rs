@@ -10,7 +10,6 @@ mod material;
 mod math;
 mod objects;
 mod ray;
-mod transform;
 mod world;
 
 use {
@@ -20,11 +19,13 @@ use {
         color::Color,
         lighting::PointLight,
         material::Material,
-        math::Matrix,
-        objects::{Object, Plane, Sphere},
-        transform::{
-            rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform,
+        math::{
+            Matrix,
+            transform::{
+                rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform,
+            },
         },
+        objects::{Object, Plane, Sphere},
         world::World,
     },
     minifb::{Key, Window, WindowOptions},

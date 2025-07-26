@@ -4,9 +4,9 @@ use {
         computations::Computations,
         lighting::{PointLight, is_shadowed, lighting},
         material::Material,
+        math::transform::scale_constant,
         objects::{Object, Sphere},
         ray::Ray,
-        transform::scale_constant,
     },
     std::sync::LazyLock,
 };
@@ -84,8 +84,8 @@ mod tests {
         crate::{
             material::Material,
             math::Tuple,
+            math::transform::{scale_constant, translate},
             objects::Sphere,
-            transform::{scale_constant, translate},
         },
         std::sync::LazyLock,
     };

@@ -1,4 +1,4 @@
-use crate::{objects::Object, ray::Ray, math::Tuple};
+use crate::{math::Tuple, objects::Object, ray::Ray};
 
 const ACNE_EPSILON: f64 = 1e-6;
 
@@ -38,7 +38,7 @@ impl<'a> Computations<'a> {
 mod tests {
     use {
         super::*,
-        crate::{objects::Sphere, point, transform::translate, vector},
+        crate::{math::transform::translate, objects::Sphere, point, vector},
     };
 
     #[test]

@@ -1,5 +1,6 @@
 #[macro_use]
 mod matrix;
+pub mod transform;
 #[macro_use]
 mod tuple;
 
