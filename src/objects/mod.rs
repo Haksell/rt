@@ -3,14 +3,13 @@ mod sphere;
 pub use sphere::Sphere;
 
 use {
-    crate::{color::Color, matrix::Matrix, ray::Ray, tuple::Tuple},
+    crate::{color::Color, material::Material, matrix::Matrix, ray::Ray, tuple::Tuple},
     std::fmt::Debug,
 };
 
-// + Default causes dyn-compatibility problems for Object
 pub trait Object: Debug {
     fn get_inverse_transform(&self) -> &Matrix;
-    // fn get_material(&self) -> &Material;
+    fn get_material(&self) -> &Material;
 
     fn local_intersect(&self, object_ray: &Ray) -> Vec<f64>;
     fn local_normal_at(&self, object_point: &Tuple) -> Tuple;

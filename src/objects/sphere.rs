@@ -1,19 +1,36 @@
 use {
-    crate::{matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector},
+    crate::{material::Material, matrix::Matrix, objects::Object, ray::Ray, tuple::Tuple, vector},
     std::cmp::Ordering,
 };
 
 #[derive(Debug)]
 pub struct Sphere {
-    pub inverse_transform: Matrix,
+    inverse_transform: Matrix, // TODO: &'a Matrix ?
+    material: Material,        // TODO: &Material ?
 }
 
 // TODO: make constructors part of Object trait
 // TODO: accept inverse transform directly
 impl Sphere {
-    pub fn new(transform: Matrix) -> Self {
+    pub fn new(transform: Matrix, material: Material) -> Self {
         Self {
             inverse_transform: transform.inverse(),
+            material,
+        }
+    }
+
+    pub fn unit(material: Material) -> Self {
+        Self {
+            inverse_transform: Matrix::identity(),
+            material,
+        }
+    }
+
+    // Is it really plastic though?
+    pub fn plastic(transform: Matrix) -> Self {
+        Self {
+            inverse_transform: transform.inverse(),
+            material: Material::default(),
         }
     }
 }
@@ -22,6 +39,7 @@ impl Default for Sphere {
     fn default() -> Self {
         Self {
             inverse_transform: Matrix::identity(),
+            material: Material::default(),
         }
     }
 }
@@ -29,6 +47,10 @@ impl Default for Sphere {
 impl Object for Sphere {
     fn get_inverse_transform(&self) -> &Matrix {
         &self.inverse_transform
+    }
+
+    fn get_material(&self) -> &Material {
+        &self.material
     }
 
     fn local_intersect(&self, object_ray: &Ray) -> Vec<f64> {
@@ -59,16 +81,26 @@ impl Object for Sphere {
 mod tests {
     use {
         super::*,
-        crate::{point, transform, vector},
+        crate::{color::Color, point, transform, vector},
         std::f64::consts::FRAC_1_SQRT_2,
     };
 
     #[test]
     fn test_sphere_constructors() {
         let default = Sphere::default();
-        assert_eq!(default.inverse_transform, Matrix::identity());
-        let big = Sphere::new(transform::scale_constant(4.0));
-        assert_eq!(big.inverse_transform, transform::scale_constant(0.25));
+        let red = Sphere::unit(Material {
+            color: Color::red(),
+            ambient: 0.1,
+            diffuse: 0.9,
+            specular: 0.9,
+            shininess: 200.,
+        });
+        let squashed = Sphere::plastic(transform::scale(1., 0.3, 1.));
+        assert_eq!(default.material.ambient, squashed.material.ambient);
+        assert_eq!(default.material.diffuse, squashed.material.diffuse);
+        assert_eq!(default.material.shininess, squashed.material.shininess);
+        assert_eq!(default.material.specular, squashed.material.specular);
+        assert_eq!(default.inverse_transform, red.inverse_transform);
     }
 
     #[test]
@@ -96,12 +128,12 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_intersect() {
-        let sphere = Sphere::new(transform::scale_constant(2.));
+        let sphere = Sphere::plastic(transform::scale_constant(2.));
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![3., 7.]
         );
-        let sphere = Sphere::new(transform::translate(5., 0., 0.));
+        let sphere = Sphere::plastic(transform::translate(5., 0., 0.));
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![]
@@ -124,7 +156,7 @@ mod tests {
     #[test]
     fn test_sphere_translated_normal_at() {
         assert!(
-            Sphere::new(transform::translate(0., 1., 0.))
+            Sphere::plastic(transform::translate(0., 1., 0.))
                 .normal_at(&point![0., 1. + FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
                 .is_close(&vector![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
         );
@@ -133,7 +165,7 @@ mod tests {
     #[test]
     fn test_sphere_transformed_normal_at() {
         assert!(
-            Sphere::new(
+            Sphere::plastic(
                 transform::scale(1., 0.5, 1.) * transform::rotate_z(std::f64::consts::TAU / 10.),
             )
             .normal_at(&point![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2]) // is it even on the sphere?

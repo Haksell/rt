@@ -31,7 +31,7 @@ impl World {
         match hit_object {
             None => Color::black(), // TODO: ambient color instead
             // TODO: shade_hit(self, &Computations::prepare(intersection, ray)),
-            Some(object) => Color::red(), // WIP
+            Some(object) => object.get_material().color, // WIP
         }
     }
 }
@@ -48,7 +48,7 @@ mod tests {
             Self {
                 objects: vec![
                     Box::new(Sphere::default()),
-                    Box::new(Sphere::new(scale_constant(0.5))),
+                    Box::new(Sphere::plastic(scale_constant(0.5))),
                 ],
                 // lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
             }
@@ -68,7 +68,7 @@ mod tests {
         let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
         assert!(
             // .is_close(&color![0.3806612, 0.47582647, 0.2854959])
-            world.color_at(&ray).is_close(&Color::red())
+            world.color_at(&ray).is_close(&Color::white())
         );
     }
 

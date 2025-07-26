@@ -5,6 +5,8 @@ mod canvas;
 #[macro_use]
 mod color;
 mod floats;
+mod lighting;
+mod material;
 #[macro_use]
 mod matrix;
 mod objects;
@@ -18,6 +20,7 @@ use {
     crate::{
         camera::Camera,
         canvas::Canvas,
+        material::Material,
         objects::Sphere,
         transform::{rotate_z, scale, scale_constant, translate},
         world::World,
@@ -36,6 +39,10 @@ fn main() {
     let world = World {
         objects: vec![Box::new(Sphere::new(
             rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
+            Material {
+                color: color![1., 0.5, 0.],
+                ..Material::default()
+            },
         ))],
     };
     let canvas = camera.render(&world);

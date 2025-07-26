@@ -145,6 +145,6 @@ mod tests {
         assert_eq!(canvas.height, 11);
         assert_eq!(canvas.width, 11);
         // assert!(canvas[(5, 5)].is_close(&color![0.3806612, 0.47582647, 0.2854959]));
-        assert!(canvas[(5, 5)].is_close(&Color::red()));
+        assert!(canvas[(5, 5)].is_close(&Color::white()));
     }
 }
