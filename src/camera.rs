@@ -16,7 +16,7 @@ impl Camera {
         debug_assert!(hsize > 0);
         debug_assert!(vsize > 0);
         let aspect_ratio = hsize as f64 / vsize as f64;
-        let half_view = (fov / 2.0).tan();
+        let half_view = (fov * 0.5).tan();
         let (half_width, half_height) = if hsize > vsize {
             (half_view, half_view / aspect_ratio)
         } else {
@@ -74,6 +74,7 @@ mod tests {
             transform::{rotate_y, translate, view_transform},
             vector,
         },
+        std::f64::consts::FRAC_PI_2,
     };
 
     #[test]
@@ -138,14 +139,19 @@ mod tests {
         let camera = Camera::new(
             11,
             11,
-            std::f64::consts::FRAC_PI_2,
+            FRAC_PI_2,
             view_transform(&point![0., 0., -5.], &Tuple::zero_point(), &Tuple::up()),
         );
         let world = World::default();
         let canvas = camera.render(&world);
         assert_eq!(canvas.height, 11);
         assert_eq!(canvas.width, 11);
-        // assert!(canvas[(5, 5)].is_close(&color![0.3806612, 0.47582647, 0.2854959]));
-        assert!(canvas[(5, 5)].is_close(&Color::white()));
+        let target = color![0.3806612, 0.47582647, 0.2854959];
+        assert!(
+            canvas[(5, 5)].is_close(&target),
+            "actual={:?}\nexpected={:?}",
+            canvas[(5, 5)],
+            target
+        );
     }
 }

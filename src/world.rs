@@ -46,14 +46,19 @@ impl World {
 mod tests {
     use {
         super::*,
-        crate::{objects::Sphere, transform::scale_constant, tuple::Tuple},
+        crate::{material::Material, objects::Sphere, transform::scale_constant, tuple::Tuple},
     };
 
     impl World {
         pub fn default() -> Self {
             Self {
                 objects: vec![
-                    Box::new(Sphere::default()),
+                    Box::new(Sphere::unit(Material {
+                        color: color![0.8, 1., 0.6],
+                        diffuse: 0.7,
+                        specular: 0.2,
+                        ..Material::default()
+                    })),
                     Box::new(Sphere::plastic(scale_constant(0.5))),
                 ],
                 lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
@@ -72,9 +77,12 @@ mod tests {
     fn test_color_at_sphere() {
         let world = World::default();
         let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
+        let target = color![0.3806612, 0.47582647, 0.2854959];
         assert!(
-            // .is_close(&color![0.3806612, 0.47582647, 0.2854959])
-            world.color_at(&ray).is_close(&Color::white())
+            world.color_at(&ray).is_close(&target),
+            "actual={:?}\nexpected={:?}",
+            world.color_at(&ray),
+            target
         );
     }
 

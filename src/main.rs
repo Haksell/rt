@@ -41,13 +41,14 @@ fn main() {
     );
     let world = World {
         objects: vec![Box::new(Sphere::new(
-            rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
+            // rotate_z(TAU / 8.) * scale(0.5, 1., 1.),
+            Matrix::identity(),
             Material {
                 color: color![1., 0.2, 1.],
                 ..Material::default()
             },
         ))],
-        lights: vec![PointLight::new(Color::white(), point![-10., 10., 10.])],
+        lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
     };
     let canvas = camera.render(&world);
     let buffer = canvas.to_buffer();
