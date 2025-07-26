@@ -27,7 +27,7 @@ use {
             },
         },
         objects::{Object, Plane, Sphere},
-        patterns::Solid,
+        patterns::{Solid, Stripe},
         world::World,
     },
     minifb::{Key, Window, WindowOptions},
@@ -73,22 +73,25 @@ fn build_world() -> World {
 
     let floor = Plane::new(Matrix::identity(), wall_material());
     let left_wall = Plane::new(
-        translate(0., 0., 5.)
-            * rotate_y(-std::f64::consts::FRAC_PI_4)
-            * rotate_x(std::f64::consts::FRAC_PI_2),
-        wall_material(),
+        translate(0., 0., 5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
+        Material {
+            pattern: Box::new(Stripe::new(
+                Color::red(),
+                Color::white(),
+                translate(0., 0., 5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
+            )),
+            ..wall_material()
+        },
     );
     let right_wall = Plane::new(
-        translate(0., 0., 5.)
-            * rotate_y(std::f64::consts::FRAC_PI_4)
-            * rotate_x(std::f64::consts::FRAC_PI_2),
+        translate(0., 0., 5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2),
         wall_material(),
     );
 
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),
         Material {
-            pattern: Box::new(Solid::new(Color::new(0.1, 1.0, 0.5))),
+            pattern: Box::new(Stripe::default()),
             diffuse: 0.7,
             specular: 0.3,
             ..Default::default()
