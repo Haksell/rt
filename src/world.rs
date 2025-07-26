@@ -1,10 +1,3 @@
-// use crate::{
-//     Color, PointLight, Ray,
-//     computations::Computations,
-//     lighting::shade_hit,
-//     objects::{Intersection, Object, hit},
-// };
-
 use crate::{color::Color, objects::Object, ray::Ray};
 
 #[derive(Debug)]

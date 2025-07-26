@@ -195,9 +195,7 @@ impl_tuple!(&Tuple);
 
 #[cfg(test)]
 mod tests {
-    use std::f64::consts::FRAC_1_SQRT_2;
-
-    use super::*;
+    use {super::*, std::f64::consts::FRAC_1_SQRT_2};
 
     #[test]
     fn test_point() {
