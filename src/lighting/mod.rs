@@ -54,7 +54,7 @@ mod tests {
         super::*,
         crate::{
             material::Material,
-            math::transform::{scale_constant, translate},
+            math::transform::{scale, translate},
             objects::Sphere,
             patterns::Stripe,
             point, vector,

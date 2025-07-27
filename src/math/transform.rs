@@ -44,21 +44,51 @@ pub fn translate_z(z: f64) -> Matrix {
 }
 
 #[inline]
-pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
+pub fn scale(s: f64) -> Matrix {
+    matrix![
+        [s, 0., 0., 0.],
+        [0., s, 0., 0.],
+        [0., 0., s, 0.],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
+pub fn scale_x(x: f64) -> Matrix {
     matrix![
         [x, 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
+pub fn scale_y(y: f64) -> Matrix {
+    matrix![
+        [1., 0., 0., 0.],
         [0., y, 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
+pub fn scale_z(z: f64) -> Matrix {
+    matrix![
+        [1., 0., 0., 0.],
+        [0., 1., 0., 0.],
         [0., 0., z, 0.],
         [0., 0., 0., 1.],
     ]
 }
 
 #[inline]
-pub fn scale_constant(s: f64) -> Matrix {
+pub fn scale_xyz(x: f64, y: f64, z: f64) -> Matrix {
     matrix![
-        [s, 0., 0., 0.],
-        [0., s, 0., 0.],
-        [0., 0., s, 0.],
+        [x, 0., 0., 0.],
+        [0., y, 0., 0.],
+        [0., 0., z, 0.],
         [0., 0., 0., 1.],
     ]
 }
@@ -161,38 +191,40 @@ mod tests {
 
     #[test]
     fn test_scale() {
-        assert_eq!(
-            scale(2., 3., 4.) * point![-4., 6., 8.],
-            point![-8., 18., 32.]
-        );
-        assert_eq!(
-            scale(2., 3., 4.) * vector![-4., 6., 8.],
-            vector![-8., 18., 32.]
-        );
-        assert_eq!(
-            scale(2., 3., 4.).inverse() * point![-4., 6., 8.],
-            point![-2., 2., 2.]
-        );
-        assert_eq!(scale(-1., 1., 1.) * point![-4., 6., 8.], point![4., 6., 8.]);
+        assert_eq!(scale(0.5) * point![-3., 4., 5.], point![-1.5, 2., 2.5]);
+        assert_eq!(scale(-2.5) * point![-3., 4., 5.], point![7.5, -10., -12.5]);
+        assert_eq!(scale(1.) * point![-3., 4., 5.], point![-3., 4., 5.]);
+        assert_eq!(scale(4.2) * Tuple::zero_vector(), Tuple::zero_vector());
     }
 
     #[test]
-    fn test_scale_constant() {
+    fn test_scale_xyz() {
         assert_eq!(
-            scale_constant(0.5) * point![-3., 4., 5.],
-            point![-1.5, 2., 2.5]
+            scale_xyz(2., 3., 4.) * point![-4., 6., 8.],
+            point![-8., 18., 32.]
         );
         assert_eq!(
-            scale_constant(-2.5) * point![-3., 4., 5.],
-            point![7.5, -10., -12.5]
+            scale_xyz(2., 3., 4.) * vector![-4., 6., 8.],
+            vector![-8., 18., 32.]
         );
         assert_eq!(
-            scale_constant(1.) * point![-3., 4., 5.],
-            point![-3., 4., 5.]
+            scale_xyz(2., 3., 4.).inverse() * point![-4., 6., 8.],
+            point![-2., 2., 2.]
         );
         assert_eq!(
-            scale_constant(4.2) * Tuple::zero_vector(),
-            Tuple::zero_vector()
+            scale_xyz(-1., 1., 1.) * point![-4., 6., 8.],
+            point![4., 6., 8.]
+        );
+    }
+
+    #[test]
+    fn test_scale_single() {
+        assert_eq!(scale_x(5.), scale_xyz(5., 1., 1.));
+        assert_eq!(scale_y(-2.), scale_xyz(1., -2., 1.));
+        assert_eq!(scale_z(42.5), scale_xyz(1., 1., 42.5));
+        assert_eq!(
+            scale_x(5.) * scale_y(-2.) * scale_z(42.5),
+            scale_xyz(5., -2., 42.5)
         );
     }
 
@@ -271,7 +303,7 @@ mod tests {
     fn test_mixed_transforms() {
         let p = point![1., 0., 1.];
         let a = rotate_x(TAU / 4.);
-        let b = scale_constant(5.);
+        let b = scale(5.);
         let c = translate(10., 5., 7.);
         assert_eq!(&c * (&b * (&a * p)), point![15., 0., 7.]);
         assert_eq!(&c * ((&b * &a) * p), point![15., 0., 7.]);

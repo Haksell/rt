@@ -43,7 +43,7 @@ mod tests {
     use {
         super::*,
         crate::{
-            math::transform::{scale_constant, translate, translate_x},
+            math::transform::{scale, translate, translate_x},
             patterns::Stripe,
         },
     };
@@ -52,7 +52,7 @@ mod tests {
     fn test_color_at_object_transform() {
         assert_eq!(
             Sphere::new(
-                scale_constant(2.0),
+                scale(2.0),
                 Material {
                     pattern: Box::new(Stripe::default()),
                     ..Material::default()
@@ -67,11 +67,7 @@ mod tests {
     fn test_color_at_pattern_transform() {
         assert_eq!(
             Sphere::unit(Material {
-                pattern: Box::new(Stripe::new(
-                    Color::white(),
-                    Color::black(),
-                    scale_constant(2.0),
-                )),
+                pattern: Box::new(Stripe::new(Color::white(), Color::black(), scale(2.0),)),
                 ..Material::default()
             })
             .color_at(&point![1.5, 0.0, 0.0]),
@@ -83,7 +79,7 @@ mod tests {
     fn test_color_at_both_transform() {
         assert_eq!(
             Sphere::new(
-                scale_constant(2.0),
+                scale(2.0),
                 Material {
                     pattern: Box::new(Stripe::new(
                         Color::white(),

@@ -29,7 +29,10 @@ impl Ray {
 mod tests {
     use {
         super::*,
-        crate::{math::transform, point, vector},
+        crate::{
+            math::transform::{scale_xyz, translate},
+            point, vector,
+        },
     };
 
     #[test]
@@ -69,7 +72,7 @@ mod tests {
     #[test]
     fn test_ray_translate() {
         assert_eq!(
-            Ray::new(point![1., 2., 3.], Tuple::up()).transform(&transform::translate(3., 4., 5.)),
+            Ray::new(point![1., 2., 3.], Tuple::up()).transform(&translate(3., 4., 5.)),
             Ray::new(point![4., 6., 8.], Tuple::up())
         );
     }
@@ -77,7 +80,7 @@ mod tests {
     #[test]
     fn test_ray_scale() {
         assert_eq!(
-            Ray::new(point![1., 2., 3.], Tuple::up()).transform(&transform::scale(2., 3., 4.)),
+            Ray::new(point![1., 2., 3.], Tuple::up()).transform(&scale_xyz(2., 3., 4.)),
             Ray::new(point![2., 6., 12.], vector![0., 3., 0.])
         );
     }

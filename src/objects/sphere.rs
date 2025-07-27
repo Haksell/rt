@@ -83,7 +83,7 @@ mod tests {
         super::*,
         crate::{
             color::Color,
-            math::transform::{self, scale_constant, translate_x},
+            math::transform::{rotate_z, scale, scale_y, translate_x, translate_y},
             point, vector,
         },
         std::f64::consts::{FRAC_1_SQRT_2, TAU},
@@ -93,7 +93,7 @@ mod tests {
     fn test_sphere_constructors() {
         let default = Sphere::default();
         let red = Sphere::unit(Material::from_color(Color::red()));
-        let squashed = Sphere::plastic(transform::scale(1., 0.3, 1.));
+        let squashed = Sphere::plastic(scale_y(0.3));
         assert_eq!(default.material.ambient, squashed.material.ambient);
         assert_eq!(default.material.diffuse, squashed.material.diffuse);
         assert_eq!(default.material.shininess, squashed.material.shininess);
@@ -126,7 +126,7 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_intersect() {
-        let sphere = Sphere::plastic(scale_constant(2.));
+        let sphere = Sphere::plastic(scale(2.));
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![3., 7.]
@@ -154,7 +154,7 @@ mod tests {
     #[test]
     fn test_sphere_translated_normal_at() {
         assert!(
-            Sphere::plastic(transform::translate_y(1.))
+            Sphere::plastic(translate_y(1.))
                 .normal_at(&point![0., 1. + FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
                 .is_close(&vector![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
         );
@@ -163,7 +163,7 @@ mod tests {
     #[test]
     fn test_sphere_transformed_normal_at() {
         assert!(
-            Sphere::plastic(transform::scale(1., 0.5, 1.) * transform::rotate_z(TAU / 10.),)
+            Sphere::plastic(scale_y(0.5) * rotate_z(TAU / 10.),)
                 .normal_at(&point![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2]) // is it even on the sphere?
                 .is_close(&vector![0., 0.97014254, -0.24253564])
         );

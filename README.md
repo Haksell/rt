@@ -15,7 +15,10 @@
 - [ ] Perturbed patterns (use noise library then implement) (page 158)
 - [ ] Parse `.obj` files (library -> own implementation)
 - [ ] Parse `World` from `.rt` files
-- [ ] Create `.rt` files for all images in the book
+- [ ] Create `.rt` files for all images in `The Ray Tracer Challenge`
+- [ ] Create `.rt` files for all images in `Ray Tracing in One Weekend`
+- [ ] Create `.rt` files for all images in `Ray Tracing: The Next Week`
+- [ ] Create `.rt` files for all images in `Ray Tracing: The Rest of your Life`
 - [ ] `iced` with file explorer
 - [ ] Save picture (flag + shortcut)
 - [ ] `f64` -> `f32` (feature or flag?)

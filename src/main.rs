@@ -23,7 +23,7 @@ use {
         math::{
             Matrix,
             transform::{
-                rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, translate_x,
+                rotate_x, rotate_y, rotate_z, scale, scale_xyz, translate, translate_x,
                 translate_z, view_transform,
             },
         },
@@ -70,16 +70,12 @@ fn wall_material() -> Material {
 }
 
 fn build_world() -> World {
-    let wall_scale = scale(10.0, 0.01, 10.0);
+    let wall_scale = scale_xyz(10.0, 0.01, 10.0);
 
     let floor = Plane::new(
         Matrix::identity(),
         Material {
-            pattern: Box::new(Ring::new(
-                Color::yellow(),
-                Color::blue(),
-                scale_constant(0.3),
-            )),
+            pattern: Box::new(Ring::new(Color::yellow(), Color::blue(), scale(0.3))),
             ..wall_material()
         },
     );
@@ -109,18 +105,18 @@ fn build_world() -> World {
         },
     );
     let right = Sphere::new(
-        translate(1.5, 0.5, -0.5) * scale_constant(0.5),
+        translate(1.5, 0.5, -0.5) * scale(0.5),
         Material {
             pattern: Box::new(Gradient::new(
                 Color::red(),
                 Color::new(0.0, 0.5, 1.0),
-                translate_x(1.) * scale_constant(2.),
+                translate_x(1.) * scale(2.),
             )),
             ..*middle.get_material()
         },
     );
     let left = Sphere::new(
-        translate(-1.5, 0.33, -0.75) * scale_constant(0.33),
+        translate(-1.5, 0.33, -0.75) * scale(0.33),
         Material {
             pattern: Box::new(Solid::new(Color::new(1.0, 0.8, 0.1))),
             ..*middle.get_material()

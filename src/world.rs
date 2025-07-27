@@ -4,7 +4,7 @@ use {
         computations::Computations,
         lighting::{PointLight, is_shadowed, lighting},
         material::Material,
-        math::transform::scale_constant,
+        math::transform::scale,
         objects::{Object, Sphere},
         ray::Ray,
     },
@@ -60,6 +60,17 @@ impl World {
             is_shadowed(self, &comps.over_point),
         )
     }
+
+    fn reflected_color(&self, comps: &Computations) -> Color {
+        let reflective = comps.object.get_material().reflective;
+        debug_assert!(reflective >= 0.);
+        debug_assert!(reflective <= 1.);
+        if reflective == 0. {
+            Color::black()
+        } else {
+            todo!()
+        }
+    }
 }
 
 #[cfg(test)]
@@ -71,7 +82,7 @@ pub const TESTING_WORLD: LazyLock<World> = LazyLock::new(|| World {
             specular: 0.2,
             ..Material::default()
         })),
-        Box::new(Sphere::plastic(scale_constant(0.5))),
+        Box::new(Sphere::plastic(scale(0.5))),
     ],
     lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
 });
@@ -84,7 +95,7 @@ mod tests {
             material::Material,
             math::{
                 Tuple,
-                transform::{scale_constant, translate, translate_z},
+                transform::{scale, translate, translate_z},
             },
             objects::Sphere,
         },
@@ -123,7 +134,7 @@ mod tests {
 
     #[test]
     fn test_intersect_more() {
-        let big_sphere_around = Sphere::plastic(scale_constant(5.));
+        let big_sphere_around = Sphere::plastic(scale(5.));
         let small_sphere_ahead = Sphere::plastic(translate(0., 0., 1.5));
         let world = World::new(
             vec![Box::new(big_sphere_around), Box::new(small_sphere_ahead)],
@@ -185,5 +196,30 @@ mod tests {
         let ray = Ray::new(point![0., 0., 0.75], vector![0., 0., -1.]);
         let expected = Color::white() * TESTING_WORLD.objects[1].get_material().ambient;
         assert!(TESTING_WORLD.color_at(&ray).is_close(&expected));
+    }
+
+    #[test]
+    fn test_reflected_color_inside_no_reflection() {
+        let ray = Ray::new(Tuple::zero_point(), vector![0., 0., 1.]);
+        let world = World {
+            objects: vec![
+                Box::new(Sphere::unit(Material {
+                    pattern: Box::new(crate::patterns::Solid::new(Color::new(0.8, 1., 0.6))),
+                    diffuse: 0.7,
+                    specular: 0.2,
+                    ..Default::default()
+                })),
+                Box::new(Sphere::new(
+                    scale(0.5),
+                    Material {
+                        ambient: 1., // ensure there is something to reflect
+                        ..Default::default()
+                    },
+                )),
+            ],
+            lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+        };
+        let comps = Computations::prepare(&*world.objects[1], 1., &ray);
+        assert_eq!(world.reflected_color(&comps), Color::black())
     }
 }
