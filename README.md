@@ -12,7 +12,8 @@
 - [ ] Complete all `// TODO`
 - [ ] Finish subject
 - [ ] Blended patterns (page 157)
-- [ ] Perturbed patterns (simpler or perlin?) (page 158)
+- [ ] Perturbed patterns (use noise library then implement) (page 158)
+- [ ] Parse `.obj` files (library -> own implementation)
 - [ ] Parse `World` from `.rt` files
 - [ ] Create `.rt` files for all images in the book
 - [ ] `iced` with file explorer
