@@ -14,6 +14,36 @@ pub fn translate(x: f64, y: f64, z: f64) -> Matrix {
 }
 
 #[inline]
+pub fn translate_x(x: f64) -> Matrix {
+    matrix![
+        [1., 0., 0., x],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
+pub fn translate_y(y: f64) -> Matrix {
+    matrix![
+        [1., 0., 0., 0.],
+        [0., 1., 0., y],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
+pub fn translate_z(z: f64) -> Matrix {
+    matrix![
+        [1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., z],
+        [0., 0., 0., 1.],
+    ]
+}
+
+#[inline]
 pub fn scale(x: f64, y: f64, z: f64) -> Matrix {
     matrix![
         [x, 0., 0., 0.],
@@ -116,6 +146,17 @@ mod tests {
         );
         let v = vector![-3., 4., 5.]; // not affected by translate
         assert_eq!(translate(5., -3., 2.) * v, v);
+    }
+
+    #[test]
+    fn test_translate_single() {
+        assert_eq!(translate_x(5.), translate(5., 0., 0.));
+        assert_eq!(translate_y(-2.), translate(0., -2., 0.));
+        assert_eq!(translate_z(42.5), translate(0., 0., 42.5));
+        assert_eq!(
+            translate_x(5.) * translate_y(-2.) * translate_z(42.5),
+            translate(5., -2., 42.5)
+        );
     }
 
     #[test]

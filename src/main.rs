@@ -23,11 +23,12 @@ use {
         math::{
             Matrix,
             transform::{
-                rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, view_transform,
+                rotate_x, rotate_y, rotate_z, scale, scale_constant, translate, translate_x,
+                translate_z, view_transform,
             },
         },
         objects::{Object, Plane, Sphere},
-        patterns::{Solid, Stripe},
+        patterns::{Gradient, Solid, Stripe},
         world::World,
     },
     minifb::{Key, Window, WindowOptions},
@@ -73,18 +74,18 @@ fn build_world() -> World {
 
     let floor = Plane::new(Matrix::identity(), wall_material());
     let left_wall = Plane::new(
-        translate(0., 0., 5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
+        translate_z(5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
         Material {
             pattern: Box::new(Stripe::new(
                 Color::red(),
                 Color::white(),
-                translate(0., 0., 5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
+                translate_z(5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
             )),
             ..wall_material()
         },
     );
     let right_wall = Plane::new(
-        translate(0., 0., 5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2),
+        translate_z(5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2),
         wall_material(),
     );
 
@@ -100,7 +101,11 @@ fn build_world() -> World {
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale_constant(0.5),
         Material {
-            pattern: Box::new(Solid::new(Color::new(0.5, 1.0, 0.1))),
+            pattern: Box::new(Gradient::new(
+                Color::red(),
+                Color::new(0.0, 0.5, 1.0),
+                translate_x(1.) * scale_constant(2.),
+            )),
             ..*middle.get_material()
         },
     );

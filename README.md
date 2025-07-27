@@ -11,6 +11,7 @@
 - [ ] `mod` restructuring
 - [ ] Complete all `// TODO`
 - [ ] Finish subject
+- [ ] Parse `World` from `.rt` files
 - [ ] `iced` with file explorer
 - [ ] Save picture (flag + shortcut)
 - [ ] `f64` -> `f32` (feature or flag?)

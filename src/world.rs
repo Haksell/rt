@@ -85,8 +85,10 @@ mod tests {
         super::*,
         crate::{
             material::Material,
-            math::Tuple,
-            math::transform::{scale_constant, translate},
+            math::{
+                Tuple,
+                transform::{scale_constant, translate, translate_z},
+            },
             objects::Sphere,
         },
         std::sync::LazyLock,
@@ -156,7 +158,7 @@ mod tests {
         let world = World::new(
             vec![
                 Box::new(Sphere::default()),
-                Box::new(Sphere::plastic(translate(0., 0., 10.))),
+                Box::new(Sphere::plastic(translate_z(10.))),
             ],
             vec![PointLight::new(Color::white(), point![0., 0., -10.])],
         );

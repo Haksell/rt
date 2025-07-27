@@ -81,7 +81,11 @@ impl Object for Sphere {
 mod tests {
     use {
         super::*,
-        crate::{color::Color, math::transform, point, vector},
+        crate::{
+            color::Color,
+            math::transform::{self, scale_constant, translate_x},
+            point, vector,
+        },
         std::f64::consts::{FRAC_1_SQRT_2, TAU},
     };
 
@@ -122,12 +126,12 @@ mod tests {
 
     #[test]
     fn test_sphere_transformed_intersect() {
-        let sphere = Sphere::plastic(transform::scale_constant(2.));
+        let sphere = Sphere::plastic(scale_constant(2.));
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![3., 7.]
         );
-        let sphere = Sphere::plastic(transform::translate(5., 0., 0.));
+        let sphere = Sphere::plastic(translate_x(5.));
         assert_eq!(
             sphere.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.],)),
             vec![]
@@ -150,7 +154,7 @@ mod tests {
     #[test]
     fn test_sphere_translated_normal_at() {
         assert!(
-            Sphere::plastic(transform::translate(0., 1., 0.))
+            Sphere::plastic(transform::translate_y(1.))
                 .normal_at(&point![0., 1. + FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
                 .is_close(&vector![0., FRAC_1_SQRT_2, -FRAC_1_SQRT_2])
         );

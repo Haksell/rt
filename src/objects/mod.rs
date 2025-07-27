@@ -43,7 +43,7 @@ mod tests {
     use {
         super::*,
         crate::{
-            math::transform::{scale_constant, translate},
+            math::transform::{scale_constant, translate, translate_x},
             patterns::Stripe,
         },
     };
@@ -88,7 +88,7 @@ mod tests {
                     pattern: Box::new(Stripe::new(
                         Color::white(),
                         Color::black(),
-                        translate(0.5, 0.0, 0.0),
+                        translate_x(0.5),
                     )),
                     ..Material::default()
                 }

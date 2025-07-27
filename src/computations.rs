@@ -38,7 +38,11 @@ impl<'a> Computations<'a> {
 mod tests {
     use {
         super::*,
-        crate::{math::transform::translate, objects::Sphere, point, vector},
+        crate::{
+            math::transform::{translate, translate_z},
+            objects::Sphere,
+            point, vector,
+        },
     };
 
     #[test]
@@ -70,7 +74,7 @@ mod tests {
     #[test]
     fn test_prepare_computations_over_point() {
         let ray = Ray::new(point![0., 0., -5.], vector![0., 0., 1.]);
-        let sphere = Sphere::plastic(translate(0., 0., 1.));
+        let sphere = Sphere::plastic(translate_z(1.));
         let comps = Computations::prepare(&sphere, 5., &ray);
         assert!(comps.over_point.z < -ACNE_EPSILON / 2.);
         assert!(comps.over_point.z < comps.point.z);
