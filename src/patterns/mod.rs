@@ -1,9 +1,10 @@
+mod checker;
 mod gradient;
 mod ring;
 mod solid;
 mod stripe;
 
-pub use {gradient::Gradient, ring::Ring, solid::Solid, stripe::Stripe};
+pub use {checker::Checker, gradient::Gradient, ring::Ring, solid::Solid, stripe::Stripe};
 
 use {
     crate::{
