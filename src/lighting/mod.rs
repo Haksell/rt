@@ -34,8 +34,7 @@ pub fn lighting(
     if reflect_dot_eye <= 0. {
         return ambient + diffuse;
     }
-    let factor = reflect_dot_eye.powf(material.shininess);
-    let specular = light.intensity * material.specular * factor;
+    let specular = light.intensity * material.specular * reflect_dot_eye.powf(material.shininess);
 
     ambient + diffuse + specular
 }
