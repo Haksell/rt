@@ -65,11 +65,14 @@ impl World {
         let reflective = comps.object.get_material().reflective;
         debug_assert!(reflective >= 0.);
         debug_assert!(reflective <= 1.);
+        println!("{}", reflective);
         if reflective == 0. {
-            Color::black()
-        } else {
-            todo!()
+            return Color::black();
         }
+
+        let reflect_ray = Ray::new(comps.over_point, comps.reflectv);
+        println!("{reflective} {:?} ", self.color_at(&reflect_ray));
+        reflective * self.color_at(&reflect_ray)
     }
 }
 
@@ -95,11 +98,11 @@ mod tests {
             material::Material,
             math::{
                 Tuple,
-                transform::{scale, translate, translate_z},
+                transform::{scale, translate, translate_y, translate_z},
             },
-            objects::Sphere,
+            objects::{Plane, Sphere},
         },
-        std::sync::LazyLock,
+        std::{f64::consts::SQRT_2, sync::LazyLock},
     };
 
     #[test]
@@ -221,5 +224,40 @@ mod tests {
         };
         let comps = Computations::prepare(&*world.objects[1], 1., &ray);
         assert_eq!(world.reflected_color(&comps), Color::black())
+    }
+
+    #[test]
+    fn test_reflected_color_from_plane_to_sphere() {
+        let outer_sphere = Sphere::unit(Material {
+            pattern: Box::new(crate::patterns::Solid::new(Color::new(0.8, 1., 0.6))),
+            diffuse: 0.7,
+            specular: 0.2,
+            ..Material::default()
+        });
+        let inner_sphere = Sphere::plastic(scale(0.5));
+        let reflective_floor = Plane::new(
+            translate_y(-1.),
+            Material {
+                reflective: 0.5,
+                ..Default::default()
+            },
+        );
+
+        let world = World {
+            objects: vec![
+                Box::new(outer_sphere),
+                Box::new(inner_sphere),
+                Box::new(reflective_floor),
+            ],
+            lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+        };
+        let ray = Ray::new(point![0., 0., -3.], vector![0., -SQRT_2 / 2., SQRT_2 / 2.]);
+        let comps = Computations::prepare(&*world.objects[2], SQRT_2, &ray);
+
+        assert!(
+            world
+                .reflected_color(&comps)
+                .is_close(&Color::new(0.190331, 0.237913, 0.142748))
+        )
     }
 }
