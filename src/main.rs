@@ -28,7 +28,7 @@ use {
             },
         },
         objects::{Object, Plane, Sphere},
-        patterns::{Gradient, Solid, Stripe},
+        patterns::{Gradient, Ring, Solid, Stripe},
         world::World,
     },
     minifb::{Key, Window, WindowOptions},
@@ -72,7 +72,17 @@ fn wall_material() -> Material {
 fn build_world() -> World {
     let wall_scale = scale(10.0, 0.01, 10.0);
 
-    let floor = Plane::new(Matrix::identity(), wall_material());
+    let floor = Plane::new(
+        Matrix::identity(),
+        Material {
+            pattern: Box::new(Ring::new(
+                Color::yellow(),
+                Color::blue(),
+                scale_constant(0.3),
+            )),
+            ..wall_material()
+        },
+    );
     let left_wall = Plane::new(
         translate_z(5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
         Material {

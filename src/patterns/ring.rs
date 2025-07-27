@@ -33,7 +33,7 @@ impl Ring {
 
 impl Pattern for Ring {
     fn color_at(&self, point: &Tuple) -> Color {
-        if point.x.hypot(point.z).rem_euclid(2.0) < 1.0 {
+        if f64::hypot(point.x, point.z).rem_euclid(2.0) < 1.0 {
             self.a
         } else {
             self.b
