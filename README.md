@@ -6,7 +6,8 @@
 - [ ] Add ideas from chapter 17
 - [ ] Copy TODOs from `old` branch
 - [ ] Remove `old` branch
-- [ ] Clean `color_at`/`shade_it`/`Computations`/`shadow`
+- [ ] Clean `color_at`/`shade_it`/`reflected_color`/`Computations`/`shadow`
+- [ ] More `color_at` tests once it's cleaned
 - [ ] Remove as many `.clone` as possible
 - [ ] `mod` restructuring
 - [ ] Complete all `// TODO`

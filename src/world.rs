@@ -42,15 +42,21 @@ impl World {
     }
 
     pub fn color_at(&self, ray: &Ray) -> Color {
+        const RECURSION_MAX_DEPTH: u8 = 7;
+        self.color_at_recursive(ray, RECURSION_MAX_DEPTH)
+    }
+
+    fn color_at_recursive(&self, ray: &Ray, remaining_depth: u8) -> Color {
         match self.intersect(ray) {
-            None => Color::black(), // TODO: ambient color instead
-            Some((object, hit_distance)) => {
-                self.shade_hit(&Computations::prepare(&**object, hit_distance, ray))
-            }
+            None => Color::black(), // TODO: ambient instead
+            Some((object, hit_distance)) => self.shade_hit(
+                &Computations::prepare(&**object, hit_distance, ray),
+                remaining_depth,
+            ),
         }
     }
 
-    fn shade_hit(&self, comps: &Computations) -> Color {
+    fn shade_hit(&self, comps: &Computations, remaining_depth: u8) -> Color {
         let surface = lighting(
             comps.object,
             &self.lights[0], // TODO: all the lights
@@ -59,20 +65,33 @@ impl World {
             &comps.normalv,
             is_shadowed(self, &comps.over_point),
         );
-        let reflected = self.reflected_color(comps);
-        surface + reflected
+        if remaining_depth == 0 {
+            return surface;
+        }
+
+        let reflectivity = comps.object.get_material().reflectivity;
+        debug_assert!(reflectivity >= 0.);
+        debug_assert!(reflectivity <= 1.);
+        if reflectivity == 0. {
+            return surface;
+        }
+
+        let reflected = self.reflected_color(comps, remaining_depth);
+        // TODO: check if the surface value should be multiplied by (1 - reflectivity)
+        // think about a perfect mirror
+        (1. - reflectivity) * surface + reflected
     }
 
-    fn reflected_color(&self, comps: &Computations) -> Color {
-        let reflective = comps.object.get_material().reflective;
-        debug_assert!(reflective >= 0.);
-        debug_assert!(reflective <= 1.);
-        if reflective == 0. {
+    fn reflected_color(&self, comps: &Computations, remaining_depth: u8) -> Color {
+        let reflectivity = comps.object.get_material().reflectivity;
+        debug_assert!(reflectivity >= 0.);
+        debug_assert!(reflectivity <= 1.);
+        if reflectivity == 0. {
             return Color::black();
         }
 
         let reflect_ray = Ray::new(comps.over_point, comps.reflectv);
-        reflective * self.color_at(&reflect_ray)
+        reflectivity * self.color_at_recursive(&reflect_ray, remaining_depth - 1)
     }
 }
 
@@ -157,7 +176,7 @@ mod tests {
         let comps = Computations::prepare(&**object, 4.0, &ray);
         assert!(
             TESTING_WORLD
-                .shade_hit(&comps)
+                .shade_hit(&comps, u8::MAX)
                 .is_close(&Color::new(0.3806612, 0.47582647, 0.2854959))
         );
     }
@@ -175,7 +194,11 @@ mod tests {
         );
         let ray = Ray::new(point![0., 0., 5.], vector![0., 0., 1.]);
         let comps = Computations::prepare(&*world.objects[1], 4., &ray);
-        assert!(world.shade_hit(&comps).is_close(&Color::new(0.1, 0.1, 0.1)));
+        assert!(
+            world
+                .shade_hit(&comps, u8::MAX)
+                .is_close(&Color::new(0.1, 0.1, 0.1))
+        );
     }
 
     #[test]
@@ -223,7 +246,7 @@ mod tests {
             lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
         };
         let comps = Computations::prepare(&*world.objects[1], 1., &ray);
-        assert_eq!(world.reflected_color(&comps), Color::black())
+        assert_eq!(world.reflected_color(&comps, u8::MAX), Color::black())
     }
 
     #[test]
@@ -238,7 +261,7 @@ mod tests {
         let reflective_floor = Plane::new(
             translate_y(-1.),
             Material {
-                reflective: 0.5,
+                reflectivity: 0.5,
                 ..Default::default()
             },
         );
@@ -256,7 +279,7 @@ mod tests {
 
         assert!(
             world
-                .reflected_color(&comps)
+                .reflected_color(&comps, u8::MAX)
                 .is_close(&Color::new(0.190331, 0.237913, 0.142748))
         )
     }
@@ -273,7 +296,7 @@ mod tests {
         let reflective_floor = Plane::new(
             translate_y(-1.),
             Material {
-                reflective: 0.5,
+                reflectivity: 0.5,
                 ..Default::default()
             },
         );
@@ -290,7 +313,70 @@ mod tests {
         let comps = Computations::prepare(&*world.objects[2], SQRT_2, &ray);
 
         // white plane + greenish reflection of the sphere
-        let expected = Color::new(0.876756, 0.924339, 0.829173);
-        assert!(world.shade_hit(&comps).is_close(&expected),)
+        let expected = Color::new(0.533543, 0.581126, 0.485961);
+        assert!(world.shade_hit(&comps, u8::MAX).is_close(&expected));
+    }
+
+    #[test]
+    fn test_color_at_parallel_mirrors_finite_recursion() {
+        let lower_mirror = Plane::new(
+            translate_y(-1.),
+            Material {
+                reflectivity: 1.,
+                ..Default::default()
+            },
+        );
+        let upper_mirror = Plane::new(
+            translate_y(1.),
+            Material {
+                reflectivity: 1.,
+                ..Default::default()
+            },
+        );
+
+        let world = World {
+            objects: vec![Box::new(lower_mirror), Box::new(upper_mirror)],
+            lights: vec![PointLight::new(Color::white(), Tuple::zero_point())],
+        };
+        let ray = Ray::new(Tuple::zero_point(), Tuple::up());
+
+        let color = world.color_at(&ray); // does not crash
+    }
+
+    #[test]
+    fn test_shade_hit_max_depth() {
+        let outer_sphere = Sphere::unit(Material {
+            pattern: Box::new(crate::patterns::Solid::new(Color::new(0.8, 1., 0.6))),
+            diffuse: 0.7,
+            specular: 0.2,
+            ..Material::default()
+        });
+        let inner_sphere = Sphere::plastic(scale(0.5));
+        let reflective_floor = Plane::new(
+            translate_y(-1.),
+            Material {
+                reflectivity: 0.5,
+                ..Default::default()
+            },
+        );
+
+        let world = World {
+            objects: vec![
+                Box::new(outer_sphere),
+                Box::new(inner_sphere),
+                Box::new(reflective_floor),
+            ],
+            lights: vec![PointLight::new(Color::white(), point![-10., 10., -10.])],
+        };
+        let ray = Ray::new(point![0., 0., -3.], vector![0., -SQRT_2 / 2., SQRT_2 / 2.]);
+        let comps = Computations::prepare(&*world.objects[2], SQRT_2, &ray);
+
+        // only the color of the white plane
+        let expected = Color::new(0.686425, 0.686425, 0.686425);
+        assert!(
+            world.shade_hit(&comps, 0).is_close(&expected),
+            "{:?}",
+            world.shade_hit(&comps, 0)
+        );
     }
 }

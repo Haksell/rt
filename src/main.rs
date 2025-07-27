@@ -61,21 +61,35 @@ fn main() {
     }
 }
 
-fn wall_material() -> Material {
-    Material {
-        pattern: Box::new(Solid::new(Color::new(1.0, 0.9, 0.9))),
-        specular: 0.0,
-        ..Default::default()
-    }
-}
-
 fn build_world() -> World {
+    fn wall_material() -> Material {
+        Material {
+            pattern: Box::new(Solid::new(Color::new(1.0, 0.9, 0.9))),
+            specular: 0.0,
+            ..Default::default()
+        }
+    }
+
+    fn sphere_material() -> Material {
+        Material {
+            pattern: Box::new(Stripe::new(
+                Color::white(),
+                Color::black(),
+                rotate_z(1.2) * scale(0.1),
+            )),
+            diffuse: 0.7,
+            specular: 0.3,
+            ..Default::default()
+        }
+    }
+
     let wall_scale = scale_xyz(10.0, 0.01, 10.0);
 
     let floor = Plane::new(
         Matrix::identity(),
         Material {
             pattern: Box::new(Ring::new(Color::yellow(), Color::blue(), scale(0.3))),
+            reflectivity: 0.5,
             ..wall_material()
         },
     );
@@ -92,18 +106,13 @@ fn build_world() -> World {
     );
     let right_wall = Plane::new(
         translate_z(5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2),
-        wall_material(),
-    );
-
-    let middle = Sphere::new(
-        translate(-0.5, 1., 0.5),
         Material {
-            pattern: Box::new(Stripe::default()),
-            diffuse: 0.7,
-            specular: 0.3,
-            ..Default::default()
+            reflectivity: 0.5,
+            ..wall_material()
         },
     );
+
+    let middle = Sphere::new(translate(-0.5, 1., 0.5), sphere_material());
     let right = Sphere::new(
         translate(1.5, 0.5, -0.5) * scale(0.5),
         Material {
@@ -112,6 +121,7 @@ fn build_world() -> World {
                 Color::new(0.0, 0.5, 1.0),
                 translate_x(1.) * scale(2.),
             )),
+            reflectivity: 0.2,
             ..*middle.get_material()
         },
     );
