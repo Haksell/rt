@@ -83,21 +83,6 @@ fn build_world() -> World {
             ..wall_material()
         },
     );
-    let left_wall = Plane::new(
-        translate_z(5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
-        Material {
-            pattern: Box::new(Stripe::new(
-                Color::red(),
-                Color::white(),
-                translate_z(5.) * rotate_y(-FRAC_PI_4) * rotate_x(FRAC_PI_2),
-            )),
-            ..wall_material()
-        },
-    );
-    let right_wall = Plane::new(
-        translate_z(5.) * rotate_y(FRAC_PI_4) * rotate_x(FRAC_PI_2),
-        wall_material(),
-    );
 
     let middle = Sphere::new(
         translate(-0.5, 1., 0.5),
@@ -130,8 +115,6 @@ fn build_world() -> World {
     World::new(
         vec![
             Box::new(floor),
-            Box::new(left_wall),
-            Box::new(right_wall),
             Box::new(middle),
             Box::new(right),
             Box::new(left),
