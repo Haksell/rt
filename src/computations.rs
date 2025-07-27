@@ -9,6 +9,7 @@ pub struct Computations<'a> {
     pub over_point: Tuple,
     pub eyev: Tuple,
     pub normalv: Tuple,
+    pub reflectv: Tuple,
     pub inside: bool,
 }
 
@@ -21,7 +22,9 @@ impl<'a> Computations<'a> {
         if inside {
             normalv = -normalv;
         }
+        let reflectv = ray.direction.reflect(&normalv);
         let over_point = point + normalv * ACNE_EPSILON;
+
         Self {
             t,
             object,
@@ -29,6 +32,7 @@ impl<'a> Computations<'a> {
             over_point,
             eyev,
             normalv,
+            reflectv,
             inside,
         }
     }
@@ -39,10 +43,14 @@ mod tests {
     use {
         super::*,
         crate::{
-            math::transform::{translate, translate_z},
-            objects::Sphere,
+            math::{
+                is_close,
+                transform::{translate, translate_z},
+            },
+            objects::{Plane, Sphere},
             point, vector,
         },
+        std::f64::consts::SQRT_2,
     };
 
     #[test]
@@ -78,5 +86,17 @@ mod tests {
         let comps = Computations::prepare(&sphere, 5., &ray);
         assert!(comps.over_point.z < -ACNE_EPSILON / 2.);
         assert!(comps.over_point.z < comps.point.z);
+    }
+
+    #[test]
+    fn test_prepare_computations_reflection() {
+        let plane = Plane::default();
+        let ray = Ray::new(point![0., 1., -1.], vector![0., -SQRT_2 / 2., SQRT_2 / 2.]);
+        let comps = Computations::prepare(&plane, SQRT_2, &ray);
+        assert!(
+            comps
+                .reflectv
+                .is_close(&vector![0., SQRT_2 / 2., SQRT_2 / 2.])
+        );
     }
 }

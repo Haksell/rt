@@ -23,7 +23,7 @@ impl Plane {
         }
     }
 
-    pub fn unit(material: Material) -> Self {
+    pub fn horizontal(material: Material) -> Self {
         Self {
             inverse_transform: Matrix::identity(),
             material,
