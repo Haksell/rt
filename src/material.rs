@@ -15,6 +15,22 @@ pub struct Material {
     pub refractive_index: f64,
 }
 
+// TODO: test visually
+impl Material {
+    pub fn glass() -> Self {
+        Self {
+            pattern: Box::new(Solid::new(Color::white())),
+            ambient: 0.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            shininess: 0.0,
+            reflectivity: 0.0,
+            transparency: 1.0,
+            refractive_index: 1.5,
+        }
+    }
+}
+
 impl Default for Material {
     fn default() -> Self {
         Self {
