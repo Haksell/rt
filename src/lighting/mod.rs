@@ -143,7 +143,16 @@ mod tests {
 
     #[test]
     fn test_lighting_stripe() {
-        let material = Material::new(Box::new(Stripe::default()), 1.0, 0.0, 0.0, 0.0, 0.0);
+        let material = Material {
+            pattern: Box::new(Stripe::default()),
+            ambient: 1.0,
+            diffuse: 0.0,
+            specular: 0.0,
+            shininess: 0.0,
+            reflectivity: 0.0,
+            transparency: 0.0,
+            refractive_index: 1.0,
+        };
         let sphere = Sphere::unit(material);
         let eyev = vector![0., 0., -1.];
         let normalv = vector![0., 0., -1.];

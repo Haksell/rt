@@ -11,33 +11,8 @@ pub struct Material {
     pub specular: f64,
     pub shininess: f64,
     pub reflectivity: f64,
-}
-
-impl Material {
-    pub fn new(
-        pattern: Box<dyn Pattern>,
-        ambient: f64,
-        diffuse: f64,
-        specular: f64,
-        shininess: f64,
-        reflectivity: f64,
-    ) -> Self {
-        Self {
-            pattern,
-            ambient,
-            diffuse,
-            specular,
-            shininess,
-            reflectivity,
-        }
-    }
-
-    pub fn from_color(color: Color) -> Self {
-        Self {
-            pattern: Box::new(Solid::new(color)),
-            ..Default::default()
-        }
-    }
+    pub transparency: f64,
+    pub refractive_index: f64,
 }
 
 impl Default for Material {
@@ -49,6 +24,8 @@ impl Default for Material {
             specular: 0.9,
             shininess: 200.,
             reflectivity: 0.0,
+            transparency: 0.0,
+            refractive_index: 1.0,
         }
     }
 }

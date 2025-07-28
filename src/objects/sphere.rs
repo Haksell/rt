@@ -84,6 +84,7 @@ mod tests {
         crate::{
             color::Color,
             math::transform::{rotate_z, scale, scale_y, translate_x, translate_y},
+            patterns::Solid,
             point, vector,
         },
         std::f64::consts::{FRAC_1_SQRT_2, TAU},
@@ -92,7 +93,10 @@ mod tests {
     #[test]
     fn test_sphere_constructors() {
         let default = Sphere::default();
-        let red = Sphere::unit(Material::from_color(Color::red()));
+        let red = Sphere::unit(Material {
+            pattern: Box::new(Solid::new(Color::red())),
+            ..Default::default()
+        });
         let squashed = Sphere::plastic(scale_y(0.3));
         assert_eq!(default.material.ambient, squashed.material.ambient);
         assert_eq!(default.material.diffuse, squashed.material.diffuse);
