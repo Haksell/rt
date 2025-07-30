@@ -11,6 +11,8 @@ pub struct Computations<'a> {
     pub normalv: Tuple,
     pub reflectv: Tuple,
     pub inside: bool,
+    pub n1: f64,
+    pub n2: f64,
 }
 
 impl<'a> Computations<'a> {
@@ -24,6 +26,8 @@ impl<'a> Computations<'a> {
         }
         let reflectv = ray.direction.reflect(&normalv);
         let over_point = point + normalv * ACNE_EPSILON;
+        let n1 = 0.0;
+        let n2 = 0.0;
 
         Self {
             t,
@@ -34,6 +38,8 @@ impl<'a> Computations<'a> {
             normalv,
             reflectv,
             inside,
+            n1,
+            n2,
         }
     }
 }
@@ -43,9 +49,10 @@ mod tests {
     use {
         super::*,
         crate::{
+            material::Material,
             math::{
-                is_close,
-                transform::{translate, translate_z},
+                Matrix, is_close,
+                transform::{scale, translate, translate_z},
             },
             objects::{Plane, Sphere},
             point, vector,
@@ -98,5 +105,37 @@ mod tests {
                 .reflectv
                 .is_close(&vector![0., SQRT_2 / 2., SQRT_2 / 2.])
         );
+    }
+
+    #[test]
+    fn test_prepare_computations_refraction() {
+        fn glass_sphere(transform: Matrix, refractive_index: f64) -> Sphere {
+            Sphere::new(
+                transform,
+                Material {
+                    refractive_index,
+                    ..Material::glass()
+                },
+            )
+        }
+
+        // a contains b and c, which overlap each other
+        let a = glass_sphere(scale(2.0), 1.5);
+        let b = glass_sphere(translate_z(-0.25), 2.0);
+        let c = glass_sphere(translate_z(0.25), 2.5);
+
+        let ray = Ray::new(point![0., 0., -4.], vector![0., 0., 1.]);
+        for (sphere, t, expected_n1, expected_n2) in [
+            (&a, 2.0, 1.0, 1.5),  // enters a
+            (&b, 2.75, 1.5, 2.0), // enters b
+            (&c, 3.25, 2.0, 2.5), // enters c
+            (&b, 4.75, 2.5, 2.5), // exits b
+            (&c, 5.25, 2.5, 1.5), // exits c
+            (&a, 6.0, 1.5, 1.0),  // exits a
+        ] {
+            let comps = Computations::prepare(sphere, t, &ray);
+            assert_eq!(comps.n1, expected_n1);
+            assert_eq!(comps.n2, expected_n2);
+        }
     }
 }
