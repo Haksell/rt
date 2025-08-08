@@ -2,6 +2,7 @@ use {
     crate::{
         color::Color,
         computations::Computations,
+        intersection::Intersection,
         lighting::{PointLight, is_shadowed, lighting},
         material::Material,
         math::transform::scale,
@@ -23,7 +24,7 @@ impl World {
         Self { objects, lights }
     }
 
-    pub fn intersect(&self, ray: &Ray) -> Option<(&Box<dyn Object>, f64)> {
+    pub fn intersect(&self, ray: &Ray) -> Option<Intersection> {
         const MIN_HIT_DISTANCE: f64 = 1e-6;
 
         let mut hit_object = None;
@@ -38,7 +39,7 @@ impl World {
             }
         }
 
-        hit_object.map(|object| (object, hit_distance))
+        hit_object.map(|object| Intersection::new(object, hit_distance))
     }
 
     pub fn color_at(&self, ray: &Ray) -> Color {
@@ -49,8 +50,8 @@ impl World {
     fn color_at_recursive(&self, ray: &Ray, remaining_depth: u8) -> Color {
         match self.intersect(ray) {
             None => Color::black(), // TODO: ambient instead
-            Some((object, hit_distance)) => self.shade_hit(
-                &Computations::prepare(&**object, hit_distance, ray),
+            Some(Intersection { object, distance }) => self.shade_hit(
+                &Computations::prepare(&**object, distance, ray),
                 remaining_depth,
             ),
         }
@@ -130,8 +131,8 @@ mod tests {
         let world = World::new(vec![Box::new(sphere)], vec![]);
         let intersection = world.intersect(&Ray::new(point![0., 0., -5.], vector![0., 0., 1.]));
         assert!(intersection.is_some());
-        let (object, t) = intersection.unwrap();
-        assert_eq!(t, 4.);
+        let Intersection { object, distance } = intersection.unwrap();
+        assert_eq!(distance, 4.);
         assert!(std::ptr::addr_eq(object, &world.objects[0]));
     }
 
@@ -141,8 +142,8 @@ mod tests {
         let world = World::new(vec![Box::new(sphere)], vec![]);
         let intersection = world.intersect(&Ray::new(point![0., 0., 0.], vector![0., 0., 1.]));
         assert!(intersection.is_some());
-        let (object, t) = intersection.unwrap();
-        assert_eq!(t, 1.);
+        let Intersection { object, distance } = intersection.unwrap();
+        assert_eq!(distance, 1.);
         assert!(std::ptr::addr_eq(object, &world.objects[0]));
     }
 
@@ -164,8 +165,8 @@ mod tests {
         );
         let intersection = world.intersect(&Ray::new(point![0., 0., 0.], vector![0., 0., 1.]));
         assert!(intersection.is_some());
-        let (object, t) = intersection.unwrap();
-        assert_eq!(t, 0.5);
+        let Intersection { object, distance } = intersection.unwrap();
+        assert_eq!(distance, 0.5);
         assert!(std::ptr::addr_eq(object, &world.objects[1]));
     }
 

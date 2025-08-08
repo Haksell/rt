@@ -3,7 +3,8 @@ mod point_light;
 pub use point_light::PointLight;
 
 use crate::{
-    color::Color, computations::Computations, math::Tuple, objects::Object, ray::Ray, world::World,
+    color::Color, computations::Computations, intersection::Intersection, math::Tuple,
+    objects::Object, ray::Ray, world::World,
 };
 
 pub fn lighting(
@@ -42,10 +43,12 @@ pub fn lighting(
 pub fn is_shadowed(world: &World, point: &Tuple) -> bool {
     // TODO: for all lights in world
     let v = world.lights[0].position - point;
-    let distance = v.magnitude();
-    let direction = v.normalize();
-    let ray = Ray::new(*point, direction);
-    world.intersect(&ray).is_some_and(|(_, t)| t < distance)
+    let light_distance = v.magnitude();
+    let light_direction = v.normalize();
+    let ray = Ray::new(*point, light_direction);
+    world
+        .intersect(&ray)
+        .is_some_and(|Intersection { distance, .. }| distance < light_distance)
 }
 
 #[cfg(test)]

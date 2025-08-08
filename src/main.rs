@@ -4,6 +4,7 @@ mod camera;
 mod canvas;
 mod color;
 mod computations;
+mod intersection;
 mod lighting;
 mod material;
 #[macro_use]
