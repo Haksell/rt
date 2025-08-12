@@ -10,3 +10,10 @@ impl<'a> Intersection<'a> {
         Self { object, distance }
     }
 }
+
+#[cfg(test)]
+impl<'a> PartialEq for Intersection<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        std::ptr::addr_eq(self.object, other.object) && self.distance == other.distance
+    }
+}
