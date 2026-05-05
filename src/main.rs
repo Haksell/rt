@@ -1,6 +1,8 @@
-use clap::Parser;
-use minifb::{Key, Window, WindowOptions};
-use std::io::{Write as _, stdout};
+use {
+    clap::Parser,
+    minifb::{Key, Window, WindowOptions},
+    std::io::{Write as _, stdout},
+};
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -30,7 +32,7 @@ fn main() {
                 .unwrap();
             sample += 1;
             print!("\rSample: {}/{}", sample, args.samples);
-            let _ = stdout().flush();
+            stdout().flush().unwrap();
             if sample == args.samples {
                 println!("\nCompleted.");
             }
