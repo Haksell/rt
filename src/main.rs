@@ -1,3 +1,7 @@
+#![feature(portable_simd)]
+
+mod vec3;
+
 use {
     clap::Parser,
     minifb::{Key, Window, WindowOptions},
