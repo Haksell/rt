@@ -25,6 +25,9 @@ suspicious = { level = "deny", priority = -1 }
 cargo_common_metadata = "allow"
 multiple_crate_versions = "allow"
 
+# nursery
+suboptimal_flops = "allow"
+
 # pedantic
 cast_possible_truncation = "allow"
 cast_precision_loss = "allow"
@@ -41,6 +44,7 @@ implicit_return = "allow"
 indexing_slicing = "allow"
 min_ident_chars = "allow"
 missing_docs_in_private_items = "allow"
+missing_inline_in_public_items = "allow"
 print_stdout = "allow"
 precedence_bits = "allow"
 single_call_fn = "allow"
