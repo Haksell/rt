@@ -38,13 +38,10 @@ impl Vec3 {
     }
 
     pub fn cross(self, other: Self) -> Self {
-        let a = self.0;
-        let b = other.0;
-
         Self(Simd::from_array([
-            a[1] * b[2] - a[2] * b[1],
-            a[2] * b[0] - a[0] * b[2],
-            a[0] * b[1] - a[1] * b[0],
+            self.y() * other.z() - self.z() * other.y(),
+            self.z() * other.x() - self.x() * other.z(),
+            self.x() * other.y() - self.y() * other.x(),
             0.0,
         ]))
     }
