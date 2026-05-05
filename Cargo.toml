@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.6", features = ["derive"] }
 minifb = "0.28"
+rand = "0.10"
 
 # [lints.rust]
 # TODO
@@ -43,6 +44,7 @@ float_arithmetic = "allow"
 implicit_return = "allow"
 indexing_slicing = "allow"
 min_ident_chars = "allow"
+missing_assert_message = "allow"
 missing_docs_in_private_items = "allow"
 missing_inline_in_public_items = "allow"
 print_stdout = "allow"
