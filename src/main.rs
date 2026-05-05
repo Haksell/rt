@@ -1,6 +1,7 @@
 #![feature(portable_simd)]
 
 mod color;
+mod interval;
 mod ray;
 mod vec3;
 
