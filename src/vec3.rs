@@ -11,6 +11,10 @@ impl Vec3 {
         Self(Simd::from_array([x, y, z, 0.0]))
     }
 
+    pub const fn zero() -> Self {
+        Self(Simd::from_array([0.0, 0.0, 0.0, 0.0]))
+    }
+
     pub const fn splat(v: f32) -> Self {
         Self(Simd::splat(v))
     }
